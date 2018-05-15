@@ -519,6 +519,9 @@ a:hover { color:#37ACFF; }
 	background-color: #7DA6C3;
 	margin-right:10px;
 	vertical-align: middle;
+	position: absolute;
+	left: -15px;
+	top: 18px;
 }
 .select_wrap  {
 	line-height: 48px;

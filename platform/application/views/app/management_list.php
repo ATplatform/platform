@@ -52,34 +52,32 @@
 			>
 			<thead>
 				<tr>
-					<th data-title="数据id" data-align="center" data-field="id" data-hidden=true></th>
-					<th data-title="住户code" data-align="center" data-field="person_code" data-hidden=true></th>
-					<th data-title="住户姓" data-align="center" data-field="lats_name" data-hidden=true></th>
-					<th data-title="住户名" data-align="center" data-field="first_name" data-hidden=true></th>
-					<th data-title="性别" data-align="center" data-field="gender" data-hidden=true></th>
-					<th data-title="出生日期" data-align="center" data-field="birth_date" data-hidden=true></th>
-					<th data-title="住户国籍" data-align="center" data-field="nationality" data-hidden=true></th>
-					<th data-title="住户血型" data-align="center" data-field="blood_type" data-hidden=true></th>
-					<th data-title="住户血型名称" data-align="center" data-field="blood_type_name" data-hidden=true></th>
-					<th data-title="住户备注" data-align="center" data-field="remark" data-hidden=true></th>
-					<th data-title="是否残疾" data-align="center" data-field="if_disabled" data-hidden=true></th>
-					<th data-title="是否残疾名称" data-align="center" data-field="if_disabled_name" data-hidden=true></th>
-					<th data-title="身份证件类型" data-align="center" data-field="id_type" data-hidden=true></th>
-					<th data-title="身份证件类型名称" data-align="center" data-field="id_type_name" data-hidden=true></th>
-					<th data-title="结束日期" data-align="center" data-field="end_date" data-hidden=true></th>
-					<th data-title="住户类型号码" data-align="center" data-field="household_type" data-hidden=true></th>
+					<th data-title="数据id" data-visible="false" data-field="id" ></th>
+					<th data-title="住户code" data-visible="false" data-field="person_code" ></th>
+					<th data-title="住户姓" data-visible="false" data-field="lats_name" ></th>
+					<th data-title="住户名" data-visible="false" data-field="first_name" ></th>
+					<th data-title="性别" data-visible="false" data-field="gender" ></th>
+					<th data-title="出生日期" data-visible="false" data-field="birth_date" ></th>
+					<th data-title="住户国籍" data-visible="false" data-field="nationality" ></th>
+					<th data-title="住户血型" data-visible="false" data-field="blood_type" ></th>
+					<th data-title="住户血型名称" data-visible="false" data-field="blood_type_name" ></th>
+					<th data-title="住户备注" data-visible="false" data-field="remark" ></th>
+					<th data-title="是否残疾" data-visible="false" data-field="if_disabled" ></th>
+					<th data-title="是否残疾名称" data-visible="false" data-field="if_disabled_name" ></th>
+					<th data-title="身份证件类型" data-visible="false" data-field="id_type" ></th>
+					<th data-title="身份证件类型名称" data-visible="false" data-field="id_type_name" ></th>
+					<th data-title="结束日期" data-visible="false" data-field="end_date" ></th>
+					<th data-title="住户类型号码" data-visible="false" data-field="household_type" ></th>
 					
 					<th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
 					<th data-field="" data-title="职位" data-align="center"></th>
 					<th data-field="" data-title="职能" data-align="center"></th>
 					<th data-field="" data-title="职位等级" data-align="center"></th>
 					<th data-field="" data-title="上一级职位" data-align="center"></th>
-
 					<th data-field="full_name" data-title="姓名" data-align="center"></th>
-					<th data-field="person_code" data-title="员工编号" data-align="center"></th>
+					<th data-field="code" data-title="员工编号" data-align="center"></th>
 					<th data-field="" data-title="入职日期" data-align="center"></th>
 					<th data-field="" data-title="管理区域" data-align="center"></th>
-
 					<th data-field="gender_name" data-title="性别" data-align="center"></th>
 					<th data-field="age" data-title="年龄" data-align="center"></th>
 					<th data-field="mobile_number" data-title="手机号码" data-align="center"></th>
@@ -352,7 +350,7 @@
 						</div>
 					</div>
 					<div class="search_person_results">
-							<div class="single_person" data-last_name="张" data-first_name="某某" data-code="100007"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a><div class="fl"><span class="name">张某某</span><span class="id_number">454444</span></div><div class="select_pull_down query_wrap col_37A fl"><div><input type="text" class="model_input household_type ka_input3" placeholder="住户类别" name="household_type" data-ajax="" readonly=""></div><div class="ka_drop" style="display: none;"><div class="ka_drop_list"><ul><li><a href="javascript:;" data-ajax="101">户主</a></li><li><a href="javascript:;" data-ajax="102">家庭成员</a></li><li><a href="javascript:;" data-ajax="103">访客</a></li><li><a href="javascript:;" data-ajax="104">租客</a></li></ul></div></div></div></div>				
+							<!-- <div class="single_person" data-last_name="张" data-first_name="某某" data-code="100007"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a><div class="fl"><span class="name">张某某</span><span class="id_number">454444</span></div></div>				 -->
 					</div>
 					<div class="person_building_data">
 						<ul>
@@ -365,23 +363,24 @@
 					<input type="text" class="hire_date date" name="hire_date">
 				</p>
 
-				
-
 				<div class="select_pull_down select_wrap select_room">
 					<div>
 						<span class="red_star">*</span>职位：
-						<input type="text" class="model_input position_code ka_input3" placeholder="请选择职位" name="position_code" data-ajax="" readonly="">
+						<input type="text" class="model_input position_grade ka_input3" placeholder="请选择职位" name="position_grade" data-ajax="" readonly="">
 					</div>
 					<div class="ka_drop">
 						<div class="ka_drop_list">
 						<ul>
-							
+							<li><a href="javascript:;" data-ajax="101">总部职能</a></li>
+							<li><a href="javascript:;" data-ajax="102">总经理</a></li>
+							<li><a href="javascript:;" data-ajax="103">经理</a></li>
+							<li><a href="javascript:;" data-ajax="104">主管</a></li>
+							<li><a href="javascript:;" data-ajax="105">班长</a></li>
+							<li><a href="javascript:;" data-ajax="106">普通员工</a></li>
 						</ul>
 						</div>
 					</div>
 				</div>
-
-
 				
 				<p><span class="red_star">*</span>开始日期：
 					<input type="text" class="begin_date date" name="begin_date">
@@ -391,7 +390,7 @@
 					<input type="text" class="end_date date" name="end_date">
 				</p>
 
-				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;员工编号：
+				<p><span class="red_star">*</span>员工编号：
 					<input type="text" class="employee_no" name="employee_no">
 				</p>
 
@@ -409,7 +408,7 @@
     </div><!-- /.modal -->
 </div>
 
-<!--人员详情-->
+<!--物业人员详情-->
 <div class="modal fade" id="person_detail" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog"  style="width: 630px;">
         <div class="modal-content model_wrap">
@@ -461,26 +460,28 @@
 						</p>
 					</div>
 					<div class="fr person_wrap person_detail">
-						<p><i class="icon_circle"></i>住户关系</p>
-						<p><span class="des">房号：</span>
+						<p><i class="icon_circle"></i>物业人员关系</p>
+						<p><span class="des">入职日期：</span>
 							<span class="building_code col_37A"></span>
 						</p>
-						<p><span class="des">开始日期：</span>
+						<p><span class="des">员工编号：</span>
 							<span class="begin_date col_37A"></span>
 						</p>
-						<p><span class="des">结束日期：</span>
+						<p><span class="des">职位：</span>
 							<span class="end_date col_37A"></span>
 						</p>
-						<p><span class="des">住户类型：</span>
+						<p><span class="des">职能：</span>
 							<span class="household_type_name col_37A"></span>
 						</p>
-						<p style="margin-top: 20px;"><i class="icon_circle"></i>同房间其他住户</p>
-						<p style="padding-left: 20px;">
-							<span class="other_person"></span>
+						<p><span class="des">职位等级：</span>
+							<span class="household_type_name col_37A"></span>
 						</p>
-						<p style="margin-top: 20px;"><i class="icon_circle"></i>该住户在本小区其他房间</p>
-						<p style="padding-left: 20px;">
-							<span class="other_building"></span>
+						<p><span class="des">管理区域：</span>
+							<span class="household_type_name col_37A"></span>
+						</p>
+						<p><i class="icon_circle"></i>上级领导</p>
+						<p><span class="des">张xxx</span>
+							<span class="building_code">总经理</span>
 						</p>
 					</div>
 
@@ -719,7 +720,7 @@
 					<p><span class="des">姓名：</span>
 						<span class="full_name col_37A"></span>
 					</p>
-					<p><span class="des">开始日期：</span>
+					<p><span class="des">入职日期：</span>
 						<span class="begin_date col_37A"></span>
 					</p>
 					<p><span class="red_star">*</span>
@@ -757,7 +758,7 @@
 
 <script type="text/javascript">
 $(function(){
-	$('#add_relation').modal('show');
+	// $('#add_relation').modal('show');
 })
 </script>
 <script>
@@ -786,22 +787,6 @@ $(function(){
 		    console.info("加载数据失败");
 		}
 	})
-	$('#table').bootstrapTable('hideColumn', 'id');
-	$('#table').bootstrapTable('hideColumn', 'person_code');
-	$('#table').bootstrapTable('hideColumn', 'lats_name');
-	$('#table').bootstrapTable('hideColumn', 'first_name');
-	$('#table').bootstrapTable('hideColumn', 'gender');
-	$('#table').bootstrapTable('hideColumn', 'birth_date');
-	$('#table').bootstrapTable('hideColumn', 'nationality');
-	$('#table').bootstrapTable('hideColumn', 'blood_type');
-	$('#table').bootstrapTable('hideColumn', 'blood_type_name');
-	$('#table').bootstrapTable('hideColumn', 'if_disabled');
-	$('#table').bootstrapTable('hideColumn', 'if_disabled_name');
-	$('#table').bootstrapTable('hideColumn', 'remark');
-	$('#table').bootstrapTable('hideColumn', 'id_type');
-	$('#table').bootstrapTable('hideColumn', 'id_type_name');
-	$('#table').bootstrapTable('hideColumn', 'end_date');
-	$('#table').bootstrapTable('hideColumn', 'household_type');
 	//点击分页go,判断页面跳转
 	$('.fenye_btn').click(function(){
 		var page = $('input[name="fenye_input"]').val();

@@ -28,8 +28,8 @@
 	<div class="col-md-10 col-xm-9">
 		<div class="searc_bar search_wrap" id="search_wrap">
 			<span class="col_37A fl">筛选条件</span>
-			<input type="text" class="begin_date date col_37A fl" name="begin_date">
-
+			<input type="text" class="begin_date date col_37A fl" name="begin_date"> 
+			
 			<div class="household_type_wrap select_pull_down query_wrap col_37A fl">
 				<div>
 					<input type="text" class="model_input household_type ka_input3" placeholder="住户类别" name="household_type" data-ajax="" readonly>
@@ -71,35 +71,35 @@
 			</form>
 
 		</div>
-
+		
 		<div class="table_wrap">
 			<div class="oh pt10">
 				<span class="fr add_btn add_relation_btn" data-target="#add_relation" data-toggle="modal">新增住户关系</span>
 				<span class="fr add_btn add_person_btn " data-target="#verify_idcard" data-toggle="modal">新增人员</span>
 			</div>
-
+			
 			<table id="table"
-					data-toolbar="#toolbar"
+					data-toolbar="#toolbar"	
 			>
 			<thead>
 				<tr>
 					<th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
-					<th data-title="数据id" data-align="center" data-field="id" data-hidden=true></th>
-					<th data-title="住户code" data-align="center" data-field="person_code" data-hidden=true></th>
-					<th data-title="住户姓" data-align="center" data-field="lats_name" data-hidden=true></th>
-					<th data-title="住户名" data-align="center" data-field="first_name" data-hidden=true></th>
-					<th data-title="性别" data-align="center" data-field="gender" data-hidden=true></th>
-					<th data-title="出生日期" data-align="center" data-field="birth_date" data-hidden=true></th>
-					<th data-title="住户国籍" data-align="center" data-field="nationality" data-hidden=true></th>
-					<th data-title="住户血型" data-align="center" data-field="blood_type" data-hidden=true></th>
-					<th data-title="住户血型名称" data-align="center" data-field="blood_type_name" data-hidden=true></th>
-					<th data-title="住户备注" data-align="center" data-field="remark" data-hidden=true></th>
-					<th data-title="是否残疾" data-align="center" data-field="if_disabled" data-hidden=true></th>
-					<th data-title="是否残疾名称" data-align="center" data-field="if_disabled_name" data-hidden=true></th>
-					<th data-title="身份证件类型" data-align="center" data-field="id_type" data-hidden=true></th>
-					<th data-title="身份证件类型名称" data-align="center" data-field="id_type_name" data-hidden=true></th>
-					<th data-title="结束日期" data-align="center" data-field="end_date" data-hidden=true></th>
-					<th data-title="住户类型号码" data-align="center" data-field="household_type" data-hidden=true></th>
+					<th data-title="数据id"  data-field="id" data-visible="false"></th>
+					<th data-title="住户code" data-visible="false" data-field="person_code"></th>
+					<th data-title="住户姓" data-visible="false" data-field="lats_name"></th>
+					<th data-title="住户名" data-visible="false" data-field="first_name"></th>
+					<th data-title="性别" data-visible="false" data-field="gender"></th>
+					<th data-title="出生日期" data-visible="false" data-field="birth_date"></th>
+					<th data-title="住户国籍" data-visible="false" data-field="nationality"></th>
+					<th data-title="住户血型" data-visible="false" data-field="blood_type"></th>
+					<th data-title="住户血型名称" data-visible="false" data-field="blood_type_name"></th>
+					<th data-title="住户备注" data-visible="false" data-field="remark"></th>
+					<th data-title="是否残疾" data-visible="false" data-field="if_disabled"></th>
+					<th data-title="是否残疾名称" data-visible="false" data-field="if_disabled_name"></th>
+					<th data-title="身份证件类型" data-visible="false" data-field="id_type"></th>
+					<th data-title="身份证件类型名称" data-visible="false" data-field="id_type_name" data-hidden=true></th>
+					<th data-title="结束日期" data-visible="false" data-field="end_date"></th>
+					<th data-title="住户类型号码" data-visible="false" data-field="household_type"></th>
 
 					<th data-field="building_code" data-title="房号" data-align="center"></th>
 					<th data-field="full_name" data-title="姓名" data-align="center"></th>
@@ -117,21 +117,21 @@
 			</table>
 
 		</div>
-
+		
 		<!--分页-->
 		<ul class="pager" page='<? $page ?>'>
 		    <?php
-		       $first=base_url().'index.php/People/residentlist?page=1&keyword='.$keyword;
+		       $first=base_url().'index.php/People/residentlist?page=1&keyword='.$keyword;	
 		       echo  " <li><a href='".$first."' id='first'>首 页</a></li>";
 		    if($page>1) {
-					$url=base_url().'index.php/People/residentlist?page='.($page-1).'&keyword='.$keyword;
+					$url=base_url().'index.php/People/residentlist?page='.($page-1).'&keyword='.$keyword; 
 		        echo "<li class=\"active\"><a href='".$url."' id='prev' >上一页</a></li>";
 		    }else{
 		        echo "<li class=\"disabled\" ><a id='prev' href='javascript:void(0);'>上一页</a></li>";
 		    }
 		    echo "<li class=\"disabled\"><a href='javascript:void(0);' id='current'>".$page."/".$total."</a></li>";
 		    if($page<$total) {
-					$url=base_url().'index.php/People/residentlist?page='.($page+1).'&keyword='.$keyword;
+					$url=base_url().'index.php/People/residentlist?page='.($page+1).'&keyword='.$keyword;	
 		        echo "<li class=\"active\"><a href='".$url."' id='next' >下一页</a></li>";
 		    }else{
 		        echo "<li class=\"disabled\"  ><a  id='next' href='javascript:void(0);'>下一页</a></li>";
@@ -142,7 +142,7 @@
 		    echo  "<li><a href='#'  class='fenye_btn'>GO</a></li>";
 		    ?>
 		</ul>
-
+		
 
 	</div>
 </div>
@@ -245,7 +245,7 @@
 						<p>
 							<span class="red_star">*</span>出生年月
 							<input type="text" class="ka_input3 birth date" name="birth" />
-						</p>
+						</p>	
 						<div class="select_wrap select_pull_down">
 							<div>
 								<span class="red_star">*</span>是否残疾：
@@ -399,7 +399,7 @@
 					<div class="ka_drop">
 						<div class="ka_drop_list">
 						<ul>
-
+							
 						</ul>
 						</div>
 					</div>
@@ -416,7 +416,7 @@
 						</div>
 					</div>
 					<div class="search_person_results">
-							<div class="single_person" data-last_name="张" data-first_name="某某" data-code="100007"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a><div class="fl"><span class="name">张某某</span><span class="id_number">454444</span></div><div class="select_pull_down query_wrap col_37A fl"><div><input type="text" class="model_input household_type ka_input3" placeholder="住户类别" name="household_type" data-ajax="" readonly=""></div><div class="ka_drop" style="display: none;"><div class="ka_drop_list"><ul><li><a href="javascript:;" data-ajax="101">户主</a></li><li><a href="javascript:;" data-ajax="102">家庭成员</a></li><li><a href="javascript:;" data-ajax="103">访客</a></li><li><a href="javascript:;" data-ajax="104">租客</a></li></ul></div></div></div></div>
+							<!-- <div class="single_person" data-last_name="张" data-first_name="某某" data-code="100007"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a><div class="fl"><span class="name">张某某</span><span class="id_number">454444</span></div><div class="select_pull_down query_wrap col_37A fl"><div><input type="text" class="model_input household_type ka_input3" placeholder="住户类别" name="household_type" data-ajax="" readonly=""></div><div class="ka_drop" style="display: none;"><div class="ka_drop_list"><ul><li><a href="javascript:;" data-ajax="101">户主</a></li><li><a href="javascript:;" data-ajax="102">家庭成员</a></li><li><a href="javascript:;" data-ajax="103">访客</a></li><li><a href="javascript:;" data-ajax="104">租客</a></li></ul></div></div></div></div>	 -->			
 					</div>
 					<div class="person_building_data">
 						<ul>
@@ -608,7 +608,7 @@
 						<p>
 							<span class="red_star">*</span>出生年月
 							<input type="text" class="ka_input3 birth_date date" name="birth_date" />
-						</p>
+						</p>	
 						<div class="select_wrap select_pull_down">
 							<div>
 								<span class="red_star">*</span>是否残疾：
@@ -809,7 +809,7 @@ $(function(){
 		url:getRootPath()+'/index.php/People/getPeopleList?page=',
 		dataType:'json',
 		// pagination:true,
-		// pageSize: 15,
+		// pageSize: 15, 
 		// pageNumber: 1,
 		// sortName: 'id',
 		// sortOrder: 'desc',
@@ -825,22 +825,6 @@ $(function(){
 		    console.info("加载数据失败");
 		}
 	})
-	$('#table').bootstrapTable('hideColumn', 'id');
-	$('#table').bootstrapTable('hideColumn', 'person_code');
-	$('#table').bootstrapTable('hideColumn', 'lats_name');
-	$('#table').bootstrapTable('hideColumn', 'first_name');
-	$('#table').bootstrapTable('hideColumn', 'gender');
-	$('#table').bootstrapTable('hideColumn', 'birth_date');
-	$('#table').bootstrapTable('hideColumn', 'nationality');
-	$('#table').bootstrapTable('hideColumn', 'blood_type');
-	$('#table').bootstrapTable('hideColumn', 'blood_type_name');
-	$('#table').bootstrapTable('hideColumn', 'if_disabled');
-	$('#table').bootstrapTable('hideColumn', 'if_disabled_name');
-	$('#table').bootstrapTable('hideColumn', 'remark');
-	$('#table').bootstrapTable('hideColumn', 'id_type');
-	$('#table').bootstrapTable('hideColumn', 'id_type_name');
-	$('#table').bootstrapTable('hideColumn', 'end_date');
-	$('#table').bootstrapTable('hideColumn', 'household_type');
 	//点击分页go,判断页面跳转
 	$('.fenye_btn').click(function(){
 		var page = $('input[name="fenye_input"]').val();
@@ -868,13 +852,13 @@ $(function(){
 			$('input[name="fenye_input"]').val('');
 			return;
 		}
-
+		
 		var keyword=getUrlParam('keyword');
 		window.location.href="residentlist?keyword="+keyword+"&page="+page;
 	})
 })
 
-</script>
-<script src='<?=base_url().'application/views/plugin/app/js/resident_list.js'?>'></script>
+</script>	
+<script src='<?=base_url().'application/views/plugin/app/js/resident_list.js'?>'></script>	
 </body>
 </html>

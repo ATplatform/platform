@@ -34,6 +34,7 @@ class People extends CI_Controller{
 
 		$data['nav'] = 'residentlist';
 		$data['page'] = $page;
+
 		$data['total']=$total;
 		$data['keyword']='';
 		$data['pagesize']=$this->user_per_page;

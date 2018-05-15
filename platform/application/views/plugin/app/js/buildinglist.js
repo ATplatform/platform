@@ -1,7 +1,11 @@
 //日期控件初始化
 var now = new Date();
 now = formatDate(now);
-
+var table = $('#table');
+//带search的参数用于异步刷新页面时做分页和查询总条数
+var search_keyword = getUrlParam('keyword');
+var search_parent_code = getUrlParam('parent_code');
+var search_id = getUrlParam('id');
 $('.add_building input[name="effective_date"]').val(now);
 //日期控件初始化
 $('.date').datetimepicker({
@@ -129,6 +133,7 @@ $('#write_building .confirm').click(function(){
 		method:'post',
 		data:{
 			id:data_id,
+			search_id:search_id,
 			code:code,
 			effective_date:effective_date,
 			effective_status:effective_status,
@@ -136,6 +141,7 @@ $('#write_building .confirm').click(function(){
 			level:level_data,
 			rank:rank,
 			parent_code:parent_code_data,
+			search_parent_code:search_parent_code,
 			remark:remark
 		},
 		success:function(data){
@@ -150,8 +156,10 @@ $('#write_building .confirm').click(function(){
 				  skin: 'tanhcuang',
 				  content: data.message,
 				  cancel: function(){ 
-				    //右上角关闭回调
-				    window.location = getRootPath() + "/index.php/Building/buildinglist";
+				  	//右上角关闭回调
+				  	//刷新列表
+				  	asynRefreshPage(getRootPath()+'/index.php/Building/buildinglist','Building/getBuildingsList',table,data.total,'&keyword='+search_keyword+'&id='+search_id+'&parent_code='+search_parent_code);
+				    $('#write_building').modal('hide');
 				  }
 			});
 

@@ -47,16 +47,15 @@
 				<span class="fr add_btn" data-target="#add_building" data-toggle="modal">新增</span>
 			</div>
 			<table id="table"
-					data-toolbar="#toolbar"	
-					data-url='<?=base_url().'index.php/Building/getBuildingsList?page='.'$page'?>'
+					data-toolbar="#toolbar"
 			>
 			<thead>
 				<tr>
-					<th data-title="楼宇层级数字" data-align="center" data-field="level"></th>
-					<th data-title="上一级楼宇数字" data-align="center" data-field="parent_code"></th>
+					<th data-title="楼宇层级数字" data-field="level"  data-visible="false"></th>
+					<th data-title="上一级楼宇数字" data-field="parent_code" data-visible="false"></th>
+					<th data-title="数据id" data-align="center" data-field="id" data-visible="false"></th>
 
 					<th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
-					<th data-title="数据id" data-align="center" data-field="id" data-hidden=true></th>
 					<th data-field="code" data-title="楼宇编号" data-align="center"></th>
 					<th data-field="effective_date" data-title="生效日期" data-align="center"></th>
 					<th data-field="effective_status" data-title="状态" data-align="center"></th>
@@ -282,9 +281,6 @@ $(function(){
 		    console.info("加载数据失败");
 		}
 	})
-	$('#table').bootstrapTable('hideColumn', 'level');
-	$('#table').bootstrapTable('hideColumn', 'id');
-	$('#table').bootstrapTable('hideColumn', 'parent_code');
 	//点击分页go,判断页面跳转
 	$('.fenye_btn').click(function(){
 		var page = $('input[name="fenye_input"]').val();

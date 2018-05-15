@@ -22,6 +22,7 @@ class Building extends CI_Controller{
 		if ( !isset($_SESSION['username']) ) {
 		   redirect('Login');
 		}
+		
 		$keyword=$this->input->get('keyword');
 		$data['keyword']=$keyword;
 		$data['nav']='buildingtree';
@@ -66,8 +67,6 @@ class Building extends CI_Controller{
 		$data['parent_code']=$parent_code;
 		$data['pagesize']=$this->user_per_page;
 		$data['nav']='buildinglist';
-
-		
 		$this->load->view('app/buiding_list',$data);
 	}
 
@@ -98,6 +97,7 @@ class Building extends CI_Controller{
 		$rank = $this->input->post('rank');
 		$parent_code = $this->input->post('parent_code');
 		$remark = $this->input->post('remark');
+        $keyword = $this->input->post('keyword');
 		$this->load->model('Building_model');
 		//查到父节点的level_type,在此基础上加1,
 		$parent_building = $this->Building_model->getBuildingByCode($parent_code);
@@ -110,12 +110,16 @@ class Building extends CI_Controller{
 		else {
 			$data['message'] = '新增楼宇失败';
 		}
+		$total=$this->Building_model->getBuildingTotal($keyword,$this->user_per_page);
+		$data['total'] = $total;
 		print_r(json_encode($data));
 	}
 
 	public function updateBuilding(){
+		//带search的参数用于异步刷新页面时做分页和查询总条数
 		$now = date('Y-m-d H:i:s',time());
 		$id = $this->input->post('id');
+		$search_id = $this->input->post('search_id');
 		$code = $this->input->post('code');
 		$effective_date = $this->input->post('effective_date');
 		$effective_status = $this->input->post('effective_status');
@@ -123,16 +127,17 @@ class Building extends CI_Controller{
 		$level = $this->input->post('level');
 		$rank = $this->input->post('rank');
 		$parent_code = $this->input->post('parent_code');
+		$search_parent_code = $this->input->post('search_parent_code');
 		$remark = $this->input->post('remark');
+		$keyword = $this->input->post('keyword');
 		$this->load->model('Building_model');
-		//更新楼宇信息,如果生效日期没变,则更新这条信息,如果生效日期变化了,就新插入一条信息
-		//todo
 		//先查到这条信息
 		$oldBuilding = $this->Building_model->getBuildingById($id);
 		//查到父节点的level_type,在此基础上加1,
 		$parent_building = $this->Building_model->getBuildingByCode($parent_code);
 		$parent_level_type =$parent_building['level_type'];
 		$level_type = $parent_level_type + 1;
+		//更新楼宇信息,如果生效日期没变,则更新这条信息,如果生效日期变化了,就新插入一条信息
 		if($effective_date==$oldBuilding['effective_date']){
 			$res = $this->Building_model->updateBuilding($id,$code,$effective_date,$effective_status,$name,$level,$rank,$parent_code,$remark,$now,$level_type);
 		}
@@ -146,6 +151,14 @@ class Building extends CI_Controller{
 		else {
 			$data['message'] = '编辑楼宇失败';
 		}
+		//如果是id或者parent_code来查找,表示从树状图点击过来的
+		if(!empty($search_id)||!empty($parent_code)){
+			$total = $this->Building_model->getBuildingTreeTotal($search_id,$search_parent_code,$this->user_per_page);
+		}
+		else {
+			$total=$this->Building_model->getBuildingTotal($keyword,$this->user_per_page);
+		}
+		$data['total'] = $total;
 		print_r(json_encode($data));
 	}
 

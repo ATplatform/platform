@@ -1,5 +1,5 @@
 <?php
-class Material_model extends CI_Model {
+class Management_model extends CI_Model {
 	public function __construct()
 	{
 		parent::__construct();

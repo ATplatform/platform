@@ -26,12 +26,235 @@ function openLayer(title){
       content: title
     });
 }
+//扩展 ajaxUtil
+(function ($) {
+    $.extend({
+        ajaxUtil :function (url, type, data, success, error, complete) {
+            $.ajax({
+                url: url,
+                type: type,
+                dataType: "text",
+                data: data,
+                success: function (data) {
+                    if ($.isFunction(success))
+                        success(data);
+                    else
+                        console.error('success:' + data);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    // 通常 textStatus 和 errorThrown 之中
+                    // 只有一个会包含信息
+                    // 调用本次AJAX请求时传递的options参数
+                    if($.isFunction(error)) {
+                        //error(XMLHttpRequest, textStatus, errorThrown);
+                        error(errorThrown);
+                    }
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    if($.isFunction(complete))
+                        complete(XMLHttpRequest, textStatus);
+                }
+            });
+        }
+    });
+    $.extend({
+        ajaxAsync:function(url, type, data, success, error, complete){
+            $.ajax({
+                url: url,
+                type: type,
+                dataType: "text",
+                data: data,
+                async: false,
+                success: function (data) {
+                    if ($.isFunction(success))
+                        success(data);
+                    else
+                        console.error('success:' + data);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    // 通常 textStatus 和 errorThrown 之中
+                    // 只有一个会包含信息
+                    // 调用本次AJAX请求时传递的options参数
+                    if($.isFunction(error)) {
+                        //error(XMLHttpRequest, textStatus, errorThrown);
+                        error(errorThrown);
+                    }
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    if($.isFunction(complete))
+                        complete(XMLHttpRequest, textStatus);
+                }
+            });
+        }
+    });
+    $.extend({
+       loadUtil: function(scripts,callback){
+           eachSeries = function (script, iterator, callback) {
+               callback = callback || function () {};
+               if (!script.length) {
+                   return callback();
+               }
+               var completed = 0;
+               var iterate = function () {
+                   iterator(script[completed], function (err) {
+                       if (err) {
+                           callback(err);
+                           callback = function () {};
+                       }
+                       else {
+                           completed += 1;
+                           if (completed >= script.length) {
+                               callback(null);
+                           }
+                           else {
+                               iterate();
+                           }
+                       }
+                   });
+               };
+               iterate();
+           };
+           function getScript(url, callback) {
+               var head = document.getElementsByTagName('head')[0];
+               var script = document.createElement('script');
+               script.src = url;
+               var done = false;
+               // Attach handlers for all browsers
+               script.onload = script.onreadystatechange = function() {
+                   if (!done && (!this.readyState ||
+                       this.readyState == 'loaded' || this.readyState == 'complete')) {
+                       done = true;
+                       if (callback)
+                           callback();
 
-function openModelById(id){
-    $(id).modal('show');
+                       // Handle memory leak in IE
+                       script.onload = script.onreadystatechange = null;
+                   }
+               };
+               head.appendChild(script);
+               // We handle everything using the script element injection
+               return undefined;
+           }
+           eachSeries(scripts, getScript, callback);
+       }
+    });
+    $.extend({openModal:function(message,callBack){
+        $('.result-message').modal('show').find('.modal-body').text(message);
+        if($(document.body).hasClass('modal-open'))
+            $(document.body).removeClass('modal-open');
+        if($('.modal-backdrop').hasClass('in'))
+               $('.modal-backdrop').removeClass('in');
+        if($.isFunction(callBack)){
+             // callBack;
+           $('.result-message').on('hidden.bs.modal',function(){
+               callBack();
+           });
+        }
+    }});
+})(jQuery);
+//局部刷新删除数据
+function asynRefreshPage(pageUrl,modal,table,total,param){
+    var cur=$("#current").text();
+    var page=cur.split("/");
+    var current = page[0];
+    var newpage;
+    if(Number(total)<=1){
+        current = total;
+        newpage = current+'/'+total;
+        $('#next').parent().addClass('disabled');
+        $('#prev').parent().addClass('disabled');
+        $('#next').removeAttr('url');
+        $('#prev').removeAttr('url');
+        $("#current").text(newpage);
+        refreshPage(modal,table,total,param);
+        return;
+     }
+
+    if(Number(current)>=Number(total)&&Number(total)!=0){
+        current = total;
+        newpage = current+"/"+total;
+        $('#next').parent().addClass('disabled');
+        $('#next').attr("href","javascript:void(0);");
+        $('#prev').parent().removeClass('disabled');
+        if(param!=undefined)
+        {
+            $('#prev').attr({href:pageUrl+"?page="+(Number(current)-1)+param});
+        }
+        else
+        {
+            $('#prev').attr({href:pageUrl+"?page="+(Number(current)-1)});   
+        }
+        $('#next').removeAttr('url');
+        $("#current").text(newpage);
+        refreshPage(modal,table,current,param);
+        return;
+    }else{
+        newpage = current+"/"+total;
+        $('#next').parent().removeClass('disabled');
+        $('#prev').parent().removeClass('disabled');
+        if(param!=undefined)
+        {
+            $('#next').attr({href:pageUrl+"?page="+(Number(current)+1)+param});
+        }
+        else
+        {
+            $('#next').attr({href:pageUrl+"?page="+(Number(current)+1)});   
+        }
+        if(current<=1){
+            $('#prev').removeAttr('url');
+        }else{
+            if(param!=undefined)
+            {
+                $('#prev').attr({href:pageUrl+"?page="+(Number(current)-1)+param});
+            }
+            else
+            {
+                $('#prev').attr({href:pageUrl+"?page="+(Number(current)-1)});   
+            }
+        }
+        $("#current").text(newpage);
+        refreshPage(modal,table,current,param);
+        return;
+    }
 }
-function closeModelById(id){
-    $(id).modal('hide');
+//刷新 table
+function refreshPage(action,target,current,param) {
+    var myCurrent = $('#current').text().split('/')[0];
+    var myTotal = $('#current').text().split('/')[1];
+    if(current!=null||current!=undefined)
+        myCurrent = current;
+    if(param==null)
+        param = '';
+    if(Number(myCurrent)>Number(myTotal))
+    {
+        newpage=myTotal+"/"+myTotal;
+        myCurrent = myTotal;
+        $("#current").text(newpage);
+        $("#next").parent().attr("disabled",true);
+        $("#next").removeAttr('url');
+    }
+    $.ajaxUtil(getRootPath() + '/index.php/'+action+'?page=' + myCurrent+param, 'get', null,
+    function (result) {
+        console.log(target);
+        if(result!='') {
+            var data = JSON.parse(result);
+            target.bootstrapTable('load', data);
+        }else{
+            target.bootstrapTable('removeAll');
+        }
+    },
+    function (error) {
+        console.log(error);
+    });
+}
+//表格id格式化操作
+function idFormatter(value,row,index){
+  var page = $('input[name="page"]').val();
+  //后端设置的分页参数
+  var pagesize = $('input[name="pagesize"]').val();
+  return [
+    index+1+(page-1)*pagesize
+  ];
 }
 //格式化时间为 年-月-日-小时:分钟 的形式
 function formatDate(date){
@@ -76,13 +299,3 @@ $(function(){
         // $(this).find('.ka_drop').hide();
     })
 })
-
-//id格式化操作
-function idFormatter(value,row,index){
-    var page = $('input[name="page"]').val();
-    //后端设置的分页参数
-    var pagesize = $('input[name="pagesize"]').val();
-    return [
-        index+1+(page-1)*pagesize
-    ];
-}

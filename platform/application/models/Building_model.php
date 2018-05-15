@@ -44,7 +44,7 @@ class Building_model extends CI_Model {
             $sql .= " where name like '%$keyword%'"; 
         }
         $sql=$sql." order by rank,code asc limit ".$rows." offset ".$start;
-
+    	$query = $this->db->query($sql);
     	$q = $this->db->query($sql); //自动转义
 		if ( $q->num_rows() > 0 ) {
 			$arr=$this->buildingsListArray($q->result_array());
@@ -266,9 +266,8 @@ class Building_model extends CI_Model {
     }
 
     public function getTreeNodeByPcode($parent_code){
-        $sql = "select concat(code,'_',id) as id,code,parent_code,name as text,id as real_id from village_building where effective_status = true and parent_code = $parent_code and code != $parent_code order by code";
-        $sql = "select concat(code,'_',id) as id,code,parent_code,name as text,id as real_id from village_building where id in(select max(id) from village_building where effective_date<now() and effective_status = true group by code) and parent_code = $parent_code and code != $parent_code order by code";
-        // echo $sql;exit;
+        $sql = "select concat(code,'_',id) as id,code,parent_code,name as text,id as real_id from village_building a where effective_date =(select max(effective_date) from village_building b where a.name = b.name and a.parent_code = b.parent_code and b.effective_status = true ) and a.parent_code = $parent_code and a.code != $parent_code  order by a.code,a.id";
+        // echo '<br />';
         $query = $this->db->query($sql);
         $row = $query->result_array();
         return $row;

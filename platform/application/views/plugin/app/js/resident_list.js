@@ -343,21 +343,29 @@ $('.search_person_wrap .search_person_btn').click(function(){
 		url:getRootPath()+'/index.php/People/getPersonByName',
 		//成功之后,将结果生成
 		success:function(data){
-			var data = JSON.parse(data);
-			for(var i=0;i<data.length;i++){
-				var d = data[i];
-				var html = '<div class="single_person" data-last_name="'+d['last_name']+'" data-first_name="'+d['first_name']+'" data-code="'+d['code']+'"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a>'
-							+'<div class="fl">'
-							+'<span class="name">'+d['full_name']+'</span>'
-							+'<span class="id_number">'+d['id_number']+'</span>'
-							+'</div>'
-							+household_type_wrap;
-				console.log(html);
-				$('.search_person_results').append(html);
+			var data = data;
+			//先清空之前的值
+			$('.search_person_results').empty();
+			if(data){
+				data = JSON.parse(data);
+				for(var i=0;i<data.length;i++){
+					var d = data[i];
+					var html = '<div class="single_person" data-last_name="'+d['last_name']+'" data-first_name="'+d['first_name']+'" data-code="'+d['code']+'"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a>'
+								+'<div class="fl">'
+								+'<span class="name">'+d['full_name']+'</span>'
+								+'<span class="id_number">'+d['id_number']+'</span>'
+								+'</div>'
+								+household_type_wrap;
+					console.log(html);
+					$('.search_person_results').append(html);
+				}
+			}
+			else{
+				$('.search_person_results').append("没有结果");
 			}
 		},
 		error:function(){
-			console.log('新增楼宇出错');
+			console.log('搜索出错');
 		}
 	})
 })

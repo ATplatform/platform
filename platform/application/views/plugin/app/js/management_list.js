@@ -138,5 +138,204 @@ $('#add_person .save_add,#add_person .save').click(function(){
 			})
 		}
 	}
-
 })
+
+//新增物业关系时,点击取消后,清空信息
+$('#add_relation .cancle').click(function(){
+	$('.search_person_wrap .search_person_name').val(' ');
+	$('.search_person_results').empty();
+	$('.person_building_data ul').empty();
+	$('#add_relation .hire_date').val(' ');
+	$('#add_relation .begin_date').val(' ');
+	$('#add_relation .end_date').val(' ');
+	$('#add_relation .employee_no').val(' ');
+	$('#add_relation .remark').val(' ');
+	$('#add_relation .position_grade').val(' ');
+	$('#add_relation .position_grade').data('ajax',' ');
+})
+
+//新增物业关系时,搜索人员
+$('.search_person_wrap .search_person_btn').click(function(){
+	var name = $(this).closest('.search_person_wrap').find('.search_person_name').val();
+	var search_person_wrap = $(this).closest('.search_person_wrap');
+	$.ajax({
+		method:'post',
+		data:{
+			name:name
+		},
+		url:getRootPath()+'/index.php/People/getPersonByName',
+		//成功之后,将结果生成
+		success:function(data){
+			var data = data;
+			//先清空之前的值
+			$('.search_person_results').empty();
+			if(data){
+				data = JSON.parse(data);
+				for(var i=0;i<data.length;i++){
+					var d = data[i];
+					var html = '<div class="single_person" data-last_name="'+d['last_name']+'" data-first_name="'+d['first_name']+'" data-code="'+d['code']+'"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a>'
+								+'<div class="fl">'
+								+'<span class="name">'+d['full_name']+'</span>'
+								+'<span class="id_number">'+d['id_number']+'</span>'
+								+'</div>';
+					console.log(html);
+					$('.search_person_results').append(html);
+				}
+			}
+			else{
+				$('.search_person_results').append("没有结果");
+			}
+		},
+		error:function(){
+			console.log('搜索出错');
+		}
+	})
+})
+
+//点击搜索到的住户,添加到结果列表
+$(document).on('click','.search_person_results .single_person .add',function(){
+	var single_person = $(this).closest('.single_person');
+	var full_name = single_person.find('.name').html();
+	var id_number = single_person.find('.id_number').html();
+	var last_name = single_person.data('last_name');
+	var first_name = single_person.data('first_name');
+
+	var last_name = single_person.data('last_name');
+	var first_name = single_person.data('first_name');
+	var code = single_person.data('code');
+
+	var html = '<li data-last_name="'+last_name+'" data-first_name="'+first_name+'" data-code="'+code +'" id="'+code+'"><span class="full_name">'+full_name+'</span><span class="id_number">'+id_number+'</span></li>';
+		//只能添加一个物业人员
+		if($(".person_building_data ul li").length==0){
+			$('.person_building_data ul').append(html);
+		}
+})
+
+//信息管理操作
+function operateFormatter(value,row,index){
+	return [
+	    '<a class="detail" href="javascript:void(0)" style="margin-left: 10px;" title="详情">',
+	    '<i class=" fa fa-trash-o fa-lg fa-file-text-o"></i>',
+	    '</a>',
+	    '<a class="rewrite" href="javascript:void(0)" style="margin-left: 10px;"   title="编辑住户">',
+	    '<i class="fa fa-id-card"></i>',
+	    '</a>',
+	    '<a class="relation" href="javascript:void(0)" style="margin-left: 10px;"   title="编辑住户关系">',
+	    '<i class=" fa fa-sitemap"></i>',
+	    '</a>'
+	].join('');
+}
+
+window.operateEvents = {
+	//点击详情时,弹出物业人员详情框
+	'click .detail':function(e,value,row,index){
+		$('#person_detail').modal('show');
+		var full_name = row.full_name;
+		var id_number = row.id_number;
+		var gender_name = row.gender_name;
+		var birth_date = row.birth_date;
+		var ethnicity_name = row.ethnicity_name;
+		var nationality = row.nationality;
+		var blood_type_name = row.blood_type_name;
+		var mobile_number = row.mobile_number;
+		var oth_mob_no = row.oth_mob_no;
+		var remark = row.remark;
+		var if_disabled_name = row.if_disabled_name;
+		var id_type_name = row.id_type_name;
+		var begin_date = row.begin_date;
+		var end_date = row.end_date;
+		var building_code = row.building_code;
+		var household_type_name = row.household_type_name;
+		var person_code = row.person_code;
+		var building_code = row.building_code;
+		$('#person_detail').find('.full_name').html(full_name);
+		$('#person_detail').find('.id_number').html(id_number);
+		$('#person_detail').find('.gender_name').html(gender_name);
+		$('#person_detail').find('.birth_date').html(birth_date);
+		$('#person_detail').find('.ethnicity_name').html(ethnicity_name);
+		$('#person_detail').find('.blood_type_name').html(blood_type_name);
+		$('#person_detail').find('.nationality').html(nationality);
+		$('#person_detail').find('.mobile_number').html(mobile_number);
+		$('#person_detail').find('.remark').html(remark);
+		$('#person_detail').find('.if_disabled_name').html(if_disabled_name);
+		$('#person_detail').find('.id_type_name').html(id_type_name);
+		$('#person_detail').find('.begin_date').html(begin_date);
+		$('#person_detail').find('.end_date').html(end_date);
+		$('#person_detail').find('.building_code').html(building_code);
+		$('#person_detail').find('.household_type_name').html(household_type_name);
+		$('#person_detail').find('.oth_mob_no').html(oth_mob_no);
+
+		//得到该住户在本小区的其它房间
+		
+
+		//得到该住户的同房间住户
+		
+
+	},
+
+	//点击编辑住户详情时,弹出住户信息编辑框
+	'click .rewrite':function(e,value,row,index){
+		$('#write_person').modal('show');
+		var person_code = row.person_code;
+		var full_name = row.full_name;
+		var last_name = row.last_name;
+		var first_name = row.first_name;
+		var id_type = row.id_type;
+		var id_type_name = row.id_type_name;
+		var id_number = row.id_number;
+		var nationality = row.nationality;
+		var gender_name = row.gender_name;
+		var gender = row.gender;
+		var birth_date = row.birth_date;
+		var if_disabled_name = row.if_disabled_name;
+		var if_disabled = row.if_disabled;
+		var blood_type_name = row.blood_type_name;
+		var blood_type = row.blood_type;
+		var ethnicity_name = row.ethnicity_name;
+		var ethnicity = row.ethnicity;
+		var mobile_number = row.mobile_number;
+		var oth_mob_no = row.oth_mob_no;
+		var remark = row.remark;
+
+		//赋值
+		$('#write_person').find('.code').html(person_code);
+		$('#write_person').find('.last_name').val(last_name);
+		$('#write_person').find('.first_name').val(first_name);
+		$('#write_person').find('.id_type').val(id_type_name);
+		$('#write_person').find('.id_type').data('ajax',id_type);
+		$('#write_person').find('.id_number').val(id_number);
+		$('#write_person').find('.nationality').val(nationality);
+		$('#write_person').find('.gender').val(gender_name);
+		$('#write_person').find('.gender').data('ajax',gender);
+		$('#write_person').find('.birth_date').val(birth_date);
+		$('#write_person').find('.if_disabled').val(if_disabled_name);
+		$('#write_person').find('.if_disabled').data('ajax',if_disabled);
+		$('#write_person').find('.blood_type').val(blood_type_name);
+		$('#write_person').find('.blood_type').data('ajax',blood_type);
+		$('#write_person').find('.ethnicity').val(ethnicity_name);
+		$('#write_person').find('.ethnicity').data('ajax',ethnicity);
+		$('#write_person').find('.mobile_number').val(mobile_number);
+		$('#write_person').find('.oth_mob_no').val(oth_mob_no);
+		$('#write_person').find('.remark').val(remark);
+	},
+
+	//点击编辑住户关系时,弹出住户关系编辑框
+	'click .relation':function(e,value,row,index){
+		$('#relation_detail').modal('show');
+		var building_code  = row.building_code;
+		var person_code = row.person_code;
+		var full_name = row.full_name;
+		var id_number = row.id_number;
+		var begin_date = row.begin_date;
+		var end_date = row.end_date;
+		var household_type_name = row.household_type_name;
+		//赋值
+		$('#relation_detail').find('.building_code').html(building_code);
+		$('#relation_detail').find('.person_code').html(person_code);
+		$('#relation_detail').find('.full_name').html(full_name);
+		$('#relation_detail').find('.id_number').html(id_number);
+		$('#relation_detail').find('.begin_date').html(begin_date);
+		$('#relation_detail').find('.end_date').val(end_date);
+		$('#relation_detail').find('.household_type_name').html(household_type_name);
+	}
+}
