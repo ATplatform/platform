@@ -94,7 +94,25 @@ class Material_model extends CI_Model
         }
         return 0;
     }
+    public function getMaterialCode(){
+        $sql = "select code from village_material order by code desc limit 1";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row['code'];
+    }
+
+    public function insertMaterial($code,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$now,$internal_no,$initial_no, $remark){
+        if(is_null($pcs)||empty($pcs)){
+        }
+        else{
+            $sql = "INSERT INTO village_material(code,effective_date,effective_status,name,pcs,material_type,building_code,supplier,now,internal_no,initial_no,remark) values ($code,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$now,$internal_no,$initial_no, $remark)";
+        }
+        $query = $this->db->query($sql);
+        return $this->db->affected_rows();
+    }
+
 }
+
 
 
 

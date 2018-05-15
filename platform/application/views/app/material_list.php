@@ -79,7 +79,7 @@
     <!-- 物资数据-->
         <div class="table_wrap">
             <div class="oh pt10">
-                <span class="fr add_btn" data-target="#add_building" data-toggle="modal">新增</span>
+                <span class="fr add_btn" data-target="#add_material" data-toggle="modal">新增</span>
             </div>
             <table id="table"
                    data-toolbar="#toolbar">
@@ -129,17 +129,16 @@
             ?>
         </ul>
 
-        <!-- 增加楼宇 -->
-        <div class="modal fade" id="add_building" tabindex="-1" role="dialog" aria-hidden="true">
+        <!-- 增加物资 -->
+        <div class="modal fade" id="add_material" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog"  style="width: 630px;">
                 <div class="modal-content model_wrap">
                     <div class="model_content">
-                        <div class="building_header">
-                            <h4 class="modal-title tac">新增楼宇信息</h4>
+                        <div class="material_header">
+                            <h4 class="modal-title tac">新增物资信息</h4>
                         </div>
-                        <div class="modal-body building add_building">
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;物资编号：
-                                <span class="code" style="margin-left:26px;"></span>
+                        <div class="modal-body material add_material">
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;物资编号：<span class="code" style="margin-left:26px;"></span>
                             </p>
                             <p><span class="red_star">*</span>生效日期：
                                 <input type="text" class="effective_date date" name="effective_date" />
@@ -160,11 +159,11 @@
                             <p><span class="red_star">*</span>物资名称：
                                 <input type="text" class="model_input name" placeholder="请输入物资名称"  name="name" />
                             </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量：<input type="text" class="model_input rank" placeholder="请输入数量" name="rank" /></p>
+                            <p><span class="red_star">*</span>数量：<input type="text" class="model_input pcs" placeholder="请输入数量" name="pcs" /></p>
                             <div class="select_wrap select_pull_down">
                                 <div>
-                                    <span class="red_star">*</span>物资类型
-                                    <input type="text" class="model_input level ka_input3" placeholder="请输入物资类型"  name="level" data-ajax="" readonly />
+                                    <span class="red_star">*</span>物资类型：
+                                    <input type="text" class="model_input material_type ka_input3" placeholder="请输入物资类型"  name="material_type" data-ajax="" readonly />
                                 </div>
                                 <div class="ka_drop">
                                     <div class="ka_drop_list">
@@ -178,9 +177,19 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;顺序号：<input type="text" class="model_input rank" placeholder="请输入顺序号" name="rank" /></p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark" /></p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地点：
+                                <input type="text" class="model_input building_code" placeholder="请输入地点"  name="building_code" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;供应商：
+                                <input type="text" class="model_input supplier" placeholder="请输入供应商"  name="supplier" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;内部编号：
+                                <input type="text" class="model_input internal_no" placeholder="请输入内部编号"  name="internal_no" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;出厂编号：
+                                <input type="text" class="model_input initial_no" placeholder="请输入出厂编号"  name="initial_no" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark" /></p>
                         </div>
                     </div>
                     <div class="modal_footer bg_eee oh">
@@ -267,5 +276,6 @@
         })
 
     </script>
+<script src='<?=base_url().'application/views/plugin/app/js/material_list.js'?>'></script>
 </body>
 </html>

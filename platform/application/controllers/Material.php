@@ -53,5 +53,40 @@ class Material extends CI_Controller{
         echo $data;
     }
 
+    public function insertMaterial(){
+        $now = date('Y-m-d h:i:s',time());
+        $code = $this->input->post('code');
+        $effective_date = $this->input->post('effective_date');
+        $effective_status = $this->input->post('effective_status');
+        $name = $this->input->post('name');
+        $pcs = $this->input->post('pcs');
+        $material_type = $this->input->post('material_type');
+        $building_code = $this->input->post('building_code');
+        $supplier = $this->input->post('supplier');
+        $internal_no = $this->input->post('internal_no');
+        $initial_no = $this->input->post('initial_no');
+        $remark = $this->input->post('remark');
+        $keyword = $this->input->post('keyword');
+        $this->load->model('Material_model');
+        //查到父节点的level_type,在此基础上加1,
+        //$parent_material = $this->Material_model->getMaterialByCode($parent_code);
+        //$parent_material_type =$parent_material['material_type'];
+        //$material_type = $parent_material_type + 1;
+        $res = $this->Material_model->insertMaterial($code,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$now,$internal_no,$initial_no, $remark);
+        if($res==true){
+            $data['message'] = '新增楼宇成功';
+        }
+        else {
+            $data['message'] = '新增楼宇失败';
+        }
+        $total=$this->Material_model->getMaterialTotal($keyword,$this->user_per_page);
+        $data['total'] = $total;
+        print_r(json_encode($data));
+    }
+    public function getMaterialCode(){
+        $this->load->model('Material_model');
+        $res = $this->Material_model->getMaterialCode();
+        echo $res;
+    }
 
 }
