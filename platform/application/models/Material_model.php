@@ -9,11 +9,18 @@ class Material_model extends CI_Model
         $this->load->database();
     }
 
-    public function getMaterialList($page, $rows)
+    public function getMaterialList($keyword,$page, $rows)
     {
         $start = ($page - 1) * $rows;
 
         $sql = "select material_type,code,name,building_code,pcs,effective_date,function,supplier,internal_no,initial_no,remark from village_material";
+
+
+
+        if(!empty($keyword)){
+            $sql .= " where name like '%$keyword%' or supplier like '%$keyword%' or remark like '%$keyword%' or code=$keyword or material_type=$keyword ";
+        }
+
         $sql=$sql." order by code asc limit ".$rows." offset ".$start;
         $query = $this->db->query($sql);
         $q = $this->db->query($sql); //自动转义
@@ -75,9 +82,13 @@ class Material_model extends CI_Model
         return $arr;
     }
 
-    public function getMaterialTotal($rows){
+    public function getMaterialTotal($keyword,$rows){
         $sql = "select count(*) as count from village_material";
         $limit = false;
+        if(!empty($keyword)){
+            $sql .= " where name like '%$keyword%' ";
+            $limit = true;
+        }
         $q = $this->db->query($sql); //自动转义
         if ( $q->num_rows() > 0 ) {
             $row = $q->row_array();
@@ -100,13 +111,15 @@ class Material_model extends CI_Model
         $row = $query->row_array();
         return $row['code'];
     }
-
-    public function insertMaterial($code,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$now,$internal_no,$initial_no, $remark){
-        if(is_null($pcs)||empty($pcs)){
-        }
-        else{
-            $sql = "INSERT INTO village_material(code,effective_date,effective_status,name,pcs,material_type,building_code,supplier,now,internal_no,initial_no,remark) values ($code,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$now,$internal_no,$initial_no, $remark)";
-        }
+//,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$now,$internal_no,$initial_no, $remark
+    public function insertMaterial($code,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$internal_no,$initial_no,$remark,$create_time){
+        //if(is_null($pcs)||empty($pcs)){
+        //}
+        //else{
+        //,effective_date,effective_status,name,pcs,material_type,building_code,supplier,now,internal_no,initial_no,remark
+        //i,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$now,$internal_no,$initial_no, $remark
+            $sql = "INSERT INTO village_material (code,effective_date,effective_status,name,pcs,material_type,building_code,supplier,internal_no,initial_no,remark,create_time) values ($code,'$effective_date',$effective_status,'$name',$pcs,$material_type,$building_code,'$supplier','$internal_no','$initial_no', '$remark','$create_time')";
+        //}
         $query = $this->db->query($sql);
         return $this->db->affected_rows();
     }

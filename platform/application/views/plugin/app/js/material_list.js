@@ -57,7 +57,7 @@ $('#add_material .confirm').click(function(){
 			effective_status:effective_status,
 			name:name,
 			pcs:pcs,
-            material_type:material_type,
+            material_type:$('.add_material').find('input[name="material_type"]').data('ajax'),
             building_code:building_code,
             supplier:supplier,
             internal_no:internal_no,
@@ -77,7 +77,8 @@ $('#add_material .confirm').click(function(){
 				  content: data.message,
 				  cancel: function(){ 
 				    //右上角关闭回调
-				    window.location = getRootPath() + "/index.php/Material/materialList";
+                      asynRefreshPage(getRootPath()+'/index.php/Material/materialList','Material/getMaterialList',table,data.total,'&keyword='+search_keyword);
+				   // window.location = getRootPath() + "/index.php/Material/materialList";
 				  }
 			});
 		},
@@ -99,12 +100,5 @@ $('.add_btn').click(function(){
 	})
 })
 
-
-
-
-
-//function write_building_hide(){
-//	$('#write_building').modal('hide');
-//}
 
 

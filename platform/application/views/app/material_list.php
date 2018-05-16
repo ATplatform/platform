@@ -68,8 +68,8 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资类别、地点" value="">
-                <a id="clear" href="">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资类别或地点" value="<?php echo $keyword;?>">
+                <a id="clear" href="<?=base_url().'index.php/Material/materialList'?>">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -134,10 +134,10 @@
             <div class="modal-dialog"  style="width: 630px;">
                 <div class="modal-content model_wrap">
                     <div class="model_content">
-                        <div class="material_header">
+                        <div class="building_header">
                             <h4 class="modal-title tac">新增物资信息</h4>
                         </div>
-                        <div class="modal-body material add_material">
+                        <div class="modal-body building add_material">
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;物资编号：<span class="code" style="margin-left:26px;"></span>
                             </p>
                             <p><span class="red_star">*</span>生效日期：
@@ -168,11 +168,11 @@
                                 <div class="ka_drop">
                                     <div class="ka_drop_list">
                                         <ul>
-                                            <li><a href="javascript:;" data-ajax="101">工程物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="102">安防物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="103">消防物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="104">保洁物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="105">办公物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="1">工程物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="1">安防物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="1">消防物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="1">保洁物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="1">办公物资</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -222,7 +222,7 @@
             $('#table').bootstrapTable({
                 method: "get",
                 undefinedText:'/',
-                url:getRootPath()+'/index.php/Material/getMaterialList?page='+page,
+                url:getRootPath()+'/index.php/Material/getMaterialList?page='+page+'&keyword='+keyword,
                 dataType:'json',
                 // pagination:true,
                 // pageSize: 15,

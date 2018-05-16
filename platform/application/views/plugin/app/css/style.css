@@ -772,3 +772,15 @@ top: 10%;
 	display: inline-block;
 	width: 100px;
 }
+
+
+.search_room .searc_room_text {
+	padding-left:20px;
+	display: block;
+	width: 264px;
+	height: 42px;
+	line-height: 42px;
+	border:none;
+	border-radius: 5px;
+	font-size: 16px;
+}
