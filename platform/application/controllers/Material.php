@@ -66,7 +66,7 @@ class Material extends CI_Controller{
         $internal_no = $this->input->post('internal_no');
         $initial_no = $this->input->post('initial_no');
         $remark = $this->input->post('remark');
-        // $keyword = $this->input->post('keyword');
+         $keyword = $this->input->post('keyword');
         $this->load->model('Material_model');
 
         //查到父节点的level_type,在此基础上加1,
@@ -76,16 +76,17 @@ class Material extends CI_Controller{
         //$code,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$now,$internal_no,$initial_no, $remark
         $res = $this->Material_model->insertMaterial($code,$effective_date,$effective_status,$name,$pcs,$material_type,$building_code,$supplier,$internal_no,$initial_no,$remark,$create_time);
 
-        if($res===true){
+        if($res){
             $data['message'] = '新增物资成功';
         }
         else {
             $data['message'] = '新增物资失败';
         }
-        $total=$this->Material_model->getMaterialTotal($this->user_per_page);
+
+        $total=$this->Material_model->getMaterialTotal($keyword,$this->user_per_page );
         $data['total'] = $total;
 
-        //print_r(json_encode($data));
+        print_r(json_encode($data));
     }
     public function getMaterialCode(){
         $this->load->model('Material_model');

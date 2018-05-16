@@ -35,7 +35,7 @@ class Material_model extends CI_Model
 
     public function MaterialListArray($data)
     {
-        $material_type_arr = array(array('code' => '1', 'name' => '工程物资'), array('code' => '2', 'name' => '安防物资'), array('code' => '3', 'name' => '消防物资'), array('code' => '4', 'name' => '保洁物资'), array('code' => '5', 'name' => '办公物资'));
+        $material_type_arr = array(array('code' => '101', 'name' => '工程物资'), array('code' => '102', 'name' => '安防物资'), array('code' => '103', 'name' => '消防物资'), array('code' => '104', 'name' => '保洁物资'), array('code' => '105', 'name' => '办公物资'));
         $arr = array();
         foreach ($data as $row) {
             $item = array();

@@ -168,11 +168,11 @@
                                 <div class="ka_drop">
                                     <div class="ka_drop_list">
                                         <ul>
-                                            <li><a href="javascript:;" data-ajax="1">工程物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="1">安防物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="1">消防物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="1">保洁物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="1">办公物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="101">工程物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="102">安防物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="103">消防物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="104">保洁物资</a></li>
+                                            <li><a href="javascript:;" data-ajax="105">办公物资</a></li>
                                         </ul>
                                     </div>
                                 </div>

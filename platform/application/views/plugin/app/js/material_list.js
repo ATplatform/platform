@@ -78,7 +78,7 @@ $('#add_material .confirm').click(function(){
 				  cancel: function(){ 
 				    //右上角关闭回调
                       asynRefreshPage(getRootPath()+'/index.php/Material/materialList','Material/getMaterialList',table,data.total,'&keyword='+search_keyword);
-				   // window.location = getRootPath() + "/index.php/Material/materialList";
+				   window.location = getRootPath() + "/index.php/Material/materialList";
 				  }
 			});
 		},
