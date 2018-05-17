@@ -31,9 +31,9 @@
         <input type="text" class="begin_date date col_37A fl" name="begin_date">
 
         <!-- 筛选条件 物资类别-->
-        <div class="household_type_wrap select_pull_down query_wrap col_37A fl">
+        <div class="material_type_wrap select_pull_down query_wrap col_37A fl">
             <div>
-                <input type="text" class="model_input household_type ka_input3" placeholder="物资类别" name="household_type" data-ajax="" readonly>
+                <input type="text" class="model_input material_type ka_input3" placeholder="物资类别" name="material_type" data-ajax="" readonly>
             </div>
             <div class="ka_drop" style="display: block;">
                 <div class="ka_drop_list">
@@ -51,7 +51,7 @@
         <!-- 筛选条件 地点-->
         <div class="select_pull_down query_wrap col_37A fl">
             <div>
-                <input type="text" class="model_input person_type ka_input3" placeholder="地点" name="person_type" data-ajax="" readonly>
+                <input type="text" class="model_input building_type ka_input3" placeholder="地点" name="building_type" data-ajax="" readonly>
             </div>
             <div class="ka_drop" style="display: block;">
                 <div class="ka_drop_list">
@@ -219,6 +219,23 @@
         $(function(){
             var page = $('input[name="page"]').val();
             var keyword = $('input[name="keywords"]').val();
+            var search_text=$('.searc_room_text').val()
+            if (search_text.indexOf("工程物资") !== -1 ){
+                keyword=101;
+            }
+            if (search_text.indexOf("安防物资") !== -1  ){
+                keyword=102;
+            }
+            if (search_text.indexOf("消防物资")!==-1){
+                keyword=103;
+            }
+            if (search_text.indexOf("保洁物资") !==-1){
+                keyword=104;
+            }
+            if (search_text.indexOf("办公物资") !==-1){
+                keyword=105;
+            }
+
             $('#table').bootstrapTable({
                 method: "get",
                 undefinedText:'/',
@@ -270,6 +287,7 @@
                     return;
                 }
 
+//判断物资类型
                 var keyword=getUrlParam('keyword');
                 window.location.href="materialList?keyword="+keyword+"&page="+page;
             })

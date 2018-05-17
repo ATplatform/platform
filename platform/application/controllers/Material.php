@@ -25,6 +25,7 @@ class Material extends CI_Controller{
 
 		$page = $this->input->get('page');
 		$keyword = $this->input->get('keyword');
+
 		if(is_null($page)||empty($page))
 		{
 			$page=1;
@@ -66,7 +67,7 @@ class Material extends CI_Controller{
         $internal_no = $this->input->post('internal_no');
         $initial_no = $this->input->post('initial_no');
         $remark = $this->input->post('remark');
-         $keyword = $this->input->post('keyword');
+        $keyword = $this->input->post('keyword');
         $this->load->model('Material_model');
 
         //查到父节点的level_type,在此基础上加1,
@@ -85,7 +86,7 @@ class Material extends CI_Controller{
 
         $total=$this->Material_model->getMaterialTotal($keyword,$this->user_per_page );
         $data['total'] = $total;
-
+        print_r(json_encode($keyword));
         print_r(json_encode($data));
     }
     public function getMaterialCode(){

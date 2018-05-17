@@ -11,6 +11,10 @@ $('.add_material input[name="effective_date"]').val(now);
 $('.date').datetimepicker({
     format: 'YYYY-MM-DD',
 });
+
+
+
+
 //点击保存新增楼宇信息
 $('#add_material .confirm').click(function(){
 	var code = $('.add_material .code').html();

@@ -15,16 +15,45 @@ class Material_model extends CI_Model
 
         $sql = "select material_type,code,name,building_code,pcs,effective_date,function,supplier,internal_no,initial_no,remark from village_material";
 
+       // $sql = "SELECT * from village_material as m left join village_building_stage as bs on m.building_code = bs.room_code";
+        //$sql .= " where  effective_date < now() ";
 
 
-        if(!empty($keyword)){
-            $sql .= " where name like '%$keyword%' or supplier like '%$keyword%' or remark like '%$keyword%' or code=$keyword or material_type=$keyword ";
+//判断keyword是数字还是汉字
+            if(!empty($keyword)){
+
+                if(preg_match("/^\d*$/",$keyword)){
+                    $sql .= " where code=$keyword or material_type=$keyword";
+                }
+
+                if(preg_match('/^[\x7f-\xff]+$/', $keyword)){
+                $sql .= " where name like '%$keyword%' or supplier like '%$keyword%' or remark like '%$keyword%' ";
+                }
+
         }
+
 
         $sql=$sql." order by code asc limit ".$rows." offset ".$start;
         $query = $this->db->query($sql);
         $q = $this->db->query($sql); //自动转义
         if ( $q->num_rows() > 0 ) {
+            $arr=$q->result_array();
+           /* foreach($arr as $key => $row ){
+                foreach($row as $key2 => $row2){
+                    if($key2=="material_type"){
+                        if($row2=="101"){
+                            $arr[$key]['material_type_name'] = '消防物资';
+                        }
+                    }
+                }
+                $arr[$key]['room_name'] = "";
+                if(!empty($row['immeuble'])){
+                    $arr[$key]['room_name'] = $row['immeuble'].'栋';
+                }
+                if(!empty($row['room'])){
+                    $arr[$key]['room_name'].=$row['room'];
+                }
+            }*/
             $arr=$this->MaterialListArray($q->result_array());
             $json=json_encode($arr);
             return $json;
