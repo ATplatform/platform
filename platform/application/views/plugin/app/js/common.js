@@ -279,7 +279,8 @@ function formatDate(date){
     var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
     return currentdate;
 }
-$(function(){
+
+
     $('.building>p').click(function(e){
         e.stopPropagation();
         $(this).closest('.building').find('.ka_drop').hide();
@@ -290,12 +291,14 @@ $(function(){
     })
     
     //下拉框赋值
+
     $(document).on('click','.ka_drop li',function(){
         var data_ajax = $(this).find('a').data('ajax');
-        $(this).parents('.select_pull_down').find('.ka_input3').val($(this).text());
+        //$(this).parents('.select_pull_down').find('.ka_input3').val($(this).text());
         $(this).parents('.select_pull_down').find('.ka_input3').data('ajax',data_ajax);
+        //sessionStorage.setItem(item,data_ajax);
     })
-    $(document).on('mouseleave','.select_pull_down',function(){
-        // $(this).find('.ka_drop').hide();
+
+    $(document).on('mouseleave','.ka_drop_list',function(){
+        $(this).parents('.ka_drop').hide();
     })
-})

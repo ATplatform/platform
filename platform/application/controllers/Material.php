@@ -47,9 +47,10 @@ class Material extends CI_Controller{
         $parent_code=$this->input->get('parent_code');
         $page = $this->input->get('page');
         $keyword = $this->input->get('keyword');
+        $time= $this->input->get('time');
         $this->load->model('Material_model');
         $page = $page?$page:'1';
-        $data = $this->Material_model->getMaterialList($keyword,$page,$this->user_per_page);
+        $data = $this->Material_model->getMaterialList($keyword,$page,$this->user_per_page,$time);
 
         echo $data;
     }
@@ -68,7 +69,9 @@ class Material extends CI_Controller{
         $initial_no = $this->input->post('initial_no');
         $remark = $this->input->post('remark');
         $keyword = $this->input->post('keyword');
+
         $this->load->model('Material_model');
+
 
         //查到父节点的level_type,在此基础上加1,
         //$parent_material = $this->Material_model->getMaterialByCode($parent_code);

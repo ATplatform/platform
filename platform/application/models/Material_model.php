@@ -9,25 +9,29 @@ class Material_model extends CI_Model
         $this->load->database();
     }
 
-    public function getMaterialList($keyword,$page, $rows)
+    public function getMaterialList($keyword,$page, $rows,$time)
     {
         $start = ($page - 1) * $rows;
 
-        $sql = "select material_type,code,name,building_code,pcs,effective_date,function,supplier,internal_no,initial_no,remark from village_material";
+        //$sql = "select material_type,code,name,building_code,pcs,effective_date,function,supplier,internal_no,initial_no,remark from village_material";
 
-       // $sql = "SELECT * from village_material as m left join village_building_stage as bs on m.building_code = bs.room_code";
-        //$sql .= " where  effective_date < now() ";
+        $sql = "SELECT * from village_material as m left join village_building_stage as bs on m.building_code = bs.room_code";
+
+
+        if(!empty($time)){
+            $sql .= " where effective_date < now() ";
+        }
 
 
 //判断keyword是数字还是汉字
             if(!empty($keyword)){
 
                 if(preg_match("/^\d*$/",$keyword)){
-                    $sql .= " where code=$keyword or material_type=$keyword";
+                    $sql .= " where code=$keyword or material_type=$keyword or supplier like '%$keyword%' or remark like '%$keyword%' or function like '%$keyword%'";
                 }
 
                 if(preg_match('/^[\x7f-\xff]+$/', $keyword)){
-                $sql .= " where name like '%$keyword%' or supplier like '%$keyword%' or remark like '%$keyword%' ";
+                $sql .= " where name like '%$keyword%' or supplier like '%$keyword%' or remark like '%$keyword%' or function like '%$keyword%' ";
                 }
 
         }
@@ -38,23 +42,64 @@ class Material_model extends CI_Model
         $q = $this->db->query($sql); //自动转义
         if ( $q->num_rows() > 0 ) {
             $arr=$q->result_array();
-           /* foreach($arr as $key => $row ){
-                foreach($row as $key2 => $row2){
+            foreach($arr as $key => $value ){
+                foreach($value as $key2 => $value2){
                     if($key2=="material_type"){
-                        if($row2=="101"){
+                        if($value2=="101"){
+                            $arr[$key]['material_type_name'] = '工程物资';
+                        }
+                        if($value2=="102"){
+                            $arr[$key]['material_type_name'] = '安防物资';
+                        }
+                        if($value2=="103"){
                             $arr[$key]['material_type_name'] = '消防物资';
                         }
+                        if($value2=="104"){
+                            $arr[$key]['material_type_name'] = '保洁物资';
+                        }
+                        if($value2=="105"){
+                            $arr[$key]['material_type_name'] = '办公物资';
+                        }
                     }
+               //$arr[$key]['room_name'] = "";
+                if($key2 == 'room'){
+                    $arr[$key]['room_name'] = $value['immeuble'].'栋';
+
+                if(!empty($value2)){
+                    $arr[$key]['room_name'].=$value['room'];
                 }
-                $arr[$key]['room_name'] = "";
-                if(!empty($row['immeuble'])){
-                    $arr[$key]['room_name'] = $row['immeuble'].'栋';
                 }
-                if(!empty($row['room'])){
-                    $arr[$key]['room_name'].=$row['room'];
+                if ($key2 == 'code') {
+                    $arr[$key][$key2] = intval($value2, 10);
+                } elseif ($key2 == 'effective_date') {
+                    $arr[$key]["effective_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
+                    // $item["effective_date"]=$value;
+                } elseif ($key2 == 'effective_status') {
+                    if ($value2 == 't') {
+                        $arr[$key]["effective_status_name"] = "有效";
+                    } elseif ($value2 == 'f') {
+                        $arr[$key]["effective_status_name"] = "无效";
+                    } else {
+                        $arr[$key]["effective_status_name"] = "未知";
+                    }
+                } elseif ($key2 == 'name') {
+                    $arr[$key][$key2] = $value2;
+                } elseif ($key2 == 'pcs') {
+                    $arr[$key][$key2] = intval($value2, 10);
+                } elseif ($key2 == 'function') {
+                    $arr[$key][$key2] = $value2 ? $value2 : '无';
+                } elseif ($key == 'supplier') {
+                    $arr[$key][$key2] = $value ? $value2 : '无';
+                } elseif ($key == 'internal_no') {
+                    $arr[$key][$key2] = intval($value2, 10);
+                }elseif ($key == 'initial_no') {
+                    $arr[$key][$key2] = intval($value2, 10);
+                }elseif ($key == 'remark') {
+                    $arr[$key][$key2] = $value2 ? $value2 : '无';
                 }
-            }*/
-            $arr=$this->MaterialListArray($q->result_array());
+                }
+            }
+            //$arr=$this->MaterialListArray($q->result_array());
             $json=json_encode($arr);
             return $json;
         }

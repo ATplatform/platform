@@ -12,8 +12,148 @@ $('.date').datetimepicker({
     format: 'YYYY-MM-DD',
 });
 
+var page = $('input[name="page"]').val();
+
+//var c=$("#selectDate").find("input").val();
+//console.log(c)
+//var c= $("#selectDate").data("datetimepicker").getDate()
 
 
+
+    var c=document.getElementById("datetimeStart").value
+
+	console.log(c)
+
+//每次刷新都会读取sessionstorage的keyword值
+var keyword =$('input[name="keywords"]').val()
+
+
+/*
+//下拉框赋值
+selectValue("keyword");
+var keyword=sessionStorage.getItem("keyword");
+var keywordSave=""
+if (keyword==101){
+    keywordSave="工程物资"
+}
+if (keyword==102){
+    keywordSave="安防物资"
+}
+if (keyword==103){
+    keywordSave="消防物资"
+}
+if (keyword==104){
+    keywordSave="保洁物资"
+}
+if (keyword==105){
+    keywordSave="办公物资"
+}
+console.log(keyword)
+console.log(keywordSave)
+$('#material_type_select').val(keywordSave);
+
+
+$(document).on('click','.ka_drop li',function(){
+        // var data_ajax = $(this).find('a').data('ajax');
+        //$(this).parents('.select_pull_down').find('.ka_input3').val($(this).text());
+        //$(this).parents('.select_pull_down').find('.ka_input3').data('ajax',data_ajax);
+        $.ajax({
+            url:getRootPath()+'/index.php/Material/getMaterialList?page='+page+'&keyword='+keyword,
+            method:'get',
+            data:{
+
+            },
+            success:function(data){
+                window.location.href="materialList?keyword="+keyword+"&page="+page;
+            },
+            error:function(){
+
+            }
+        })
+    })
+
+
+*/
+
+
+
+//特殊处理搜索框输入物资类型的中文，将它变成数字赋给keyword
+var search_text=$('.searc_room_text').val()
+console.log(search_text)
+if (search_text.indexOf("工程物资") !== -1 ){
+        keyword=101;
+}
+if (search_text.indexOf("安防物资") !== -1  ){
+        keyword=102;
+}
+if (search_text.indexOf("消防物资")!==-1){
+        keyword=103;
+}
+if (search_text.indexOf("保洁物资") !==-1){
+        keyword=104;
+}
+if (search_text.indexOf("办公物资") !==-1){
+        keyword=105;
+}
+console.log(1)
+console.log(keyword)
+
+//搜索框赋值
+$('#table').bootstrapTable({
+    method: "get",
+    undefinedText:'/',
+    url:getRootPath()+'/index.php/Material/getMaterialList?page='+page+'&keyword='+keyword,
+    dataType:'json',
+    // pagination:true,
+    // pageSize: 15,
+    // pageNumber: 1,
+    // sortName: 'id',
+    // sortOrder: 'desc',
+    responseHandler:function(res){
+        //用于处理后端返回数据
+        console.log(res);
+        return res;
+    },
+    onLoadSuccess: function(data){  //加载成功时执行
+        console.log(data);
+    },
+    onLoadError: function(){  //加载失败时执行
+        console.info("加载数据失败");
+    }
+})
+
+    //点击分页go,判断页面跳转
+    $('.fenye_btn').click(function() {
+        var page = $('input[name="fenye_input"]').val();
+        if (!/^[0-9]*$/.test(page)) {
+            openLayer('请输入数字');
+            $('input[name="fenye_input"]').val('');
+            return;
+        }
+        var pagenumber = Number(page) + "";
+        var myCurrent = $('#current').text().split('/')[0];
+        var myTotal = $('#current').text().split('/')[1];
+        if (page != pagenumber) {
+            $('input[name="fenye_input"]').val(pagenumber);
+            page = pagenumber;
+        }
+        if (Number(page) > Number(myTotal)) {
+            $('input[name="fenye_input"]').val(myTotal);
+            page = myTotal;
+        }
+        if (Number(page) < 1) {
+            openLayer('请输入合法页数');
+            $('input[name="fenye_input"]').val('');
+            return;
+        }
+
+        var keyword = getUrlParam('keyword');
+        window.location.href = "materialList?keyword=" + keyword + "&page=" + page;
+    })
+
+
+
+//$('.add_material').find('input[name="effective_date"]').val();
 
 //点击保存新增楼宇信息
 $('#add_material .confirm').click(function(){
@@ -52,6 +192,7 @@ $('#add_material .confirm').click(function(){
 	else {
 		effective_status = 'false';
 	}
+
 	$.ajax({
 		url:getRootPath()+'/index.php/Material/insertMaterial',
 		method:'post',
@@ -67,6 +208,7 @@ $('#add_material .confirm').click(function(){
             internal_no:internal_no,
             initial_no:initial_no,
 			remark:remark
+
 		},
 		success:function(data){
 			var data = JSON.parse(data);
