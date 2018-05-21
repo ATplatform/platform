@@ -294,11 +294,11 @@ function formatDate(date){
 
     $(document).on('click','.ka_drop li',function(){
         var data_ajax = $(this).find('a').data('ajax');
-        //$(this).parents('.select_pull_down').find('.ka_input3').val($(this).text());
+        $(this).parents('.select_pull_down').find('.ka_input3').val($(this).text());
         $(this).parents('.select_pull_down').find('.ka_input3').data('ajax',data_ajax);
         //sessionStorage.setItem(item,data_ajax);
     })
 
-    $(document).on('mouseleave','.ka_drop_list',function(){
-        $(this).parents('.ka_drop').hide();
-    })
+   // $(document).on('mouseleave','.ka_drop_list',function(){
+   //     $(this).parents('.ka_drop').hide();
+   // })

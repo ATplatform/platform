@@ -3,14 +3,18 @@
 ?>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-table/css/bootstrap-table.css'?>'/>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css'?>'/>
+<link rel="stylesheet" href='<?=base_url().'application/views/plugin/jstree/dist/themes/default/style.min.css'?>'/>
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table-zh-CN.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/moment-with-locales.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'?>'></script>
+<script src='<?=base_url().'application/views/plugin/jstree/dist/jstree.min.js'?>'></script>
 <input type="hidden" value='<?php echo $page;?>' name="page" />
 <input type="hidden" value='<?php echo $keyword;?>' name="keywords" />
 <input type="hidden" value='<?php echo $pagesize;?>' name="pagesize" />
-
+<input type="hidden" value='<?php echo $material_type;?>' name="material_types" />
+<input type="hidden" value='<?php echo $building_code;?>' name="building_codes" />
+<!--<input type="hidden" value='<?php /*echo $material_type_name;*/?>' name="material_type_name" />-->
 <div class="header oh">
 	<div class="fl logo">
 		<i></i>艾特智汇谷云平台
@@ -31,48 +35,51 @@
     <div class="col-md-10 col-xm-9">
     <!-- 筛选条件 -->
     <div class="searc_bar search_wrap" id="search_wrap" >
+
         <span class="col_37A fl">筛选条件</span>
         <input type="text" class="begin_date date col_37A fl" name="begin_date" id="datetimeStart" >
 
         <!-- 筛选条件 物资类别-->
-        <div class="material_type_wrap select_pull_down query_wrap col_37A fl">
-            <div>
-                <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="物资类别" name="material_type" data-ajax="" value="<?php 123?>" readonly>
+        <div class="material_type_wrap  selectMaterial select_pull_down query_wrap col_37A fl">
+            <div >
+                <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="物资类别" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly>
             </div>
             <div class="ka_drop"  style="display: none;">
                 <div class="ka_drop_list">
                     <ul>
-                        <li><a href="<?=base_url().'index.php/Material/materialList?page='.$page.'&keyword='.$keyword ?>" data-ajax="101">工程物资</a></li>
+                        <li><a href="javascript:;" data-ajax="101">工程物资</a></li>
                         <li><a href="javascript:;" data-ajax="102">安防物资</a></li>
                         <li><a href="javascript:;" data-ajax="103">消防物资</a></li>
                         <li><a href="javascript:;" data-ajax="104">保洁物资</a></li>
                         <li><a href="javascript:;" data-ajax="105">办公物资</a></li>
+                        <li><a href="javascript:;" data-ajax="">取消</a></li>
                     </ul>
                 </div>
             </div>
         </div>
 
         <!-- 筛选条件 地点-->
-        <div class="select_pull_down query_wrap col_37A fl">
+       <!-- <div class="select_pull_down query_wrap col_37A fl select_parent_code building_code_wrap">
             <div>
-                <input type="text" class="model_input building_type ka_input3" placeholder="地点" name="building_type" data-ajax="" readonly>
+                <input type="text" class="model_input building_code_select ka_input3" placeholder="地点" name="building_code_select" data-ajax="" value="" readonly>
             </div>
             <div class="ka_drop " style="display: none;">
-                <div class="ka_drop_list">
+                <div class="ka_drop_list buildings" >
                     <ul>
-                        <li><a href="javascript:;" data-ajax="101">栋</a></li>
-                        <li><a href="javascript:;" data-ajax="102">区</a></li>
-                        <li><a href="javascript:;" data-ajax="103">室</a></li>
-                        <li><a href="javascript:;" data-ajax="104">居</a></li>
+                        <!--<li><a href="javascript:;" data-ajax="101">栋</a></li>
+                        <li><a href="javascript:;" data-ajax="102">室</a></li>
+
                     </ul>
                 </div>
             </div>
-        </div>
+        </div>-->
+     <a href="javascript:;" id="treeNav" class="treeWrap"><span></span></a>
 
+     <!--   <a id="sendSelect" href="javascript:;">yes</a>-->
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资类别或地点" value="<?php echo $keyword ?>">
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称等" value="<?php echo $keyword ?>">
                 <a id="clear" href="<?=base_url().'index.php/Material/materialList'?>">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
@@ -181,9 +188,35 @@
                                     </div>
                                 </div>
                             </div>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地点：
-                                <input type="text" class="model_input building_code" placeholder="请输入地点"  name="building_code" />
+                      <!--      <div class="select_wrap select_pull_down">
+                                <div>
+                                    <span class="red_star">*</span>楼宇层级：
+                                    <input type="text" class="model_input level ka_input3" placeholder="请输入楼宇层级"  name="level" data-ajax="" readonly />
+                                </div>
+                                <div class="ka_drop">
+                                    <div class="ka_drop_list">
+                                        <ul>
+                                            <li><a href="javascript:;" data-ajax="100">小区</a></li>
+                                            <li><a href="javascript:;" data-ajax="101">期</a></li>
+                                            <li><a href="javascript:;" data-ajax="102">区</a></li>
+                                            <li><a href="javascript:;" data-ajax="103">栋</a></li>
+                                            <li><a href="javascript:;" data-ajax="104">单元</a></li>
+                                            <li><a href="javascript:;" data-ajax="105">层</a></li>
+                                            <li><a href="javascript:;" data-ajax="106">室</a></li>
+                                            <li><a href="javascript:;" data-ajax="107">公共设施</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>-->
+
+                            <p class="select_buliding_wrap">
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地点：</span>
+                                <a href="javascript:;" id="treeNavWrite" class="treeWrap"><span></span></a>
+                                <span class="select_buliding">
+
+						</span>
                             </p>
+
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;供应商：
                                 <input type="text" class="model_input supplier" placeholder="请输入供应商"  name="supplier" />
                             </p>
@@ -211,7 +244,79 @@
     </div>
 </div>
 
+<script>
+    var treeNav_data = <?php echo $treeNav_data?>;
+    console.log(treeNav_data);
+    //楼宇层级树形菜单
+    $('#treeNav>span').jstree({
+        'core' : {
+            data: treeNav_data
+        }
+    })
+    //树节点点击后跳转到相应的楼宇列表页面
+    $('#treeNav>span').on("select_node.jstree", function (e, node) {
+        var arr=node.node.id.split("_");
+        var parent_code=arr[0];
+        var id=arr[1];
+        console.log(node.node);
+        window.location.href="materialList?building_code="+building_code+"&parent_code="+parent_code+"&page=1";
+    })
 
+/*
+    var treeNav_data =
+    console.log(treeNav_data);
+    //编辑物业关系和新增物业关系楼宇层级树形菜单
+    $('#treeNavAdd>span,#treeNavWrite>span').jstree({
+        'core' : {
+            data: treeNav_data
+        }
+    })
+    //树节点点击后将节点赋值
+    $('#treeNavAdd>span,#treeNavWrite>span').on("select_node.jstree", function (e, node) {
+        var arr=node.node.id.split("_");
+        var parent_code=arr[0];
+        //当前节点的id
+        var id=arr[1];
+        //当前节点的文本值
+        var name = node.node.text;
+        //当前节点的房号code
+        var room_code = node.node.original.code;
+        console.log(room_code);
+        console.log(node.node);
+        // console.log($(this));
+        //当前对象为包裹层元素(这里是span)
+        var that = $(this);
+
+        //父节点数组
+        var parents_arr = node.node.parents;
+        if(parents_arr.length==3){
+            //表示到了室这一层级,需要获取到父节点,把父节点的名称拼接
+            var imm_id = parents_arr[0];
+            var imm_node = that.jstree("get_node", imm_id);
+            var imm_name = imm_node.text;
+            console.log(imm_node);
+        }
+        //表示是栋这一层级
+        else if(parents_arr.length==2){
+
+        }
+
+        imm_name = imm_name?imm_name:'';
+        var html_tmp = "<em id="+id+" data-room_code="+room_code+">"+imm_name+name+"<i class='fa fa-close'></i></em>";
+        console.log(html_tmp);
+        if(that.closest('.model_content').find('.select_buliding #'+id).length==0){
+            that.closest('.model_content').find('.select_buliding').append(html_tmp);
+        }
+
+    })
+
+    $(function(){
+        //点击删除当前节点
+        $('.select_buliding_wrap').on('click','.select_buliding em i',function(){
+            $(this).closest('em').remove();
+        })
+    })*/
+</script>
 
 
 
