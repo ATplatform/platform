@@ -1,0 +1,11 @@
+INSERT INTO "village_material" VALUES (1000001, '2018-5-22 00:00:00', 't', NULL, '123', 123, 101, 100003, NULL, '', '', '', '', NULL, '2018-5-22 16:31:35');
+INSERT INTO "village_material" VALUES (1000002, '2018-5-22 00:00:00', 't', NULL, '123', 123, 101, 100001, NULL, '', '', '', '', NULL, '2018-5-22 16:34:49');
+INSERT INTO "village_material" VALUES (1000003, '2018-5-22 00:00:00', 't', NULL, '123', 123, 101, 100002, NULL, '', '', '', '', NULL, '2018-5-22 16:35:40');
+INSERT INTO "village_material" VALUES (1000004, '2018-5-22 00:00:00', 't', NULL, '123', 123, 101, 100008, NULL, '', '', '', '', NULL, '2018-5-22 16:35:50');
+INSERT INTO "village_material" VALUES (1000005, '2018-5-22 00:00:00', 't', NULL, '123', 123, 103, 100003, NULL, '', '', '', '', NULL, '2018-5-22 16:35:59');
+INSERT INTO "village_material" VALUES (1000006, '2018-5-22 00:00:00', 't', NULL, '213', 123, 101, 100004, NULL, '', '', '', '', NULL, '2018-5-22 16:36:09');
+INSERT INTO "village_material" VALUES (1000007, '2018-5-22 00:00:00', 't', NULL, '213', 123, 101, 100007, NULL, '', '', '', '', NULL, '2018-5-22 16:36:09');
+INSERT INTO "village_material" VALUES (1000008, '2018-5-22 00:00:00', 't', NULL, '213', 123, 101, 100013, NULL, '', '', '', '', NULL, '2018-5-22 16:36:09');
+INSERT INTO "village_material" VALUES (1000009, '2018-5-22 00:00:00', 't', NULL, '测试1', 123, 105, 100008, NULL, '123456789', '123456789', '123456789', '备注1', NULL, '2018-5-22 16:59:11');
+INSERT INTO "village_material" VALUES (1000010, '2018-5-22 00:00:00', 't', NULL, '测试3', 123, 102, 100010, NULL, '123', '123', '123', '213', NULL, '2018-5-22 17:23:40');
+INSERT INTO "village_material" VALUES (1000011, '2018-5-22 00:00:00', 't', NULL, '123', 123, 103, 100008, NULL, '', '', '', '', NULL, '2018-5-22 17:28:11');
