@@ -16,7 +16,6 @@ class Material_model extends CI_Model
         $sql = "select * from village_material M";
         $sql .= " LEFT JOIN village_building_stage AS bs ON M.building_code = bs.room_code";
         $sql = $sql . " ORDER BY code ASC limit ".$rows." offset ".$start;
-       // $this->load->getMaterial( $sql);
         return $sql;
     }
 
@@ -24,9 +23,35 @@ class Material_model extends CI_Model
     public function getMaterialListbySearch($parent_code,$building_code, $material_type, $keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-        $sql = "select * ,M.code as m_code, M.name as m_name,M.effective_date as m_effective_date,M.effective_status as m_effective_status,M.remark as mm_remark from village_material M left join village_building_stage AS bs ON M .building_code = bs.room_code";
-        $sql .= " LEFT JOIN village_building AS b ON M.building_code = b.code";
-        $sql .= " where b.effective_date =(select max(effective_date) from village_building A where b. name=A.name and b.parent_code=A.parent_code and M.building_code=bs.room_code and bs.room_code=b.code  and A.effective_status=TRUE) and b.effective_status = TRUE";
+        $sql = "SELECT
+m.*,
+b.effective_date as b_effective_date,
+b.code as b_code,
+b.parent_code as b_parent_code,
+bs.room,
+bs.immeuble,
+bs.room_code
+
+
+            FROM
+	village_material AS M,
+	village_building_stage AS bs,
+	village_building AS b
+WHERE
+	M .building_code = bs.room_code
+    AND bs.room_code = b.code
+    AND b.effective_date = (
+    SELECT
+		MAX (effective_date)
+	FROM
+		village_building bb
+	WHERE
+		b. NAME = bb. NAME
+        AND bb.parent_code = b.parent_code
+        AND bs.room_code = b.code
+        AND bb.effective_status = TRUE
+)
+AND b.effective_status = TRUE";
         /*
                if(!empty($time)){
                     $sql .= " where effective_date < now() ";
@@ -36,7 +61,7 @@ class Material_model extends CI_Model
             $sql .= " and M.material_type=$material_type ";
         }
         if(!empty($building_code)){
-            $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) or (M.building_code=$building_code and b.parent_code=$parent_code)";
+            $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
         }
 
         if (!empty($keyword)) {
@@ -65,13 +90,9 @@ class Material_model extends CI_Model
                         if ($value2 == "103") {$arr[$key]['material_type_name'] = '消防物资';}
                         if ($value2 == "104") {$arr[$key]['material_type_name'] = '保洁物资';}
                         if ($value2 == "105") {$arr[$key]['material_type_name'] = '办公物资';}
-                        /* else{
-                             $arr[$key]['material_type_name'] = '物资类别';
-                         }*/
                     }
-                    //$arr[$key]['room_name'] = "";
                     if ($key2 == 'room') {
-                        if(empty($arr[$key]['room']) && empty($arr[$key]['immeuble'])){
+                        if( (( empty($arr[$key]['room']) ) && empty($arr[$key]['immeuble']) ) || (( $arr[$key]['room']=="" ) && $arr[$key]['immeuble']=="" )){
                             $arr[$key]['room_name']='和正·智汇谷';
                         }else{
                             $arr[$key]['room_name'] = $value['immeuble'] . '栋';
@@ -80,10 +101,12 @@ class Material_model extends CI_Model
                     }
                     if ($key2 == 'code') {
                         $arr[$key][$key2] = intval($value2, 10);
-                    } elseif ($key2 == 'effective_date') {
+                    }
+                    if ($key2 == 'effective_date') {
                         $arr[$key]["effective_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
                         // $item["effective_date"]=$value;
-                    } elseif ($key2 == 'effective_status') {
+                    }
+                    if ($key2 == 'effective_status') {
                         if ($value2 == 't') {
                             $arr[$key]["effective_status_name"] = "有效";
                         } elseif ($value2 == 'f') {
@@ -91,21 +114,30 @@ class Material_model extends CI_Model
                         } else {
                             $arr[$key]["effective_status_name"] = "未知";
                         }
-                    } elseif ($key2 == 'name') {
+                    }
+                    if ($key2 == 'name') {
                         $arr[$key][$key2] = $value2;
-                    } elseif ($key2 == 'pcs') {
+                    }
+
+                    if ($key2 == 'pcs') {
                         $arr[$key][$key2] = intval($value2, 10);
-                    } elseif ($key2 == 'function') {
-                        $arr[$key][$key2] = $value2 ? $value2 : '无';
-                    } elseif ($key == 'supplier') {
-                        $arr[$key][$key2] = $value ? $value2 : '无';
-                    } elseif ($key == 'internal_no') {
-                        $arr[$key][$key2] = intval($value2, 10);
-                    } elseif ($key == 'initial_no') {
-                        $arr[$key][$key2] = intval($value2, 10);
-                    } elseif ($key == 'remark') {
+                    }
+                    if ($key2 == 'function') {
                         $arr[$key][$key2] = $value2 ? $value2 : '无';
                     }
+                    if ($key == 'supplier') {
+                        $arr[$key][$key2] = $value ? $value2 : '无';
+                    }
+                    if ($key == 'internal_no') {
+                        $arr[$key][$key2] = intval($value2, 10);
+                    }
+                    if ($key == 'initial_no') {
+                        $arr[$key][$key2] = intval($value2, 10);
+                    }
+                    if ($key == 'remark') {
+                        $arr[$key][$key2] = $value2 ? $value2 : '无';
+                    }
+
                 }
             }
             $json = json_encode($arr);

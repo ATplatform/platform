@@ -71,7 +71,6 @@ class Material extends CI_Controller
             $this->load->view('app/material_list', $dataNormal);
         } else {
             $total = $this->Material_model->getMaterialTotalbySearch($parent_code, $building_code, $material_type, $keyword, $this->user_per_page);
-
             $dataSearch['nav'] = 'materialList';
             $dataSearch['keyword'] = $keyword;
             $dataSearch['material_type'] = $material_type;
@@ -134,7 +133,6 @@ class Material extends CI_Controller
     //搜索查询数据 get方法 查询参数
     public function getMaterialListbySearch()
     {
-
         $parent_code = $this->input->get('parent_code');
         $building_code = $this->input->get('building_code');
         $material_type = $this->input->get('material_type');
