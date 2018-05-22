@@ -9,12 +9,8 @@
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/moment-with-locales.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/jstree/dist/jstree.min.js'?>'></script>
-<input type="hidden" value='<?php echo $page;?>' name="page" />
-<input type="hidden" value='<?php echo $keyword;?>' name="keywords" />
-<input type="hidden" value='<?php echo $pagesize;?>' name="pagesize" />
-<input type="hidden" value='<?php echo $material_type;?>' name="material_types" />
-<input type="hidden" value='<?php echo $building_code;?>' name="building_codes" />
-<!--<input type="hidden" value='<?php /*echo $material_type_name;*/?>' name="material_type_name" />-->
+
+
 <div class="header oh">
 	<div class="fl logo">
 		<i></i>艾特智汇谷云平台
@@ -32,7 +28,7 @@
 ?>
 
 <!--<?php echo 'x'; ?>-->
-    <div class="col-md-10 col-xm-9">
+    <div class="col-md-10 col-xm-12 pl0 pr0">
     <!-- 筛选条件 -->
     <div class="searc_bar search_wrap" id="search_wrap" >
 
@@ -80,6 +76,10 @@
         <form class="search_room" action="" method="get">
             <p>
                 <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称等" value="<?php echo $keyword ?>">
+
+                <input type="hidden" value='<?php echo $material_type;?>' name="material_type" />
+                <input type="hidden" value='<?php echo $building_code;?>' name="building_code" />
+                <input type="hidden" value='<?php echo $parent_code;?>' name="parent_code" />
                 <a id="clear" href="<?=base_url().'index.php/Material/materialList'?>">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
@@ -102,7 +102,7 @@
                     <th data-title="物资名称" data-align="center" data-field="name" ></th>
                     <th  data-title="地点" data-align="center" data-field="room_name"></th>
                     <th  data-title="数量" data-align="center" data-field="pcs"></th>
-                    <th data-title="启用时间" data-align="center" data-field="effective_date"></th>
+                    <th data-title="启用时间" data-align="center" data-field="effective_date_name"></th>
                     <th  data-title="用途" data-align="center" data-field="function"></th>
                     <th  data-title="供应商" data-align="center" data-field="supplier"></th>
                     <th  data-title="内部编号" data-align="center" data-field="internal_no"></th>
@@ -118,22 +118,22 @@
         <!--物资数据分页处理-->
         <ul class="pager" page='<? $page ?>'>
             <?php
-            $first=base_url().'index.php/Material/materialList?page=1&keyword='.$keyword;
+            $first=base_url().'index.php/Material/materialList?page=1&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
             echo  " <li><a href='".$first."' id='first'>首 页</a></li>";
             if($page>1) {
-                $url=base_url().'index.php/Material/materialList?page='.($page-1).'&keyword='.$keyword;
+                $url=base_url().'index.php/Material/materialList?page='.($page-1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
                 echo "<li class=\"active\"><a href='".$url."' id='prev' >上一页</a></li>";
             }else{
                 echo "<li class=\"disabled\" ><a id='prev' href='javascript:void(0);'>上一页</a></li>";
             }
             echo "<li class=\"disabled\"><a href='javascript:void(0);' id='current'>".$page."/".$total."</a></li>";
             if($page<$total) {
-                $url=base_url().'index.php/Material/materialList?page='.($page+1).'&keyword='.$keyword;
+                $url=base_url().'index.php/Material/materialList?page='.($page+1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
                 echo "<li class=\"active\"><a href='".$url."' id='next' >下一页</a></li>";
             }else{
                 echo "<li class=\"disabled\"  ><a  id='next' href='javascript:void(0);'>下一页</a></li>";
             }
-            $last=base_url().'index.php/Material/materialList?page='.$total.'&keyword='.$keyword;
+            $last=base_url().'index.php/Material/materialList?page='.$total.'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
             echo  " <li><a href='".$last."' id='last'>尾 页</a></li>";
             echo  " <li><input type='text' class='fenye_input' name='fenye_input'  /> </li>";
             echo  "<li><a href='#'  class='fenye_btn'>GO</a></li>";
@@ -243,79 +243,198 @@
 
     </div>
 </div>
+<input type="hidden" value='<?php echo $page;?>' name="page" />
+<input type="hidden" value='<?php echo $keyword;?>' name="keywords" />
+<input type="hidden" value='<?php echo $pagesize;?>' name="pagesize" />
+<input type="hidden" value='<?php echo $material_type;?>' name="material_types" />
+<input type="hidden" value='<?php echo $building_code;?>' name="building_codes" />
+<input type="hidden" value='<?php echo $parent_code;?>' name="parent_codes" />
+<script>
+      //表格数据初始化赋值=> 判断是普通模式还是搜索模式
+    $(function() {
+        var page = $('input[name="page"]').val();
+        var keyword = $('input[name="keywords"]').val()
+        var material_type = $('input[name="material_types"]').val();
+        var building_code = $('input[name="building_codes"]').val();
+        var parent_code = $('input[name="parent_codes"]').val();
+
+
+        if( !$.trim(keyword) && !$.trim(material_type) && !$.trim(building_code)){
+        $('#table').bootstrapTable({
+            method: "get",
+            undefinedText: '/',
+            url: getRootPath() + '/index.php/Material/getMaterialListbyNormal?page=' + page,
+            dataType: 'json',
+            // pagination:true,
+            // pageSize: 15,
+            // pageNumber: 1,
+            // sortName: 'id',
+            // sortOrder: 'desc',
+            responseHandler: function (res) {
+                //用于处理后端返回数据
+                console.log(res);
+                return res;
+            },
+            onLoadSuccess: function (data) {  //加载成功时执行
+                console.log(data);
+            },
+            onLoadError: function () {  //加载失败时执行
+                console.info("加载数据失败");
+            }
+        })
+        }else{
+            $('#table').bootstrapTable({
+                method: "get",
+                undefinedText: '/',
+                url: getRootPath() + '/index.php/Material/getMaterialListbySearch?page=' + page+'&parent_code='+parent_code+'&building_code='+building_code+'&material_type='+material_type+'&keyword='+keyword,
+                dataType: 'json',
+                // pagination:true,
+                // pageSize: 15,
+                // pageNumber: 1,
+                // sortName: 'id',
+                // sortOrder: 'desc',
+                responseHandler: function (res) {
+                    //用于处理后端返回数据
+                    console.log(res);
+                    return res;
+                },
+                onLoadSuccess: function (data) {  //加载成功时执行
+                    console.log(data);
+                },
+                onLoadError: function () {  //加载失败时执行
+                    console.info("加载数据失败");
+                }
+            })
+
+
+
+
+        }
+
+        //点击分页go,判断页面跳转
+        $('.fenye_btn').click(function() {
+            var page = $('input[name="fenye_input"]').val();
+            if (!/^[0-9]*$/.test(page)) {
+                openLayer('请输入数字');
+                $('input[name="fenye_input"]').val('');
+                return;
+            }
+            var pagenumber = Number(page) + "";
+            var myCurrent = $('#current').text().split('/')[0];
+            var myTotal = $('#current').text().split('/')[1];
+            if (page != pagenumber) {
+                $('input[name="fenye_input"]').val(pagenumber);
+                page = pagenumber;
+            }
+            if (Number(page) > Number(myTotal)) {
+                $('input[name="fenye_input"]').val(myTotal);
+                page = myTotal;
+            }
+            if (Number(page) < 1) {
+                openLayer('请输入合法页数');
+                $('input[name="fenye_input"]').val('');
+                return;
+            }
+
+            var keyword = getUrlParam('keyword');
+            var material_type = getUrlParam('material_type');
+            var building_code = getUrlParam('building_code');
+            window.location.href = "materialList?keyword=" + keyword + "&page=" + page+'&material_type='+material_type+'&building_code='+building_code;
+        })
+
+       /* window.location.href = "materialList?keyword=" + keyword + "&page=" + page+'&material_type='+material_type+'&building_code='+building_code;*/
+    })
+</script>
 
 <script>
-    var treeNav_data = <?php echo $treeNav_data?>;
-    console.log(treeNav_data);
-    //楼宇层级树形菜单
-    $('#treeNav>span').jstree({
-        'core' : {
-            data: treeNav_data
-        }
-    })
-    //树节点点击后跳转到相应的楼宇列表页面
-    $('#treeNav>span').on("select_node.jstree", function (e, node) {
-        var arr=node.node.id.split("_");
-        var parent_code=arr[0];
-        var id=arr[1];
-        console.log(node.node);
-        window.location.href="materialList?building_code="+building_code+"&parent_code="+parent_code+"&page=1";
-    })
-
-/*
-    var treeNav_data =
-    console.log(treeNav_data);
-    //编辑物业关系和新增物业关系楼宇层级树形菜单
-    $('#treeNavAdd>span,#treeNavWrite>span').jstree({
-        'core' : {
-            data: treeNav_data
-        }
-    })
-    //树节点点击后将节点赋值
-    $('#treeNavAdd>span,#treeNavWrite>span').on("select_node.jstree", function (e, node) {
-        var arr=node.node.id.split("_");
-        var parent_code=arr[0];
-        //当前节点的id
-        var id=arr[1];
-        //当前节点的文本值
-        var name = node.node.text;
-        //当前节点的房号code
-        var room_code = node.node.original.code;
-        console.log(room_code);
-        console.log(node.node);
-        // console.log($(this));
-        //当前对象为包裹层元素(这里是span)
-        var that = $(this);
-
-        //父节点数组
-        var parents_arr = node.node.parents;
-        if(parents_arr.length==3){
-            //表示到了室这一层级,需要获取到父节点,把父节点的名称拼接
-            var imm_id = parents_arr[0];
-            var imm_node = that.jstree("get_node", imm_id);
-            var imm_name = imm_node.text;
-            console.log(imm_node);
-        }
-        //表示是栋这一层级
-        else if(parents_arr.length==2){
-
-        }
-
-        imm_name = imm_name?imm_name:'';
-        var html_tmp = "<em id="+id+" data-room_code="+room_code+">"+imm_name+name+"<i class='fa fa-close'></i></em>";
-        console.log(html_tmp);
-        if(that.closest('.model_content').find('.select_buliding #'+id).length==0){
-            that.closest('.model_content').find('.select_buliding').append(html_tmp);
-        }
-
-    })
-
-    $(function(){
-        //点击删除当前节点
-        $('.select_buliding_wrap').on('click','.select_buliding em i',function(){
-            $(this).closest('em').remove();
+    //////////////////////////////搜索模块的树形地点///////////////////////////////////
+        var treeNav_data =<?php echo $treeNav_data?>;
+       // console.log(treeNav_data);
+        //楼宇层级树形菜单
+        $('#treeNav>span').jstree({
+            'core' : {
+                data: treeNav_data
+            }
         })
-    })*/
+        //树节点点击后跳转到相应的楼宇列表页面
+        $('#treeNav>span').on("select_node.jstree", function (e, node) {
+           // var arr=node.node.id.split("_");
+            var building_code=node.node.original.code;
+            var parent_code=node.node.original.code;
+            var page = $('input[name="page"]').val();
+            var keyword = $('input[name="keywords"]').val()
+            var material_type = $('input[name="material_types"]').val();
+
+            console.log(111);
+            console.log(node);
+            console.log(building_code);
+            console.log(parent_code);
+           window.location.href="materialList?building_code="+building_code+"&parent_code="+parent_code+"&page="+page+'&material_type='+material_type+'&keyword='+keyword;
+        })
+
+
+
+
+
+//////////////////////////////新增模块的树形地点///////////////////////////////////
+        var treeNav_data = <?php echo $treeNav_data?>;
+        //编辑物业关系和新增物业关系楼宇层级树形菜单
+        $('#treeNavAdd>span,#treeNavWrite>span').jstree({
+            'core': {
+                data: treeNav_data
+            }
+        })
+
+        //树节点点击后将节点赋值
+        $('#treeNavAdd>span,#treeNavWrite>span').on("select_node.jstree", function (e, node) {
+            var arr = node.node.id.split("_");
+            var parent_code = arr[0];
+            //当前节点的id
+            var id = arr[1];
+            //当前节点的文本值
+            var name = node.node.text;
+            //当前节点的房号code
+            var room_code = node.node.original.code;
+            console.log(room_code);
+            console.log(node.node);
+            // console.log($(this));
+            //当前对象为包裹层元素(这里是span)
+            var that = $(this);
+
+            //父节点数组
+            var parents_arr = node.node.parents;
+            if (parents_arr.length == 3) {
+                //表示到了室这一层级,需要获取到父节点,把父节点的名称拼接
+                var imm_id = parents_arr[0];
+                var imm_node = that.jstree("get_node", imm_id);
+                var imm_name = imm_node.text;
+                console.log(imm_node);
+            }
+            //表示是栋这一层级
+            else if (parents_arr.length == 2) {
+
+            }
+
+            imm_name = imm_name ? imm_name : '';
+            var html_tmp = "<em id=" + id + " data-room_code=" + room_code + ">" + imm_name + name + "<i class='fa fa-close'></i></em>";
+            console.log(html_tmp);
+            if (that.closest('.model_content').find('.select_buliding #' + id).length == 0) {
+                that.closest('.model_content').find('.select_buliding').append(html_tmp);
+            }
+
+        })
+
+        $(function () {
+            //点击删除当前节点
+            $('.select_buliding_wrap').on('click', '.select_buliding em i', function () {
+                $(this).closest('em').remove();
+            })
+        })
+
+
+
+
+
 </script>
 
 

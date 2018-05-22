@@ -12,65 +12,6 @@ $('.date').datetimepicker({
     format: 'YYYY-MM-DD',
 });
 
-var page = $('input[name="page"]').val();
-var keyword =$('input[name="keywords"]').val()
-var material_type = $('input[name="material_types"]').val();
-var building_code = $('input[name="building_codes"]').val();
-//var c=$("#selectDate").find("input").val();
-//console.log(c)
-//var c= $("#selectDate").data("datetimepicker").getDate()
-
-
-
-//每次刷新都会读取sessionstorage的keyword值
-
-/*
-//下拉框赋值
-selectValue("keyword");
-var keyword=sessionStorage.getItem("keyword");
-var keywordSave=""
-if (keyword==101){
-    keywordSave="工程物资"
-}
-if (keyword==102){
-    keywordSave="安防物资"
-}
-if (keyword==103){
-    keywordSave="消防物资"
-}
-if (keyword==104){
-    keywordSave="保洁物资"
-}
-if (keyword==105){
-    keywordSave="办公物资"
-}
-console.log(keyword)
-console.log(keywordSave)
-$('#material_type_select').val(keywordSave);
-
-
-
-$(document).on('click','.ka_drop li',function(){
-        // var data_ajax = $(this).find('a').data('ajax');
-        //$(this).parents('.select_pull_down').find('.ka_input3').val($(this).text());
-        //$(this).parents('.select_pull_down').find('.ka_input3').data('ajax',data_ajax);
-        $.ajax({
-            url:getRootPath()+'/index.php/Material/insertMaterial?page='+page+'&keyword='+keyword,
-            method:'get',
-            data:{
-
-            },
-            success:function(data){
-                window.location.href="materialList?keyword="+keyword+"&page="+page;
-            },
-            error:function(){
-
-            }
-        })
-    })
-
-*/
-
 
 //特殊处理搜索框输入物资类型的中文，将它变成数字赋给keyword
 var search_text=$('.searc_room_text').val()
@@ -91,83 +32,8 @@ if (search_text.indexOf("办公物资") !==-1){
         keyword=105;
 }
 
-//特殊处理搜索框输入物资类型的中文，将它变成数字赋给keyword
-/*var material_type_select=material_type
-console.log(material_type_select)
-if (material_type_select ===101 ){
-    $('#material_type_select').val('工程物资');
-}
-if (material_type_select ===102 ){
-    material_type_select='安防物资';
-}
-if (material_type_select ===103 ){
-    material_type_select='消防物资';
-}
-if (material_type_select ===104 ){
-    material_type_select='保洁物资';
-}
-if (material_type_select ===105 ){
-    material_type_select='办公物资';
-}*/
-
-//表格数据初始化赋值
-$('#table').bootstrapTable({
-    method: "get",
-    undefinedText:'/',
-    url:getRootPath()+'/index.php/Material/getMaterialList?page='+page+'&keyword='+keyword+'&material_type='+material_type+'&building_code='+building_code,
-    dataType:'json',
-    // pagination:true,
-    // pageSize: 15,
-    // pageNumber: 1,
-    // sortName: 'id',
-    // sortOrder: 'desc',
-    responseHandler:function(res){
-        //用于处理后端返回数据
-        console.log(res);
-        return res;
-    },
-    onLoadSuccess: function(data){  //加载成功时执行
-        console.log(data);
-    },
-    onLoadError: function(){  //加载失败时执行
-        console.info("加载数据失败");
-    }
-})
-
-    //点击分页go,判断页面跳转
-    $('.fenye_btn').click(function() {
-        var page = $('input[name="fenye_input"]').val();
-        if (!/^[0-9]*$/.test(page)) {
-            openLayer('请输入数字');
-            $('input[name="fenye_input"]').val('');
-            return;
-        }
-        var pagenumber = Number(page) + "";
-        var myCurrent = $('#current').text().split('/')[0];
-        var myTotal = $('#current').text().split('/')[1];
-        if (page != pagenumber) {
-            $('input[name="fenye_input"]').val(pagenumber);
-            page = pagenumber;
-        }
-        if (Number(page) > Number(myTotal)) {
-            $('input[name="fenye_input"]').val(myTotal);
-            page = myTotal;
-        }
-        if (Number(page) < 1) {
-            openLayer('请输入合法页数');
-            $('input[name="fenye_input"]').val('');
-            return;
-        }
-
-        var keyword = getUrlParam('keyword');
-        var material_type = getUrlParam('material_type');
-        var building_code = getUrlParam('building_code');
-        window.location.href = "materialList?keyword=" + keyword + "&page=" + page+'&material_type='+material_type+'&building_code='+building_code;
-    })
 
 
-
-//$('.add_material').find('input[name="effective_date"]').val();
 
 //点击保存新增楼宇信息
 $('#add_material .confirm').click(function(){
@@ -182,7 +48,8 @@ $('#add_material .confirm').click(function(){
     var internal_no = $('.add_material').find('input[name="internal_no"]').val();
     var initial_no = $('.add_material').find('input[name="initial_no"]').val();
 	var remark = $('.add_material').find('input[name="remark"]').val();
-   // var p_bs = add_relation.find('.select_buliding em');
+    var p_bs = $('.add_material').find('.select_buliding em');
+//$('.add_material').find('input[name="effective_date"]').val();
 
 	remark = remark?remark:'';
 	if(!effective_date){
@@ -216,7 +83,7 @@ $('#add_material .confirm').click(function(){
 	else {
 		effective_status = 'false';
 	}
-/*
+
     var person_position_datas = [];
     console.log(p_bs.length);
     for(var i=0;i<p_bs.length;i++){
@@ -227,7 +94,7 @@ $('#add_material .confirm').click(function(){
             code:code
         }
         person_position_datas[i] = person_position_data;
-    }*/
+    }
 
 	$.ajax({
 		url:getRootPath()+'/index.php/Material/insertMaterial',
@@ -239,11 +106,11 @@ $('#add_material .confirm').click(function(){
 			name:name,
 			pcs:pcs,
             material_type:material_type,
-            building_code:building_code,
+            building_code:person_position_datas,
             supplier:supplier,
             internal_no:internal_no,
             initial_no:initial_no,
-			remark:remark
+			remark:remark,
             //parent_code:parent_code_data,
             //territorys:person_position_datas
 		},
@@ -315,9 +182,12 @@ $('.select_parent_code').click(function(){
 
 
 $('.material_type_wrap .ka_drop_list li').click(function(){
+    var page = $('input[name="page"]').val();
     var material_type = $(this).find('a').data('ajax');
+    var building_code = $('input[name="building_codes"]').val();
+    var parent_code = $('input[name="parent_codes"]').val();
     console.log(material_type);
-    window.location.href="materialList?keyword="+search_keyword+"&page="+page+'&material_type='+material_type+"&building_code="+building_code;
+    window.location.href="materialList?keyword="+search_keyword+"&page=1"+'&material_type='+material_type+"&building_code="+building_code+"&parent_code="+parent_code;
 })
 
 

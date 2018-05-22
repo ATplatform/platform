@@ -198,7 +198,7 @@ a:hover { color:#37ACFF; }
 }
 .searc_bar>a {
 	display: block;
-	width: 142px;
+	width: 100px;
 	height: 42px;
 	line-height: 42px;
 	color:#37ACFF;
@@ -206,7 +206,7 @@ a:hover { color:#37ACFF; }
 	border:1px solid #37ACFF;
 	border-radius: 5px;
 	float: left;
-	margin-right:10px;
+	margin-right:14px;
 	text-align: center;
 	position: relative;
 }
@@ -256,17 +256,37 @@ a:hover { color:#37ACFF; }
 	color:#fff;
 	font-size: 24px;
 }
+@media screen and (max-width: 768px) {
+    .search_room  {
+    	width: 300px;
+    }
+    .search_room p {
+    	width: 230px;
+    }
+    .search_room p a {
+    	width: 40px;
+    }
+    .search_room .searc_room_text {
+    	width: 238px;
+    }
+    .search_room button[type="submit"] {
+    	width: 60px;
+    }
+    .search_room .searc_room_text {
+    	padding-left: 10px;
+    }
+    .search_room p a {
+		right: -14px;
+    }
+}
 .searc_bar {
 	height: 74px;
-	padding: 15px 14px;
+	padding: 15px 10px;
 	background-color: #D2EBFF;
-	font-size: 16px;
+	font-size: 14px;
 }
 #treeNav {
-	/*height: auto;
-	width: auto;
-	overflow-x: auto;
-	overflow-y: auto;*/
+	width: 132px;
 	border:none;
 }
 .treeWrap>span {
@@ -283,7 +303,6 @@ a:hover { color:#37ACFF; }
 	color: #37ACFF;
 	background-color: #fff;
 	border: 1px solid #37ACFF;
-	padding-right: 16px;
 }
 .treeWrap>span>ul>li{
 	padding: 8px 0px;
@@ -460,7 +479,6 @@ a:hover { color:#37ACFF; }
 	display: block;
 	padding:0 30px;
 	height: 40px;
-	font-size: 16px;
 	line-height: 40px;
 	color: #37ACFF;
 	background-color: #fff;
@@ -539,6 +557,17 @@ a:hover { color:#37ACFF; }
 }
 .building .person_wrap p>input,.person_wrap .select_wrap input.ka_input3{
 	width: 260px;
+}
+@media screen and (max-width: 768px) {
+	.building .person_wrap p>input,.person_wrap .select_wrap input.ka_input3{
+		width: 180px;
+	}
+	.person_wrap .ka_drop {
+		left: 132px !important;
+	}
+	#write_person .modal-dialog,#add_person .modal-dialog{
+		width: 740px !important;
+	}
 }
 .regular-radio {
 	display: none;
@@ -674,13 +703,13 @@ top: 10%;
 .modal-body .person_wrap {
 	width: 48%;
 }
-.searc_bar .search_wrap span {
-	height: 40px;
-	line-height: 40px;
+#search_wrap span {
+	line-height: 42px;
 }
 #search_wrap .date {
-	width: 130px;
-	height: 40px;
+	width: 100px;
+	height: 42px;
+	line-height: 42px;
 	border:1px solid #37ACFF;
 	border-radius: 5px;
 	padding-left:10px;
@@ -690,12 +719,11 @@ top: 10%;
 }
 .query_wrap {
 	position: relative;
-	margin-left: 10px;
 }
 .search_person_result .query_wrap .model_input,.query_wrap .model_input {
 	width: 100px;
-	height: 40px;
-	line-height: 40px;
+	height: 42px;
+	line-height: 42px;
 	border: 1px solid #37ACFF;
 	color: #37ACFF;
 	border-radius: 5px;
@@ -704,7 +732,7 @@ top: 10%;
 .search_person_result .query_wrap .ka_drop,.query_wrap .ka_drop {
 	width: 100px;
 	left:0;
-	top:40px;
+	top:42px;
 	color:#37ACFF;
 }
 .query_wrap  .ka_drop_list li {
@@ -713,7 +741,7 @@ top: 10%;
 .search_wrap {
 	height: 70px;
 }
-.search_wrap ::-webkit-input-placeholder{ color:#37ACFF; }
+.search_wrap ::-webkit-input-placeholder{ color:#37ACFF; font-size: 14px; }
 .search_person_text {
  	border: 1px solid #A7A7A7;
 	border-radius: 5px;
@@ -780,7 +808,7 @@ top: 10%;
 }
 .treeWrap {
 	display: inline-block;
-	width: 142px;
+	width: 133px;
 	height: 42px;
 	line-height: 42px;
 	color: #37ACFF;
