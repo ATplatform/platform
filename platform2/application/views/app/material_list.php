@@ -36,7 +36,7 @@
         <input type="text" class="begin_date date col_37A fl" name="begin_date" id="datetimeStart" >
 
         <!-- 筛选条件 物资类别-->
-        <div class="material_type_wrap  selectMaterial select_pull_down query_wrap col_37A fl">
+        <div class="Search_Item_wrap  selectMaterial select_pull_down query_wrap col_37A fl">
             <div >
                 <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="物资类别" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly>
             </div>
@@ -90,7 +90,7 @@
     <!-- 物资数据-->
         <div class="table_wrap">
             <div class="oh pt10">
-                <span class="fr add_btn" data-target="#add_material" data-toggle="modal">新增</span>
+                <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增</span>
             </div>
             <table id="table"
                    data-toolbar="#toolbar">
@@ -141,14 +141,14 @@
         </ul>
 
         <!-- 增加物资 -->
-        <div class="modal fade" id="add_material" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade" id="add_Item" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog"  style="width: 630px;">
                 <div class="modal-content model_wrap">
                     <div class="model_content">
                         <div class="building_header">
                             <h4 class="modal-title tac">新增物资信息</h4>
                         </div>
-                        <div class="modal-body building add_material">
+                        <div class="modal-body building add_Item">
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;物资编号：<span class="code" style="margin-left:26px;"></span>
                             </p>
                             <p><span class="red_star">*</span>生效日期：
@@ -244,108 +244,12 @@
     </div>
 </div>
 <input type="hidden" value='<?php echo $page;?>' name="page" />
-<input type="hidden" value='<?php echo $keyword;?>' name="keywords" />
 <input type="hidden" value='<?php echo $pagesize;?>' name="pagesize" />
+<input type="hidden" value='<?php echo $keyword;?>' name="keywords" />
 <input type="hidden" value='<?php echo $material_type;?>' name="material_types" />
 <input type="hidden" value='<?php echo $building_code;?>' name="building_codes" />
 <input type="hidden" value='<?php echo $parent_code;?>' name="parent_codes" />
-<script>
-      //表格数据初始化赋值=> 判断是普通模式还是搜索模式
-    $(function() {
-        var page = $('input[name="page"]').val();
-        var keyword = $('input[name="keywords"]').val()
-        var material_type = $('input[name="material_types"]').val();
-        var building_code = $('input[name="building_codes"]').val();
-        var parent_code = $('input[name="parent_codes"]').val();
-
-
-        if( !$.trim(keyword) && !$.trim(material_type) && !$.trim(building_code)){
-        $('#table').bootstrapTable({
-            method: "get",
-            undefinedText: '/',
-            url: getRootPath() + '/index.php/Material/getMaterialListbyNormal?page=' + page,
-            dataType: 'json',
-            // pagination:true,
-            // pageSize: 15,
-            // pageNumber: 1,
-            // sortName: 'id',
-            // sortOrder: 'desc',
-            responseHandler: function (res) {
-                //用于处理后端返回数据
-                console.log(res);
-                return res;
-            },
-            onLoadSuccess: function (data) {  //加载成功时执行
-                console.log(data);
-            },
-            onLoadError: function () {  //加载失败时执行
-                console.info("加载数据失败");
-            }
-        })
-        }else{
-            $('#table').bootstrapTable({
-                method: "get",
-                undefinedText: '/',
-                url: getRootPath() + '/index.php/Material/getMaterialListbySearch?page=' + page+'&parent_code='+parent_code+'&building_code='+building_code+'&material_type='+material_type+'&keyword='+keyword,
-                dataType: 'json',
-                // pagination:true,
-                // pageSize: 15,
-                // pageNumber: 1,
-                // sortName: 'id',
-                // sortOrder: 'desc',
-                responseHandler: function (res) {
-                    //用于处理后端返回数据
-                    console.log(res);
-                    return res;
-                },
-                onLoadSuccess: function (data) {  //加载成功时执行
-                    console.log(data);
-                },
-                onLoadError: function () {  //加载失败时执行
-                    console.info("加载数据失败");
-                }
-            })
-
-
-
-
-        }
-
-        //点击分页go,判断页面跳转
-        $('.fenye_btn').click(function() {
-            var page = $('input[name="fenye_input"]').val();
-            if (!/^[0-9]*$/.test(page)) {
-                openLayer('请输入数字');
-                $('input[name="fenye_input"]').val('');
-                return;
-            }
-            var pagenumber = Number(page) + "";
-            var myCurrent = $('#current').text().split('/')[0];
-            var myTotal = $('#current').text().split('/')[1];
-            if (page != pagenumber) {
-                $('input[name="fenye_input"]').val(pagenumber);
-                page = pagenumber;
-            }
-            if (Number(page) > Number(myTotal)) {
-                $('input[name="fenye_input"]').val(myTotal);
-                page = myTotal;
-            }
-            if (Number(page) < 1) {
-                openLayer('请输入合法页数');
-                $('input[name="fenye_input"]').val('');
-                return;
-            }
-
-            var keyword = getUrlParam('keyword');
-            var material_type = getUrlParam('material_type');
-            var building_code = getUrlParam('building_code');
-            window.location.href = "materialList?keyword=" + keyword + "&page=" + page+'&material_type='+material_type+'&building_code='+building_code;
-        })
-
-       /* window.location.href = "materialList?keyword=" + keyword + "&page=" + page+'&material_type='+material_type+'&building_code='+building_code;*/
-    })
-</script>
-
+<input type="hidden" value='<?php echo $parent_code;?>' name="parent_codes" />
 <script>
     //////////////////////////////搜索模块的树形地点///////////////////////////////////
         var treeNav_data =<?php echo $treeNav_data?>;
@@ -430,11 +334,6 @@
                 $(this).closest('em').remove();
             })
         })
-
-
-
-
-
 </script>
 
 
