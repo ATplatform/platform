@@ -22,7 +22,11 @@ class Material extends CI_Controller
     }
 
 
-    //数据展示
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////materialList/////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /////////////数据展示///////////////
     public function materialList()
     {
         if (!isset($_SESSION['username'])) {
@@ -31,38 +35,30 @@ class Material extends CI_Controller
         $this->load->model('Building_model');
         $this->load->model('Material_model');
 
+        $username=$_SESSION['username'];
+        $username= $this->Material_model->getUserName($username);
         $treeNav_data = $this->Building_model->getBuildingTreeData();
-
+        $effective_date=$this->input->get('effective_date');
         $parent_code = $this->input->get('parent_code');
         $building_code = $this->input->get('building_code');
         $material_type = $this->input->get('material_type');
         $keyword = $this->input->get('keyword');
-
-        if ($material_type == 101) {
-            $material_type_name = '工程物资';
-        } elseif ($material_type == 102) {
-            $material_type_name = '安防物资';
-        } elseif ($material_type == 103) {
-            $material_type_name = '消防物资';
-        } elseif ($material_type == 104) {
-            $material_type_name = '保洁物资';
-        } elseif ($material_type == 105) {
-            $material_type_name = '办公物资';
-        } else {
-            $material_type_name = '物资类别';
-        }
+        $material_type_name=$this->Material_model->getmaterial_type_name($material_type);
 
         $page = $this->input->get('page');
         $page = $page ? $page : '1';
 
+
         //判断是普通查询还是搜索查询
-        if (empty($parent_code) && empty($building_code) && empty($material_type) && empty($keyword)) {
+        if (empty($parent_code) && empty($building_code) && empty($material_type) && empty($keyword) && empty($effective_date)) {
             $total = $this->Material_model->getMaterialTotalbyNormal($this->user_per_page);
             $dataNormal['nav'] = 'materialList';
             $dataNormal['keyword'] = $keyword;
             $dataNormal['material_type'] = $material_type;
             $dataNormal['building_code'] = $building_code;
             $dataNormal['parent_code'] = $parent_code;
+            $dataNormal['effective_date'] = $effective_date;
+            $dataNormal['username'] = $username;
             $dataNormal['material_type_name'] = $material_type_name;
             $dataNormal['treeNav_data'] = $treeNav_data;
             $dataNormal['total'] = $total;
@@ -70,24 +66,27 @@ class Material extends CI_Controller
             $dataNormal['pagesize'] = $this->user_per_page;
             $this->load->view('app/material_list', $dataNormal);
         } else {
-            $total = $this->Material_model->getMaterialTotalbySearch($parent_code, $building_code, $material_type, $keyword, $this->user_per_page);
+            $total = $this->Material_model->getMaterialTotalbySearch($effective_date,$parent_code, $building_code, $material_type, $keyword, $this->user_per_page);
             $dataSearch['nav'] = 'materialList';
             $dataSearch['keyword'] = $keyword;
             $dataSearch['material_type'] = $material_type;
             $dataSearch['building_code'] = $building_code;
             $dataSearch['parent_code'] = $parent_code;
+            $dataSearch['effective_date'] = $effective_date;
+            $dataSearch['username'] = $username;
             $dataSearch['material_type_name'] = $material_type_name;
             $dataSearch['treeNav_data'] = $treeNav_data;
             $dataSearch['total'] = $total;
             $dataSearch['page'] = $page >= $total ? $total : $page;
             $dataSearch['pagesize'] = $this->user_per_page;
+
             $this->load->view('app/material_list', $dataSearch);
         }
 
     }
 
 
-    //插入数据
+    //////////////////////插入数据/////////////////////
     public function insertMaterial()
     {
         //收集数据
@@ -99,13 +98,14 @@ class Material extends CI_Controller
         $pcs = $this->input->post('pcs');
         $material_type = $this->input->post('material_type');
         $building_code = $this->input->post('building_code');
+        $function = $this->input->post('materialfunction');
         $supplier = $this->input->post('supplier');
         $internal_no = $this->input->post('internal_no');
         $initial_no = $this->input->post('initial_no');
         $remark = $this->input->post('remark');
         $this->load->model('Material_model');
         foreach ($building_code as $row) {
-            $res = $this->Material_model->insertMaterial($code, $effective_date, $effective_status, $name, $pcs, $material_type, $row['code'], $supplier, $internal_no, $initial_no, $remark, $create_time);
+            $res = $this->Material_model->insertMaterial($code, $effective_date, $effective_status, $name, $pcs, $material_type, $row['code'], $function,$supplier, $internal_no, $initial_no, $remark, $create_time);
         }
         if ($res) {
             $data['message'] = '新增物资成功';
@@ -118,7 +118,7 @@ class Material extends CI_Controller
     }
 
 
-    //普通查询数据
+    //////////////////////普通查询数据///////////////
     public function getMaterialListbyNormal()
     {
         $page = $this->input->get('page');
@@ -130,9 +130,10 @@ class Material extends CI_Controller
     }
 
 
-    //搜索查询数据 get方法 查询参数
+    ///////////////////搜索查询数据 get方法 查询参数//////////////
     public function getMaterialListbySearch()
     {
+        $effective_date=$this->input->get('effective_date');
         $parent_code = $this->input->get('parent_code');
         $building_code = $this->input->get('building_code');
         $material_type = $this->input->get('material_type');
@@ -140,13 +141,13 @@ class Material extends CI_Controller
         $page = $this->input->get('page');
         $page = $page ? $page : '1';
         $this->load->model('Material_model');
-        $sqlSearch = $this->Material_model->getMaterialListbySearch($parent_code, $building_code, $material_type, $keyword, $page, $this->user_per_page);
+        $sqlSearch = $this->Material_model->getMaterialListbySearch($effective_date,$parent_code, $building_code, $material_type, $keyword, $page, $this->user_per_page);
         $dataSearch = $this->Material_model->getMaterialList($sqlSearch);
         echo $dataSearch;
     }
 
 
-    //获得目前数据库里的最高序列+1
+   /////////////////获得目前数据库里的最高序列+1
     public function getMaterialCode()
     {
         $this->load->model('Material_model');
@@ -154,12 +155,24 @@ class Material extends CI_Controller
         echo $res;
     }
 
+
+
+
+    //动态获取所有楼宇信息
     public function getMaterialNameCode()
     {
         $this->load->model('Material_model');
         $res = $this->Material_model->getMaterialNameCode();
         echo $res;
     }
+
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////materialUsage/////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     public function materialUsage()
@@ -170,59 +183,109 @@ class Material extends CI_Controller
         $this->load->model('Building_model');
         $this->load->model('Material_model');
 
-        $treeNav_data = $this->Building_model->getBuildingTreeData();
+        $username=$_SESSION['username'];
+        $username= $this->Material_model->getUserName($username);
 
+        $treeNav_data = $this->Building_model->getBuildingTreeData();
+        $effective_date=$this->input->get('effective_date');
         $parent_code = $this->input->get('parent_code');
         $building_code = $this->input->get('building_code');
         $material_type = $this->input->get('material_type');
         $keyword = $this->input->get('keyword');
+        $material_type_name=$this->Material_model->getmaterial_type_name($material_type);
 
-        if ($material_type == 101) {
-            $material_type_name = '工程物资';
-        } elseif ($material_type == 102) {
-            $material_type_name = '安防物资';
-        } elseif ($material_type == 103) {
-            $material_type_name = '消防物资';
-        } elseif ($material_type == 104) {
-            $material_type_name = '保洁物资';
-        } elseif ($material_type == 105) {
-            $material_type_name = '办公物资';
-        } else {
-            $material_type_name = '物资类别';
-        }
+        $mgt_status=$this->input->get('mgt_status');
+
 
         $page = $this->input->get('page');
         $page = $page ? $page : '1';
 
+
         //判断是普通查询还是搜索查询
-        if (empty($parent_code) && empty($building_code) && empty($material_type) && empty($keyword)) {
-            $total = $this->Material_model->getMaterialTotalbyNormal($this->user_per_page);
-            $dataNormal['nav'] = 'materialList';
+        if (empty($parent_code) && empty($building_code) && empty($material_type) && empty($keyword) && empty($effective_date)) {
+            $total = $this->Material_model->getMaterialUsageTotalbyNormal($this->user_per_page);
+            $dataNormal['nav'] = 'materialUsage';
             $dataNormal['keyword'] = $keyword;
             $dataNormal['material_type'] = $material_type;
             $dataNormal['building_code'] = $building_code;
             $dataNormal['parent_code'] = $parent_code;
+            $dataNormal['effective_date'] = $effective_date;
+            $dataNormal['username'] = $username;
             $dataNormal['material_type_name'] = $material_type_name;
             $dataNormal['treeNav_data'] = $treeNav_data;
             $dataNormal['total'] = $total;
             $dataNormal['page'] = $page >= $total ? $total : $page;
             $dataNormal['pagesize'] = $this->user_per_page;
-            $this->load->view('app/material_list', $dataNormal);
+            $this->load->view('app/material_usage', $dataNormal);
         } else {
-            $total = $this->Material_model->getMaterialTotalbySearch($parent_code, $building_code, $material_type, $keyword, $this->user_per_page);
-
-            $dataSearch['nav'] = 'materialList';
+            $total = $this->Material_model->getMaterialTotalbySearch($effective_date,$parent_code, $building_code, $material_type, $keyword, $this->user_per_page);
+            $dataSearch['nav'] = 'materialUsage';
             $dataSearch['keyword'] = $keyword;
             $dataSearch['material_type'] = $material_type;
             $dataSearch['building_code'] = $building_code;
             $dataSearch['parent_code'] = $parent_code;
+            $dataSearch['effective_date'] = $effective_date;
+            $dataSearch['username'] = $username;
             $dataSearch['material_type_name'] = $material_type_name;
             $dataSearch['treeNav_data'] = $treeNav_data;
             $dataSearch['total'] = $total;
             $dataSearch['page'] = $page >= $total ? $total : $page;
             $dataSearch['pagesize'] = $this->user_per_page;
-            $this->load->view('app/material_list', $dataSearch);
+
+            $this->load->view('app/material_usage', $dataSearch);
         }
 
     }
+
+    public function getMaterialUsagebyNormal()
+    {
+        $page = $this->input->get('page');
+        $page = $page ? $page : '1';
+        $this->load->model('Material_model');
+        $sqlNormal = $this->Material_model->getMaterialUsagebyNormal($page, $this->user_per_page);
+        $dataNormal = $this->Material_model->getMaterialUsage($sqlNormal);
+        echo $dataNormal;
+    }
+
+
+public function insertMaterialUsage()
+{
+    //收集数据
+  /*  $create_time = date('Y-m-d h:i:s', time());
+    $effective_date = $this->input->post('effective_date');
+    $effective_status = $this->input->post('effective_status');
+
+
+    $pcs = $this->input->post('pcs');
+    $material_type = $this->input->post('material_type');
+    $building_code = $this->input->post('building_code');
+    $function = $this->input->post('materialfunction');
+    $supplier = $this->input->post('supplier');
+    $internal_no = $this->input->post('internal_no');
+    $initial_no = $this->input->post('initial_no');
+    $remark = $this->input->post('remark');
+ */
+
+
+    $id = $this->input->post('id');
+    $mgt_status=$this->input->post('mgt_status');
+    $person_code=$this->input->post('person_code');
+    $remark = $this->input->post('remark');
+
+    $this->load->model('Material_model');
+  /*  foreach ($building_code as $row) {
+        $res = $this->Material_model->insertMaterial($code, $effective_date, $effective_status, $name, $pcs, $material_type, $row['code'], $function,$supplier, $internal_no, $initial_no, $remark, $create_time);
+    }*/
+    $res = $this->Material_model->insertMaterialUsage($id,$mgt_status,$person_code,$remark);
+    if ($res) {
+        $data['message'] = '新增物资成功';
+    } else {
+        $data['message'] = '新增物资失败';
+    }
+    $total = $this->Material_model->getMaterialTotalbyNormal($this->user_per_page);
+    $data['total'] = $total;
+    print_r(json_encode($data));
+
+}
+
 }

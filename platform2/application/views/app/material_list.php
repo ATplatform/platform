@@ -16,7 +16,7 @@
 		<i></i>艾特智汇谷云平台
 	</div>
 	<div class="top_login_wrap fr">
-		<span class="user"><i></i>180940320</span>
+		<span class="user"><i></i> <span></span></span>
 		|<a class="login_out" href="<?=base_url().'index.php/Login/logout'?>">退出登录</a>
 	</div>
 </div>	
@@ -33,7 +33,7 @@
     <div class="searc_bar search_wrap" id="search_wrap" >
 
         <span class="col_37A fl">筛选条件</span>
-        <input type="text" class="begin_date date col_37A fl" name="begin_date" id="datetimeStart" >
+        <input type="text" class="effective_date date col_37A fl form-control" name="effective_date"  value="<?php echo $effective_date; ?>">
 
         <!-- 筛选条件 物资类别-->
         <div class="Search_Item_wrap  selectMaterial select_pull_down query_wrap col_37A fl">
@@ -90,7 +90,7 @@
     <!-- 物资数据-->
         <div class="table_wrap">
             <div class="oh pt10">
-                <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增</span>
+                <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增物资</span>
             </div>
             <table id="table"
                    data-toolbar="#toolbar">
@@ -102,12 +102,13 @@
                     <th data-title="物资名称" data-align="center" data-field="name" ></th>
                     <th  data-title="地点" data-align="center" data-field="room_name"></th>
                     <th  data-title="数量" data-align="center" data-field="pcs"></th>
-                    <th data-title="启用时间" data-align="center" data-field="effective_date_name"></th>
+                    <th data-title="生效日期" data-align="center" data-field="effective_date_name"></th>
                     <th  data-title="用途" data-align="center" data-field="function"></th>
                     <th  data-title="供应商" data-align="center" data-field="supplier"></th>
                     <th  data-title="内部编号" data-align="center" data-field="internal_no"></th>
                     <th  data-title="出厂编号" data-align="center" data-field="initial_no"></th>
                     <th  data-title="备注" data-align="center" data-field="remark"></th>
+                    <th  data-title="详情" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
                 </tr>
                 </thead>
 
@@ -152,9 +153,9 @@
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;物资编号：<span class="code" style="margin-left:26px;"></span>
                             </p>
                             <p><span class="red_star">*</span>生效日期：
-                                <input type="text" class="effective_date date" name="effective_date" />
+                                <input type="text" class="effective_date date" name="effective_date" value=""/>
                             </p>
-                            <p class="effective_status"><span class="red_star">*</span>状态：
+                           <p class="effective_status"><span class="red_star">*</span>状态：
                                 <span style="margin-left:45px;">
 							<input type="radio" id="radio-1-1" name="radio-1-set" class="regular-radio" checked="">
 							<label for="radio-1-1"></label>
@@ -210,13 +211,15 @@
                             </div>-->
 
                             <p class="select_buliding_wrap">
-                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地点：</span>
+                                <span class="red_star">*</span><span>地点：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                 <a href="javascript:;" id="treeNavWrite" class="treeWrap"><span></span></a>
                                 <span class="select_buliding">
 
 						</span>
                             </p>
-
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用途：
+                                <input type="text" class="model_input function" placeholder="请输入用途"  name="function" />
+                            </p>
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;供应商：
                                 <input type="text" class="model_input supplier" placeholder="请输入供应商"  name="supplier" />
                             </p>
@@ -239,17 +242,87 @@
             </div><!-- /.modal -->
         </div>
 
+
+
+
+
+
+
+
+
+
+        <div class="modal fade" id="person_detail" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog"  style="width: 630px;">
+                <div class="modal-content model_wrap">
+                    <div class="model_content">
+                        <div class="building_header">
+                            <h4 class="modal-title tac">物资详情</h4>
+                        </div>
+                        <div class="modal-body building oh">
+                            <div class="fl person_wrap person_detail">
+
+                               <!-- <p><span class="des">序号：</span>
+                                    <span class="full_name col_37A"></span>
+                                </p>-->
+                                <p><span class="des">物资编号：</span>
+                                    <span class="code col_37A"></span>
+                                </p>
+                                <p><span class="des">生效日期：</span>
+                                    <span class="effective_date_name id_number col_37A"></span>
+                                </p>
+                                <p><span class="des">物资名称：</span>
+                                    <span class="name col_37A"></span>
+                                </p>
+                                <p><span class="des">数量：</span>
+                                    <span class="pcs col_37A"></span>
+                                </p>
+                                <p><span class="des">物资类型：</span>
+                                    <span class="material_type_name col_37A"></span>
+                                </p>
+                                <p><span class="des">地点：</span>
+                                    <span class="room_name col_37A"></span>
+                                </p>
+                                <p><span class="des">用途：</span>
+                                    <span class="materialfunction col_37A"></span>
+                                </p>
+                                <p><span class="des">供应商：</span>
+                                    <span class="supplier col_37A"></span>
+                                </p>
+                                <p><span class="des">内部编号：</span>
+                                    <span class="internal_no col_37A"></span>
+                                </p>
+                                <p><span class="des">出厂编号：</span>
+                                    <span class="initial_no col_37A"></span>
+                                </p>
+                                <p><span class="des">备注：</span>
+                                    <span class="remark col_37A"></span>
+                                </p>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A cancle"  data-dismiss="modal">关闭</span>
+                        </p>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
     </div>
 
     </div>
 </div>
+<input type="hidden" value='<?php echo $username;?>' name="username" />
 <input type="hidden" value='<?php echo $page;?>' name="page" />
 <input type="hidden" value='<?php echo $pagesize;?>' name="pagesize" />
 <input type="hidden" value='<?php echo $keyword;?>' name="keywords" />
 <input type="hidden" value='<?php echo $material_type;?>' name="material_types" />
 <input type="hidden" value='<?php echo $building_code;?>' name="building_codes" />
 <input type="hidden" value='<?php echo $parent_code;?>' name="parent_codes" />
-<input type="hidden" value='<?php echo $parent_code;?>' name="parent_codes" />
+<input type="hidden" value='<?php echo $effective_date;?>' name="effective_dates" />
 <script>
     //////////////////////////////搜索模块的树形地点///////////////////////////////////
         var treeNav_data =<?php echo $treeNav_data?>;
@@ -335,10 +408,92 @@
             })
         })
 </script>
+<script>
+    var page = $('input[name="page"]').val();
+    var keyword = $('input[name="keywords"]').val()
+    var material_type = $('input[name="material_types"]').val();
+    var building_code = $('input[name="building_codes"]').val();
+    var parent_code = $('input[name="parent_codes"]').val();
+    var effective_date = $('input[name="effective_dates"]').val();
+    $('.date').datetimepicker({
+        language:  'zh-CN',
+        format: 'yyyy-mm-dd',
+        weekStart: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 1
+    });
+
+    $('.search_wrap .effective_date').datetimepicker().on('changeDate',function(e){
+        var effective_date=$('input[name="effective_date"]').val();
+console.log(effective_date)
+
+            window.location.href="materialList?keyword="+keyword+"&page=1"+'&material_type='+material_type+"&building_code="+building_code+"&parent_code="+parent_code+"&effective_date="+effective_date;
+
+    })
+</script>
+<script>
+    //信息管理操作
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="detail" href="javascript:void(0)" style="margin-left: 10px;" title="详情">',
+            '<i class=" fa fa-trash-o fa-lg fa-file-text-o"></i>',
+            '</a>',
+
+        ].join('');
+    }
+
+   /* <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+        <th  data-title="物资类型" data-align="center" data-field="material_type_name"></th>
+        <th data-title="物资编号" data-align="center" data-field="code"></th>
+        <th data-title="物资名称" data-align="center" data-field="name" ></th>
+        <th  data-title="地点" data-align="center" data-field="room_name"></th>
+        <th  data-title="数量" data-align="center" data-field="pcs"></th>
+        <th data-title="启用时间" data-align="center" data-field="effective_date_name"></th>
+        <th  data-title="用途" data-align="center" data-field="function"></th>
+        <th  data-title="供应商" data-align="center" data-field="supplier"></th>
+        <th  data-title="内部编号" data-align="center" data-field="internal_no"></th>
+        <th  data-title="出厂编号" data-align="center" data-field="initial_no"></th>
+        <th  data-title="备注" data-align="center" data-field="remark"></th>
+        <th  data-title="详情" data-align="center" data-formatter="operateFormatter"*/
 
 
+    window.operateEvents = {
+        //点击详情时,弹出住户详情框
+        'click .detail': function (e, value, row, index) {
+            $('#person_detail').modal('show');
+            var code = row.code;
+            var material_type_name = row.material_type_name;
+            var name = row.name;
+            var effective_date_name = row.effective_date_name;
+            var room_name = row.room_name;
+            var pcs = row.pcs;
+            var materialfunction = row.function;
+            var supplier = row.supplier;
+            var internal_no = row.internal_no;
+            var initial_no = row.initial_no;
+            var remark = row.remark;
 
 
+            $('#person_detail').find('.code').html(code);
+            $('#person_detail').find('.material_type_name').html(material_type_name);
+            $('#person_detail').find('.name').html(name);
+            $('#person_detail').find('.effective_date_name').html(effective_date_name);
+            $('#person_detail').find('.room_name').html(room_name);
+            $('#person_detail').find('.pcs').html(pcs);
+            $('#person_detail').find('.materialfunction').html(materialfunction);
+            $('#person_detail').find('.remark').html(remark);
+            $('#person_detail').find('.supplier').html(supplier);
+            $('#person_detail').find('.initial_no').html(initial_no);
+            $('#person_detail').find('.internal_no').html(internal_no);
+            $('#person_detail').find('.pcs').html(pcs);
+
+        }
+    }
+
+</script>
 
 <script src='<?=base_url().'application/views/plugin/app/js/material_list.js'?>'></script>
 </body>
