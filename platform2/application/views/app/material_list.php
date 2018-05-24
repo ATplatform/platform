@@ -213,9 +213,7 @@
                             <p class="select_buliding_wrap">
                                 <span class="red_star">*</span><span>地点：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                 <a href="javascript:;" id="treeNavWrite" class="treeWrap"><span></span></a>
-                                <span class="select_buliding">
-
-						</span>
+                                <span class="select_buliding"></span>
                             </p>
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用途：
                                 <input type="text" class="model_input function" placeholder="请输入用途"  name="function" />
@@ -241,7 +239,6 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
         </div>
-
 
 
 
@@ -395,9 +392,18 @@
             imm_name = imm_name ? imm_name : '';
             var html_tmp = "<em id=" + id + " data-room_code=" + room_code + ">" + imm_name + name + "<i class='fa fa-close'></i></em>";
             console.log(html_tmp);
-            if (that.closest('.model_content').find('.select_buliding #' + id).length == 0) {
+         /*   if (that.closest('.model_content').find('.select_buliding #' + id).length == 0) {
                 that.closest('.model_content').find('.select_buliding').append(html_tmp);
             }
+*/
+            if($('.model_content').find('.select_buliding em i').length==0){
+                $('.model_content').find('.select_buliding').append(html_tmp);
+            }
+
+       /*     if($(".person_building_data ul #"+code).length==0){
+                $('.person_building_data ul').append(html);
+            }*/
+
 
         })
 

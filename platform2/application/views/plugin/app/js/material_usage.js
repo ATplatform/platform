@@ -75,16 +75,18 @@ function getMaterialUsagebyNormal(){
 
 
 //对应获得最新的code方法的地址
-function getMaterialCode(){
-    return getRootPath()+'/index.php/Material/getMaterialCode'
+function getMaterialLatestCode(){
+    return getRootPath()+'/index.php/Material/getMaterialLatestCode'
 }
 
 //对应展示楼宇信息方法的地址
-function getMaterialNameCode(){
-	return getRootPath()+'/index.php/Material/getMaterialNameCode'
+function getMaterialBuildingCode(){
+	return getRootPath()+'/index.php/Material/getMaterialBuildingCode'
 }
 
-
+function getMaterialAllCode(){
+    return getRootPath()+'/index.php/Material/getMaterialAllCode'
+}
 
 
 /////////////////////////////////////数据展示功能/////////////////////////////////////////
@@ -192,27 +194,31 @@ $('.Search_Item_wrap .ka_drop_list li').click(function(){
 })
 
 
-
-
-
-
-
-
-
 //////////////////////////////////////////新增功能////////////////////////////////////////
-//点击新增按钮,从后端取得楼宇编号信息
-$('.add_btn').click(function(){
-    $.ajax({
-        url:getMaterialCode(),
-        success:function(data){
-            if(parseInt(data)){
-                var code = parseInt(data) + 1;
-            }else{
-                var code = 1000000;
+
+///获取物资编号
+$.ajax({
+    type:"POST",
+    url:getMaterialAllCode(),
+    dataType:"text",
+    success:function(message){
+        console.log(message)
+        var data=JSON.parse(message);
+        console.log(data);
+        for(var i=0;i<data.length;i++){
+            var d = data[i];
+            var name = d['name'];
+            var code = d['code'];
+            if($(".select_room #"+code).length==0){
+                $('.select_room ul').append('<li><a href="javascript:;" id='+code+' data-ajax='+code+'>'+code+'-'+name+'</a></li>');
             }
-            $('.add_Item .code').html(code);
         }
-    })
+    },
+    error:function(jqXHR,textStatus,errorThrown){
+        // console.log(jqXHR);
+        // console.log(textStatus);
+        // console.log(errorThrown);
+    }
 })
 
 
@@ -221,7 +227,7 @@ $('.add_btn').click(function(){
 $('.select_parent_code').click(function(){
     $.ajax({
         type:"POST",
-        url : getMaterialNameCode(),
+        url : getMaterialBuildingCode(),
         dataType:"json",
         success:function(data){
 
@@ -241,61 +247,78 @@ $('.select_parent_code').click(function(){
 
 //点击保存新增楼宇信息
 $('#add_Item .confirm').click(function(){
-    var person_code = $('.add_Item ').find('.person_building_data li').data('code');
-	var id = $('.add_Item ').find('input[name="id"]').val();
-	//var effective_date = $('.add_Item').find('input[name="mgt_status"]').val();
+    //var person_code = $('.add_Item ').find('.person_building_data li').data('code');
+	var material_code = $('.add_Item ').find('input[name="material_code"]').val().split("-")[0];
+	var effective_date = $('.add_Item').find('input[name="effective_date"]').val();
 	var remark = $('.add_Item').find('input[name="remark"]').val();
     var mgt_status = $('.add_Item').find("input[type='radio']:checked").val();
+    //人员信息
+    var p_bs = $(this).closest('.modal-content').find('.person_building_data ul li');
 
-	/*var pcs = $('.add_Item').find('input[name="pcs"]').val();
-    var material_type = $('.add_Item').find('input[name="material_type"]').data('ajax');
-    var building_code = $('.add_Item').find('input[name="building_code"]').data('ajax');
-	var remark = $('.add_Item').find('input[name="remark"]').val();*/
+    var person_codes = [];
+    for(var i=0;i<p_bs.length;i++){
+        var p_b = p_bs.eq(i);
+        var person_code = p_b.data('code');
+        person_code = {
+            person_code:person_code,
+        }
+        person_codes[i] = person_code;
+    }
 
-    //$('.add_material').find('input[name="effective_date"]').val();
 
-	//remark = remark?remark:'';
-	/*if(!effective_date){
-		openLayer('请输入生效日期');
-		return;
-	}
-	if(!name){
-		openLayer('请输入物资名称');
-		return;
-	}
-	if(!pcs){
-		openLayer('请输入物资数量');
-		return;
-	}
-	if(!material_type){
-		openLayer('请选择物资类型');
-		return;
-	}
-   if(p_bs.length==0){
-        openLayer('请选择至少一个地点!');
+
+    if(!material_code){
+        openLayer('请输入物资编号');
         return;
     }
-	//判断有效无效
-	if($('.add_Item .effective_status input[type="radio"]').eq(0).is(':checked')){
-		effective_status = 'true';
-	}
-	else {
-		effective_status = 'false';
-	}*/
-
-	//把building_code和parent_code导入服务器
 
 
+    if(!effective_date){
+        openLayer('请输入生效日期');
+        return;
+    }
+    if(!mgt_status){
+        openLayer('请输入生效日期');
+        return;
+    }
+    if(!person_code){
+        openLayer('请输入物资使用人');
+        return;
+    }
+
+
+           /* $.ajax({
+                url : getRootPath()+'/index.php/Building/getMaterialCode',
+                dataType:"text",
+                success:function(message){
+                    var data=JSON.parse(message);
+                    console.log(data);
+                    for(var i=0;i<data.length;i++){
+                        var d = data[i];
+                        var name = d['name'];
+                        var code = d['code'];
+                        if($(".select_room #"+code).length==0){
+                            $('.select_room ul').append('<li><a href="javascript:;" id='+code+' data-ajax='+code+'>'+code+'-'+name+'</a></li>');
+                        }
+                    }
+                },
+                error:function(jqXHR,textStatus,errorThrown){
+                    // console.log(jqXHR);
+                    // console.log(textStatus);
+                    // console.log(errorThrown);
+                }
+            })
+    */
 
     //传数据
 	$.ajax({
 		url:insertMaterial(),
 		method:'post',
 		data:{
-			id:id,
-			//effective_date:effective_date,
+            material_code:material_code,
+			effective_date:effective_date,
             remark:remark,
-            person_code:person_code,
+            person_codes:person_codes,
             mgt_status:mgt_status
 			/*pcs:pcs,
             material_type:material_type,
@@ -320,9 +343,11 @@ $('#add_Item .confirm').click(function(){
 			});
 		},
 		error:function(){
-			console.log('新增物资出错');
+			console.log('新增物资状态失败');
 		}
 	})
+
+
 
 })
 
@@ -376,9 +401,26 @@ $(document).on('click','.search_person_results .single_person .add',function(){
     var first_name = single_person.data('first_name');
     var code = single_person.data('code');
 
-    var html = '<li data-last_name="'+last_name+'" data-first_name="'+first_name+'" data-code="'+code +'" id="'+code+'"><span class="full_name">'+full_name+'</span><span class="id_number">'+id_number+'</span></li>';
-    //只能添加一个物业人员
-    if($(".person_building_data ul li").length==0){
+
+    var html = '<li data-last_name="'+last_name+'" data-first_name="'+first_name+'" data-code="'+code +'" id="'+code+'"><span class="full_name">'+full_name+'</span><span class="id_number">'+id_number+'</span> <i class="fa fa-close"></i></li>';
+    //不重复添加
+   if($(".person_building_data ul #"+code).length==0){
         $('.person_building_data ul').append(html);
     }
+    //只能添加一个物业人员
+  /*  if($(".person_building_data ul li").length==0){
+        $('.person_building_data ul').append(html);
+
+    }*/
+  /*  if (that.closest('.model_content').find('.select_buliding #' + id).length == 0) {
+        that.closest('.model_content').find('.select_buliding').append(html_tmp);
+    }
+*/
 })
+$(function () {
+    //点击删除当前节点
+    $('.search_person_wrap').on('click', '.person_building_data ul li', function () {
+        $(this).remove();
+    })
+})
+

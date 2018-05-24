@@ -75,13 +75,13 @@ function getMaterialListbyNormal(){
 
 
 //对应获得最新的code方法的地址
-function getMaterialCode(){
-    return getRootPath()+'/index.php/Material/getMaterialCode'
+function getMaterialLatestCode(){
+    return getRootPath()+'/index.php/Material/getMaterialLatestCode'
 }
 
 //对应展示楼宇信息方法的地址
-function getMaterialNameCode(){
-	return getRootPath()+'/index.php/Material/getMaterialNameCode'
+function getMaterialBuildingCode(){
+	return getRootPath()+'/index.php/Material/getMaterialBuildingCode'
 }
 
 
@@ -202,12 +202,12 @@ $('.Search_Item_wrap .ka_drop_list li').click(function(){
 //点击新增按钮,从后端取得楼宇编号信息
 $('.add_btn').click(function(){
     $.ajax({
-        url:getMaterialCode(),
+        url:getMaterialLatestCode(),
         success:function(data){
             if(parseInt(data)){
                 var code = parseInt(data) + 1;
             }else{
-                var code = 1000000;
+                var code = 1000001;
             }
             $('.add_Item .code').html(code);
         }
@@ -220,7 +220,7 @@ $('.add_btn').click(function(){
 $('.select_parent_code').click(function(){
     $.ajax({
         type:"POST",
-        url : getMaterialNameCode(),
+        url : getMaterialBuildingCode(),
         dataType:"json",
         success:function(data){
 

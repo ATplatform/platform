@@ -18,10 +18,19 @@ class Material_model extends CI_Model
     public function getMaterialListbyNormal($page, $rows)
     {
         $start = ($page - 1) * $rows;
-        $sql = "select * from village_material M";
-        $sql .= " LEFT JOIN village_building_stage AS bs ON M.building_code = bs.room_code";
-        $sql .= " where M.effective_status=true";
-        $sql = $sql . " ORDER BY code ASC limit ".$rows." offset ".$start;
+        $sql = "select * from village_material M
+   LEFT JOIN village_building_stage AS bs ON M.building_code = bs.room_code
+      where M.effective_status=true
+    AND  m.effective_date IN (
+		SELECT
+			MAX (effective_date)
+		FROM
+			village_material a
+		GROUP BY
+			a.code
+)
+";
+        $sql .=  " ORDER BY code ASC limit ".$rows." offset ".$start;
         return $sql;
     }
 
@@ -33,6 +42,7 @@ class Material_model extends CI_Model
 m.*,
 b.effective_date as b_effective_date,
 b.code as b_code,
+b.id,
 b.parent_code as b_parent_code,
 bs.room,
 bs.immeuble,
@@ -46,19 +56,15 @@ bs.room_code
 WHERE
 	M .building_code = bs.room_code
     AND bs.room_code = b.code
-    AND b.effective_date = (
-    SELECT
-		MAX (effective_date)
-	FROM
-		village_building bb
-	WHERE
-		b. NAME = bb. NAME
-        AND bb.parent_code = b.parent_code
-        AND bs.room_code = b.code
-        AND bb.effective_status = TRUE
+    AND  b.id IN (
+		SELECT
+			MAX (id)
+		FROM
+			village_building
+		GROUP BY
+			code
 )
-AND b.effective_status = TRUE
-AND M.effective_status=true";
+";
         if(!empty($effective_date)){
             $sql .= " and M.effective_date<='$effective_date' ";
         }
@@ -75,7 +81,7 @@ AND M.effective_status=true";
                 $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
             }
             if (preg_match("/^\d*$/", $keyword)) {
-                $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no=$keyword or M.initial_no=$keyword";
+                $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
             }
         }
         $sql = $sql . " ORDER BY b.code ASC limit ".$rows." offset ".$start;
@@ -155,7 +161,7 @@ AND M.effective_status=true";
 
 
     ////////////////////普通查询数据数目的数据总条数///////////////
-    public function getMaterialTotalbyNormal( $rows)
+    public function getMaterialListTotalbyNormal( $rows)
     {
         $sql="select count(*) as count from village_material";
         $q = $this->db->query($sql); //自动转义
@@ -173,7 +179,7 @@ AND M.effective_status=true";
     }
 
     //////////////////////搜索查询数据数目的数据总条数/////////////
-    public function getMaterialTotalbySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $rows)
+    public function getMaterialListTotalbySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $rows)
     {
         $sql="select count(*) as count from (";
 
@@ -195,7 +201,8 @@ AND M.effective_status=true";
 
         if (!empty($keyword)) {
             if (preg_match("/^\d*$/", $keyword)) {
-                $sql .= " and M.code=$keyword or M.material_type=$keyword";
+                $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
+                // or M.material_type like '%$keyword%'
             }
             if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
                 $sql .= " and concat(M.supplier,M.remark,M.function,M.name) like '%$keyword%'";
@@ -255,11 +262,33 @@ AND M.effective_status=true";
 
 
 
+public function UpdateMaterialList ($code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark, $create_time)
+{
+
+        $sql = "INSERT INTO village_material (code,effective_date,effective_status,name,pcs,material_type,building_code,function,supplier,internal_no,initial_no,remark,create_time) values (".
+
+            $this->db->escape($code).", ".
+            $this->db->escape($effective_date).", ".
+            $this->db->escape($effective_status).", ".
+            $this->db->escape($name).", ".
+            $this->db->escape($pcs).", ".
+            $this->db->escape($material_type).",".
+            $this->db->escape($building_code).", ".
+            $this->db->escape($function).", ".
+            $this->db->escape($supplier).", ".
+            $this->db->escape($internal_no).", ".
+            $this->db->escape($initial_no).", ".
+            $this->db->escape($remark).", ".
+            $this->db->escape($create_time).")"
+        ;
+        $this->db->query($sql);
+        return $this->db->affected_rows();
 
 
+}
     //////////////////////////////////一些辅助功能///////////////////////////////////
     //获排名最前的数据
-    public function getMaterialCode()
+    public function getMaterialLatestCode()
     {
         $sql = "select code from village_material order by code desc limit 1";
         $query = $this->db->query($sql);
@@ -269,7 +298,7 @@ AND M.effective_status=true";
 
 
     //动态获取所有楼宇信息
-    public function getMaterialNameCode()
+    public function getMaterialBuildingCode()
     {
         $sql = "select code,name from village_building GROUP BY code,name order by code";
         $q = $this->db->query($sql);
@@ -313,10 +342,48 @@ AND M.effective_status=true";
     return $material_type_name;
     }
 
+////////////////////////////////////获取物资编码//////////////////////
+    public function getMaterialAllCode()
+    {
+        $sql = "SELECT code,name FROM village_material where create_time in (select max(create_time) from village_material  group by code )
+
+	";
+        $q = $this->db->query($sql);
+        if ($q->num_rows() > 0) {
+            $arr = $q->result_array();
+            $json = json_encode($arr);
+            return $json;
+        }
+    }
+
+////////////////////////////////////根据物资状态表是否报废更新物资列表//////////////////////
+  /*  public function UpdateMaterialList($material_code,$effective_date){
+/*        $sql="
+UPDATE village_material
+SET effective_status = FALSE
+FROM
+	village_mtr_mgt
+WHERE
+	(village_mtr_mgt.mgt_status = 104
+OR village_mtr_mgt.mgt_status = 105)
+AND village_mtr_mgt.material_code = village_material.code";
+        $this->db->query($sql);*/
+
+
+  /*  $sql = " INSERT INTO village_material (material_code,mgt_status,effective_date,person_code,remark,create_time) values (".
+
+            $this->db->escape($material_code).", ".
+            $this->db->escape($mgt_status).", ".
+            $this->db->escape($effective_date).", ".
+            $this->db->escape($person_code).", ".
+            $this->db->escape($remark).", ".
+            $this->db->escape($create_time).")";
+        $this->db->query($sql);
+        return $this->db->affected_rows();
 
 
 
-
+    }*/
 
 
 
@@ -337,21 +404,31 @@ m.name,
 m.material_type,
 m.pcs,
 m.building_code,
-m.effective_date as m_effective_date
+m.effective_date as m_effective_date,
+p.code,
+p.first_name,
+p.last_name
+
 
      FROM
 	village_mtr_mgt AS mtr,
 	village_material AS m,
-	village_building_stage AS bs
+	village_building_stage AS bs,
+	village_person as p
 	
 WHERE
-	mtr.id=m.code 
+	mtr.material_code=m.code 
 and m.building_code=bs.room_code
-and mtr.id=bs.room_code";
+and mtr.person_code=p.code
+
+
+
+";
        /* $sql .= " LEFT JOIN village_building_stage AS bs ON M.building_code = bs.room_code";
         $sql .= " where M.effective_status=true";*/
-        $sql = $sql . " ORDER BY id ASC limit ".$rows." offset ".$start;
+        $sql = $sql . " order by case when mgt_status = 103  then 0 else 1 end , material_code ASC limit ".$rows." offset ".$start;
         return $sql;
+
     }
 
 
@@ -369,17 +446,26 @@ m.name,
 m.material_type,
 m.pcs,
 m.building_code,
-m.effective_date as m_effective_date
+m.effective_date as m_effective_date,
+p.code,
+p.first_name,
+p.last_name
+
 
      FROM
 	village_mtr_mgt AS mtr,
 	village_material AS m,
-	village_building_stage AS bs
+	village_building_stage AS bs,
+	village_person as p
 	
 WHERE
-	mtr.id=m.code 
+	mtr.material_code=m.code 
 and m.building_code=bs.room_code
-and mtr.id=bs.room_code
+and mtr.person_code=p.code
+
+
+
+
 ) as ss";
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {
@@ -434,6 +520,7 @@ and mtr.id=bs.room_code
                             $arr[$key]["mgt_status_name"] = "外借/外调";
                         }elseif ($value2 == '104'){
                             $arr[$key]["mgt_status_name"] = "已报废";
+
                         }elseif ($value2 == '105'){
                             $arr[$key]["mgt_status_name"] = "已消耗";
                         }
@@ -447,6 +534,9 @@ and mtr.id=bs.room_code
                     if ($key2 == 'remark') {
                         $arr[$key][$key2] = $value2 ? $value2 : '无';
                     }
+                    if ($key2 == 'person_code'){
+                        $arr[$key]['person_name'] = $value['last_name'].$value['first_name'];
+                    }
 
                 }
             }
@@ -456,18 +546,203 @@ and mtr.id=bs.room_code
         return false;
     }
 
-public function insertMaterialUsage($id,$mgt_status,$person_code,$remark)
+public function insertMaterialUsage($material_code,$mgt_status,$effective_date,$person_code,$remark,$create_time)
 {
 
 
-        $sql = " INSERT INTO village_mtr_mgt (id,mgt_status,person_code,remark) values (".
+        $sql = " INSERT INTO village_mtr_mgt (material_code,mgt_status,effective_date,person_code,remark,create_time) values (".
 
-            $this->db->escape($id).", ".
+            $this->db->escape($material_code).", ".
             $this->db->escape($mgt_status).", ".
+            $this->db->escape($effective_date).", ".
             $this->db->escape($person_code).", ".
-            $this->db->escape($remark).")";
+            $this->db->escape($remark).", ".
+            $this->db->escape($create_time).")";
         $this->db->query($sql);
         return $this->db->affected_rows();
+    }
+
+
+
+    public function  getMaterialListbyUsage($material_code)
+    {
+        $sql = " SELECT
+  mtr.material_code,
+	mtr.effective_date,
+  m.*
+
+FROM village_material as m,
+ village_mtr_mgt as mtr
+where
+mtr.material_code=$material_code and
+mtr.material_code=m.code
+and
+
+	m.effective_date IN (
+		SELECT
+			MAX (effective_date)
+		FROM
+			village_material
+		GROUP BY
+			code=$material_code
+	)";
+
+        $q = $this->db->query($sql);
+        $row = $q->row_array();
+
+        return $row;
+
+
+    }
+
+
+
+
+    public function getMaterialUsagebySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $page, $rows)
+    {
+        $start = ($page - 1) * $rows;
+        $sql = "		SELECT
+				mtr.*, bs.*, M .code,
+				M . NAME,
+				M .material_type,
+				M .pcs,
+				M .building_code,
+				M .effective_date AS m_effective_date,
+				P .code,
+				P .first_name,
+				P .last_name,
+				b.parent_code,
+				b.code AS b_code,
+				b.id
+			FROM
+				village_mtr_mgt AS mtr,
+				village_material AS M,
+				village_building_stage AS bs,
+				village_person AS P,
+				village_building AS b
+			WHERE
+				mtr.material_code = M .code
+			AND M .building_code = bs.room_code
+			AND mtr.person_code = P .code
+			AND b.code = M .building_code
+			AND b.id = (
+		SELECT
+			MAX (id)
+			FROM
+			village_building A
+            WHERE mtr.material_code = M .code
+            AND M .building_code = bs.room_code	
+            AND A.code = M .building_code
+)
+
+
+";
+        if(!empty($effective_date)){
+            $sql .= " and mtr.effective_date<='$effective_date' ";
+        }
+
+        if(!empty($material_type)){
+            $sql .= " and M.material_type=$material_type ";
+        }
+        if(!empty($building_code)){
+            $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
+        }
+
+
+        if (!empty($keyword)) {
+                if (preg_match("/^\d*$/", $keyword)) {
+                    $sql .= " and M.code=$keyword or M.material_type=$keyword  ";
+                    // or M.material_type like '%$keyword%'
+                }
+                 if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
+                     $sql .= " and concat(mtr.remark,M.name,p.last_name,p.first_name) like '%$keyword%'";
+                 }
+        }
+
+        $sql = $sql . " ORDER BY mtr.material_code ASC limit ".$rows." offset ".$start;
+        return $sql;
+    }
+
+
+
+    public function getMaterialUsageTotalbySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $rows)
+    {
+        $sql="select count(*) as count from (";
+
+        $sql .= "
+		SELECT
+				mtr.*, bs.*, M .code,
+				M . NAME,
+				M .material_type,
+				M .pcs,
+				M .building_code,
+				M .effective_date AS m_effective_date,
+				P .code,
+				P .first_name,
+				P .last_name,
+				b.parent_code,
+				b.code AS b_code,
+				b.id
+			FROM
+				village_mtr_mgt AS mtr,
+				village_material AS M,
+				village_building_stage AS bs,
+				village_person AS P,
+				village_building AS b
+			WHERE
+				mtr.material_code = M .code
+			AND M .building_code = bs.room_code
+			AND mtr.person_code = P .code
+			AND b.code = M .building_code
+			AND b.id = (
+		SELECT
+			MAX (id)
+			FROM
+			village_building A
+            WHERE mtr.material_code = M .code
+            AND M .building_code = bs.room_code	
+            AND A.code = M .building_code
+					
+)
+
+";
+
+        if(!empty($effective_date)){
+            $sql .= " and mtr.effective_date<='$effective_date' ";
+        }
+
+
+        if(!empty($material_type)){
+            $sql .= " and M.material_type=$material_type ";
+        }
+        if(!empty($building_code)){
+            $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code)";
+        }
+
+        if (!empty($keyword)) {
+            if (preg_match("/^\d*$/", $keyword)) {
+                $sql .= " and M.code=$keyword or M.material_type=$keyword  ";
+                // or M.material_type like '%$keyword%'
+            }
+           /* if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
+                $sql .= " and concat(M.supplier,M.remark,M.function,M.name) like '%$keyword%'";
+            }*/
+        }
+        $sql.=" ) as sss";
+        $q = $this->db->query($sql); //自动转义
+
+        if ($q->num_rows() > 0) {
+            $row = $q->row_array();
+            $items = $row["count"];
+
+            if ($items % $rows != 0) {
+                $total = (int)((int)$items / $rows) + 1;
+            } else {
+                $total = $items / $rows;
+            }
+            return $total;
+        }
+        return 0;
     }
 
 
