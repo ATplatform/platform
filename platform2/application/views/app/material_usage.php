@@ -117,22 +117,22 @@
         <!--物资数据分页处理-->
         <ul class="pager" page='<? $page ?>'>
             <?php
-            $first=base_url().'index.php/Material/materialUsage?page=1&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
+            $first=base_url().'index.php/Material/materialUsage?page=1&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword.'&effective_date='.$effective_date;
             echo  " <li><a href='".$first."' id='first'>首 页</a></li>";
             if($page>1) {
-                $url=base_url().'index.php/Material/materialUsage?page='.($page-1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
+                $url=base_url().'index.php/Material/materialUsage?page='.($page-1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword.'&effective_date='.$effective_date;
                 echo "<li class=\"active\"><a href='".$url."' id='prev' >上一页</a></li>";
             }else{
                 echo "<li class=\"disabled\" ><a id='prev' href='javascript:void(0);'>上一页</a></li>";
             }
             echo "<li class=\"disabled\"><a href='javascript:void(0);' id='current'>".$page."/".$total."</a></li>";
             if($page<$total) {
-                $url=base_url().'index.php/Material/materialUsage?page='.($page+1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
+                $url=base_url().'index.php/Material/materialUsage?page='.($page+1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword.'&effective_date='.$effective_date;
                 echo "<li class=\"active\"><a href='".$url."' id='next' >下一页</a></li>";
             }else{
                 echo "<li class=\"disabled\"  ><a  id='next' href='javascript:void(0);'>下一页</a></li>";
             }
-            $last=base_url().'index.php/Material/materialUsage?page='.$total.'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
+            $last=base_url().'index.php/Material/materialUsage?page='.$total.'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword.'&effective_date='.$effective_date;
             echo  " <li><a href='".$last."' id='last'>尾 页</a></li>";
             echo  " <li><input type='text' class='fenye_input' name='fenye_input'  /> </li>";
             echo  "<li><a href='#'  class='fenye_btn'>GO</a></li>";

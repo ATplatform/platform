@@ -494,6 +494,13 @@ and M .effective_date = (
 where M.code=A.code
 	GROUP BY
 		code)
+and mtr.effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_mtr_mgt A
+where mtr.material_code=A.material_code
+	GROUP BY
+		material_code)
 
 ";
        /* $sql .= " LEFT JOIN village_building_stage AS bs ON M.building_code = bs.room_code";
@@ -540,7 +547,13 @@ and M .effective_date = (
 where M.code=A.code
 	GROUP BY
 		code)
-
+and mtr.effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_mtr_mgt A
+where mtr.material_code=A.material_code
+	GROUP BY
+		material_code)
 ) as ss";
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {
@@ -741,6 +754,13 @@ mtr.effective_date=$effective_date
             WHERE mtr.material_code = M .code
             AND M .building_code = bs.room_code	
             AND A.code = M .building_code
+            and M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code)
 )
 
 
@@ -810,6 +830,13 @@ mtr.effective_date=$effective_date
             WHERE mtr.material_code = M .code
             AND M .building_code = bs.room_code	
             AND A.code = M .building_code
+            and M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code)
 					
 )
 

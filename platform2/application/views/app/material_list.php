@@ -120,22 +120,22 @@
         <!--物资数据分页处理-->
         <ul class="pager" page='<? $page ?>'>
             <?php
-            $first=base_url().'index.php/Material/materialList?page=1&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
+            $first=base_url().'index.php/Material/materialList?page=1&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword.'&effective_date='.$effective_date;
             echo  " <li><a href='".$first."' id='first'>首 页</a></li>";
             if($page>1) {
-                $url=base_url().'index.php/Material/materialList?page='.($page-1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
+                $url=base_url().'index.php/Material/materialList?page='.($page-1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword.'&effective_date='.$effective_date;
                 echo "<li class=\"active\"><a href='".$url."' id='prev' >上一页</a></li>";
             }else{
                 echo "<li class=\"disabled\" ><a id='prev' href='javascript:void(0);'>上一页</a></li>";
             }
             echo "<li class=\"disabled\"><a href='javascript:void(0);' id='current'>".$page."/".$total."</a></li>";
             if($page<$total) {
-                $url=base_url().'index.php/Material/materialList?page='.($page+1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
+                $url=base_url().'index.php/Material/materialList?page='.($page+1).'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword.'&effective_date='.$effective_date;
                 echo "<li class=\"active\"><a href='".$url."' id='next' >下一页</a></li>";
             }else{
                 echo "<li class=\"disabled\"  ><a  id='next' href='javascript:void(0);'>下一页</a></li>";
             }
-            $last=base_url().'index.php/Material/materialList?page='.$total.'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword;
+            $last=base_url().'index.php/Material/materialList?page='.$total.'&parent_code='.$parent_code.'&building_code='.$building_code.'&material_type='.$material_type.'&keyword='.$keyword.'&effective_date='.$effective_date;
             echo  " <li><a href='".$last."' id='last'>尾 页</a></li>";
             echo  " <li><input type='text' class='fenye_input' name='fenye_input'  /> </li>";
             echo  "<li><a href='#'  class='fenye_btn'>GO</a></li>";
@@ -265,6 +265,9 @@
                                 <p><span class="des">物资编号：</span>
                                     <span class="code col_37A"></span>
                                 </p>
+                                <p><span class="des">物资状态：</span>
+                                    <span class="effective_status_name col_37A"></span>
+                                </p>
                                 <p><span class="des">生效日期：</span>
                                     <span class="effective_date_name id_number col_37A"></span>
                                 </p>
@@ -280,6 +283,7 @@
                                 <p><span class="des">地点：</span>
                                     <span class="room_name col_37A"></span>
                                 </p>
+
                                 <p><span class="des">用途：</span>
                                     <span class="materialfunction col_37A"></span>
                                 </p>
@@ -483,9 +487,10 @@ console.log(effective_date)
             var internal_no = row.internal_no;
             var initial_no = row.initial_no;
             var remark = row.remark;
-
+            var effective_status_name= row.effective_status_name;
 
             $('#person_detail').find('.code').html(code);
+            $('#person_detail').find('.effective_status_name').html(effective_status_name);
             $('#person_detail').find('.material_type_name').html(material_type_name);
             $('#person_detail').find('.name').html(name);
             $('#person_detail').find('.effective_date_name').html(effective_date_name);
