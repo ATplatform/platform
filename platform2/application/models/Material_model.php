@@ -18,17 +18,22 @@ class Material_model extends CI_Model
     public function getMaterialListbyNormal($page, $rows)
     {
         $start = ($page - 1) * $rows;
-        $sql = "select * from village_material M
-   LEFT JOIN village_building_stage AS bs ON M.building_code = bs.room_code
-      where M.effective_status=true
-    AND  m.effective_date IN (
-		SELECT
-			MAX (effective_date)
-		FROM
-			village_material a
-		GROUP BY
-			a.code
-)
+        $sql = "SELECT
+	*
+FROM
+	village_material M
+LEFT JOIN village_building_stage AS bs ON M .building_code = bs.room_code
+WHERE
+	M .building_code = bs.room_code 
+and M .effective_status=true
+and M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code
+) 
 ";
         $sql .=  " ORDER BY code ASC limit ".$rows." offset ".$start;
         return $sql;
@@ -49,12 +54,13 @@ bs.immeuble,
 bs.room_code
 
 
-            FROM
-	village_material AS M,
-	village_building_stage AS bs,
-	village_building AS b
+FROM village_material AS M 
+left join 	village_building_stage AS bs on M .building_code = bs.room_code
+left join 		village_building AS b on M .building_code = b.code
+
 WHERE
 	M .building_code = bs.room_code
+and M .building_code = b.code
     AND bs.room_code = b.code
     AND  b.id IN (
 		SELECT
@@ -63,6 +69,7 @@ WHERE
 			village_building
 		GROUP BY
 			code
+
 )
 ";
         if(!empty($effective_date)){
@@ -163,7 +170,26 @@ WHERE
     ////////////////////普通查询数据数目的数据总条数///////////////
     public function getMaterialListTotalbyNormal( $rows)
     {
-        $sql="select count(*) as count from village_material";
+        $sql="select count(*) as count from (";
+        $sql.="
+SELECT
+	*
+FROM
+	village_material M
+LEFT JOIN village_building_stage AS bs ON M .building_code = bs.room_code
+WHERE
+	M .building_code = bs.room_code 
+and M .effective_status=true
+and M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code
+		
+)";
+        $sql.=" ) as sss";
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {
             $row = $q->row_array();
@@ -183,9 +209,34 @@ WHERE
     {
         $sql="select count(*) as count from (";
 
-        $sql .= "select *,M.code as m_code, M.name as m_name,M.effective_date as m_effective_date,M.effective_status as m_effective_status from village_material M left join village_building_stage AS bs ON M .building_code = bs.room_code";
-        $sql .= " LEFT JOIN village_building AS b ON M.building_code = b.code";
-        $sql .= " where b.effective_date =(select max(effective_date) from village_building A where b. name=A.name and b.parent_code=A.parent_code and M.building_code=bs.room_code and bs.room_code=b.code  and A.effective_status=TRUE) and b.effective_status = TRUE";
+        $sql .= "SELECT
+m.*,
+b.effective_date as b_effective_date,
+b.code as b_code,
+b.id,
+b.parent_code as b_parent_code,
+bs.room,
+bs.immeuble,
+bs.room_code
+
+
+FROM village_material AS M 
+left join 	village_building_stage AS bs on M .building_code = bs.room_code
+left join 		village_building AS b on M .building_code = b.code
+
+WHERE
+	M .building_code = bs.room_code
+and M .building_code = b.code
+    AND bs.room_code = b.code
+    AND  b.id IN (
+		SELECT
+			MAX (id)
+		FROM
+			village_building
+		GROUP BY
+			code
+)
+";
 
         if(!empty($effective_date)){
             $sql .= " and M.effective_date<='$effective_date' ";
@@ -345,7 +396,20 @@ public function UpdateMaterialList ($code, $effective_date, $effective_status, $
 ////////////////////////////////////获取物资编码//////////////////////
     public function getMaterialAllCode()
     {
-        $sql = "SELECT code,name FROM village_material where create_time in (select max(create_time) from village_material  group by code )
+        $sql = "SELECT code,name,effective_date FROM village_material as M where
+ M .effective_status=true
+and M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code
+)
+
+
+
+
 
 	";
         $q = $this->db->query($sql);
@@ -355,6 +419,10 @@ public function UpdateMaterialList ($code, $effective_date, $effective_status, $
             return $json;
         }
     }
+
+
+
+
 
 ////////////////////////////////////根据物资状态表是否报废更新物资列表//////////////////////
   /*  public function UpdateMaterialList($material_code,$effective_date){
@@ -409,24 +477,28 @@ p.code,
 p.first_name,
 p.last_name
 
-
-     FROM
-	village_mtr_mgt AS mtr,
-	village_material AS m,
-	village_building_stage AS bs,
-	village_person as p
+ 
+FROM village_mtr_mgt AS mtr 
+LEFT JOIN 	village_material AS m on 	mtr.material_code=m.code 
+left join 	village_building_stage AS bs on m.building_code=bs.room_code 
+left join 	village_person as p on mtr.person_code=p.code
 	
 WHERE
 	mtr.material_code=m.code 
 and m.building_code=bs.room_code
 and mtr.person_code=p.code
-
-
+and M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code)
 
 ";
        /* $sql .= " LEFT JOIN village_building_stage AS bs ON M.building_code = bs.room_code";
         $sql .= " where M.effective_status=true";*/
-        $sql = $sql . " order by case when mgt_status = 103  then 0 else 1 end , material_code ASC limit ".$rows." offset ".$start;
+        $sql = $sql . " order by case when mtr.mgt_status = 103  then 0 else 1 end , mtr.material_code ASC limit ".$rows." offset ".$start;
         return $sql;
 
     }
@@ -451,20 +523,23 @@ p.code,
 p.first_name,
 p.last_name
 
-
-     FROM
-	village_mtr_mgt AS mtr,
-	village_material AS m,
-	village_building_stage AS bs,
-	village_person as p
+ 
+FROM village_mtr_mgt AS mtr 
+LEFT JOIN 	village_material AS m on 	mtr.material_code=m.code 
+left join 	village_building_stage AS bs on m.building_code=bs.room_code 
+left join 	village_person as p on mtr.person_code=p.code
 	
 WHERE
 	mtr.material_code=m.code 
 and m.building_code=bs.room_code
 and mtr.person_code=p.code
-
-
-
+and M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code)
 
 ) as ss";
         $q = $this->db->query($sql); //自动转义
@@ -594,6 +669,39 @@ and
 
 
     }
+
+    public function  defineUsageEffective($material_code,$effective_date)
+    {
+
+        $effective_date=$this->db->escape($effective_date);
+        $sql="select count(*) as count from (";
+        $sql.= " SELECT
+  mtr.material_code,
+	mtr.effective_date
+FROM 
+ village_mtr_mgt as mtr
+where
+mtr.material_code=$material_code and
+mtr.effective_date=$effective_date 
+
+	";
+       $sql.=" ) as sss";
+        $q = $this->db->query($sql);
+        $res=$q->row_array();
+         if ($res["count"] > 0) {
+
+             return true;
+         }else{
+             return false;
+
+         }
+    }
+
+
+
+
+
+
 
 
 

@@ -284,11 +284,15 @@ public function insertMaterialUsage()
   /*  foreach ($building_code as $row) {
         $res = $this->Material_model->insertMaterial($code, $effective_date, $effective_status, $name, $pcs, $material_type, $row['code'], $function,$supplier, $internal_no, $initial_no, $remark, $create_time);
     }*/
-
-
+    $flag =$this->Material_model-> defineUsageEffective($material_code,$effective_date);
+    if ($flag) {
+        $data['message'] = '同一物资每天只能修改一次';
+        $data['datebug']=true;
+    } else {
+        $data['datebug']=false;
     foreach($person_codes as $row){
 
-         $this->Material_model->insertMaterialUsage($material_code,$mgt_status,$effective_date,$row['person_code'],$remark,$create_time);
+        $result=$this->Material_model->insertMaterialUsage($material_code,$mgt_status,$effective_date,$row['person_code'],$remark,$create_time);
 
         if($mgt_status==104 || $mgt_status==105  ){
 
@@ -304,6 +308,7 @@ public function insertMaterialUsage()
         $data['message'] = '新增物资状态成功';
     } else {
         $data['message'] = '新增物资状态失败';
+    }
     }
     $total = $this->Material_model->getMaterialUsageTotalbyNormal($this->user_per_page);
     $data['total'] = $total;

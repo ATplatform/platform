@@ -327,6 +327,9 @@ $('#add_Item .confirm').click(function(){
 		success:function(data){
 			var data = JSON.parse(data);
 			//成功之后自动刷新页面
+
+
+            if(!data.datebug){
 			layer.open({
 				  type: 1,
 				  title: false,
@@ -340,11 +343,29 @@ $('#add_Item .confirm').click(function(){
                      /* asynRefreshPage(getRootPath()+'/index.php/Material/materialList','Material/getMaterialList',table,data.total,'&keyword='+search_keyword);*/
                       materialUsage();
 				  }
-			});
+			})
+
+            }
+            else {
+                layer.open({
+                    type: 1,
+                    title: false,
+                    //打开关闭按钮
+                    closeBtn: 1,
+                    shadeClose: false,
+                    skin: 'tanhcuang',
+                    content: data.message,
+                    cancel: function(){
+                        //右上角关闭回调
+                        /* asynRefreshPage(getRootPath()+'/index.php/Material/materialList','Material/getMaterialList',table,data.total,'&keyword='+search_keyword);*/
+                        //materialUsage();
+                    }
+                })
+            }
 		},
-		error:function(){
-			console.log('新增物资状态失败');
-		}
+		error:function() {
+console.log("新增物资出错")
+        }
 	})
 
 

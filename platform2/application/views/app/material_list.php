@@ -102,6 +102,7 @@
                     <th data-title="物资名称" data-align="center" data-field="name" ></th>
                     <th  data-title="地点" data-align="center" data-field="room_name"></th>
                     <th  data-title="数量" data-align="center" data-field="pcs"></th>
+                    <th  data-title="状态" data-align="center" data-field="effective_status_name"></th>
                     <th data-title="生效日期" data-align="center" data-field="effective_date_name"></th>
                     <th  data-title="用途" data-align="center" data-field="function"></th>
                     <th  data-title="供应商" data-align="center" data-field="supplier"></th>
@@ -338,12 +339,13 @@
             var page = $('input[name="page"]').val();
             var keyword = $('input[name="keywords"]').val()
             var material_type = $('input[name="material_types"]').val();
+            var effective_date=$('input[name="effective_dates"]').val();
 
             console.log(111);
             console.log(node);
             console.log(building_code);
             console.log(parent_code);
-           window.location.href="materialList?building_code="+building_code+"&parent_code="+parent_code+"&page="+page+'&material_type='+material_type+'&keyword='+keyword;
+           window.location.href="materialList?building_code="+building_code+"&parent_code="+parent_code+"&page="+page+'&material_type='+material_type+'&keyword='+keyword+'&effective_date='+effective_date;
         })
 
 
