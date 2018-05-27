@@ -1,0 +1,9 @@
+INSERT INTO "village_building_stage" VALUES ('和正·智汇谷', NULL, NULL, NULL, NULL, NULL, 100001);
+INSERT INTO "village_building_stage" VALUES (NULL, NULL, '3', NULL, NULL, '1303', 100009);
+INSERT INTO "village_building_stage" VALUES (NULL, NULL, '3', NULL, NULL, '201', 100003);
+INSERT INTO "village_building_stage" VALUES (NULL, NULL, '3', NULL, NULL, '204', 100006);
+INSERT INTO "village_building_stage" VALUES (NULL, NULL, '3', NULL, NULL, '205', 100007);
+INSERT INTO "village_building_stage" VALUES (NULL, NULL, '3', NULL, NULL, NULL, 100002);
+INSERT INTO "village_building_stage" VALUES (NULL, NULL, '4', NULL, NULL, NULL, 100008);
+INSERT INTO "village_building_stage" VALUES (NULL, NULL, '5', NULL, NULL, '201', 100011);
+INSERT INTO "village_building_stage" VALUES (NULL, NULL, '5', NULL, NULL, NULL, 100010);
