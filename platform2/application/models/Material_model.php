@@ -313,30 +313,7 @@ and M .building_code = b.code
 
 
 
-public function UpdateMaterialList ($code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark, $create_time)
-{
 
-        $sql = "INSERT INTO village_material (code,effective_date,effective_status,name,pcs,material_type,building_code,function,supplier,internal_no,initial_no,remark,create_time) values (".
-
-            $this->db->escape($code).", ".
-            $this->db->escape($effective_date).", ".
-            $this->db->escape($effective_status).", ".
-            $this->db->escape($name).", ".
-            $this->db->escape($pcs).", ".
-            $this->db->escape($material_type).",".
-            $this->db->escape($building_code).", ".
-            $this->db->escape($function).", ".
-            $this->db->escape($supplier).", ".
-            $this->db->escape($internal_no).", ".
-            $this->db->escape($initial_no).", ".
-            $this->db->escape($remark).", ".
-            $this->db->escape($create_time).")"
-        ;
-        $this->db->query($sql);
-        return $this->db->affected_rows();
-
-
-}
     //////////////////////////////////一些辅助功能///////////////////////////////////
     //获排名最前的数据
     public function getMaterialLatestCode()
@@ -425,35 +402,30 @@ where M.code=A.code
 
 
 ////////////////////////////////////根据物资状态表是否报废更新物资列表//////////////////////
-  /*  public function UpdateMaterialList($material_code,$effective_date){
-/*        $sql="
-UPDATE village_material
-SET effective_status = FALSE
-FROM
-	village_mtr_mgt
-WHERE
-	(village_mtr_mgt.mgt_status = 104
-OR village_mtr_mgt.mgt_status = 105)
-AND village_mtr_mgt.material_code = village_material.code";
-        $this->db->query($sql);*/
+    public function UpdateMaterialList ($code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark, $create_time)
+    {
 
+        $sql = "INSERT INTO village_material (code,effective_date,effective_status,name,pcs,material_type,building_code,function,supplier,internal_no,initial_no,remark,create_time) values (".
 
-  /*  $sql = " INSERT INTO village_material (material_code,mgt_status,effective_date,person_code,remark,create_time) values (".
-
-            $this->db->escape($material_code).", ".
-            $this->db->escape($mgt_status).", ".
+            $this->db->escape($code).", ".
             $this->db->escape($effective_date).", ".
-            $this->db->escape($person_code).", ".
+            $this->db->escape($effective_status).", ".
+            $this->db->escape($name).", ".
+            $this->db->escape($pcs).", ".
+            $this->db->escape($material_type).",".
+            $this->db->escape($building_code).", ".
+            $this->db->escape($function).", ".
+            $this->db->escape($supplier).", ".
+            $this->db->escape($internal_no).", ".
+            $this->db->escape($initial_no).", ".
             $this->db->escape($remark).", ".
-            $this->db->escape($create_time).")";
+            $this->db->escape($create_time).")"
+        ;
         $this->db->query($sql);
         return $this->db->affected_rows();
 
 
-
-    }*/
-
-
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////

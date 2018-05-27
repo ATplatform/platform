@@ -166,7 +166,7 @@ class Material extends CI_Controller
         echo $res;
     }
 
-
+    //动态获取所有物资的编号
     public function getMaterialAllCode()
     {
         $this->load->model('Material_model');

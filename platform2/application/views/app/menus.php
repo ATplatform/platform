@@ -61,13 +61,31 @@
                 <li <?php if($nav=="materialUsage") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Material/materialUsage'?>"><i class="glyphicon"></i>物资使用管理</a></li>
             </ul>
         </li>
-	<li>
-		<a href="#">
-			<i class="icon fa fa-file"></i>
-			工单管理
-			<span class="pull-right fa fa-chevron-right"></span> 
-		</a>
-	</li>
+
+
+        <li>
+            <a href="#Workorder" class="nav-header " data-toggle="collapse"
+                <?php if($nav=="workorderList") {echo 'aria-expanded="true"';} ?>
+            >
+
+                <i class="icon fa fa-gift"></i>
+                工单管理
+                <span class="pull-right fa fa-chevron-right"></span>
+            </a>
+            <ul id="Workorder"
+                <?php
+                if($nav=="workorderList"){
+                    echo 'class="collapse secondmenu in"';
+                }
+                else{
+                    echo 'class="collapse secondmenu"';
+                }
+                ?>
+                aria-expanded="true" >
+                <li <?php if($nav=="workorderList") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Workorder/workorderList'?>"><i class="glyphicon"></i>工单记录</a></li>
+
+            </ul>
+        </li>
 	<li>
 		<a href="#">
 			<i class="icon fa fa-envelope"></i>
