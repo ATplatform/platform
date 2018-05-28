@@ -30,7 +30,7 @@
 <!--<?php echo 'x'; ?>-->
     <div class="col-md-10 col-xm-12 pl0 pr0">
     <!-- 筛选条件 -->
-    <div class="searc_bar search_wrap" id="search_wrap" >
+    <div class="searc_bar search_wrap materialsearch_wrap" id="search_wrap" >
 
         <span class="col_37A fl">筛选条件</span>
         <input type="text" class="effective_date date col_37A fl form-control" name="effective_date"  value="<?php echo $now=date('Y-m-d H:i:s',time()); ?>" >
@@ -38,7 +38,7 @@
         <!-- 筛选条件 物资类别-->
         <div class="Search_Item_wrap  selectMaterial select_pull_down query_wrap col_37A fl">
             <div >
-                <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="物资类别" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly>
+                <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="物资类型" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly>
             </div>
             <div class="ka_drop"  style="display: none;">
                 <div class="ka_drop_list">
@@ -48,7 +48,7 @@
                         <li><a href="javascript:;" data-ajax="103">消防物资</a></li>
                         <li><a href="javascript:;" data-ajax="104">保洁物资</a></li>
                         <li><a href="javascript:;" data-ajax="105">办公物资</a></li>
-                        <li><a href="javascript:;" data-ajax="">取消</a></li>
+
                     </ul>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                 </div>
             </div>
         </div>-->
-     <a href="javascript:;" id="treeNav" class="treeWrap"><span></span></a>
+     <a href="javascript:;" id="treeNav" class="treeWrap treeWrapSearch"><span></span></a>
 
      <!--   <a id="sendSelect" href="javascript:;">yes</a>-->
         <!-- 筛选条件 查找-->
@@ -102,14 +102,14 @@
                     <th data-title="物资名称" data-align="center" data-field="name" ></th>
                     <th  data-title="地点" data-align="center" data-field="room_name"></th>
                     <th  data-title="数量" data-align="center" data-field="pcs"></th>
-                    <th  data-title="状态" data-align="center" data-field="effective_status_name"></th>
+                   <th  data-title="状态" data-align="center" data-field="effective_status_name"></th>
                     <th data-title="生效日期" data-align="center" data-field="effective_date_name"></th>
                     <th  data-title="用途" data-align="center" data-field="function"></th>
                     <th  data-title="供应商" data-align="center" data-field="supplier"></th>
                     <th  data-title="内部编号" data-align="center" data-field="internal_no"></th>
                     <th  data-title="出厂编号" data-align="center" data-field="initial_no"></th>
                     <th  data-title="备注" data-align="center" data-field="remark"></th>
-                    <th  data-title="详情" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
+                    <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
                 </tr>
                 </thead>
 
@@ -374,7 +374,6 @@
         $('#treeNavAdd>span,#treeNavWrite>span').on("select_node.jstree", function (e, node) {
 
             $('#treeNavWrite>span').jstree("close_all")
-
 
             var arr = node.node.id.split("_");
             var parent_code = arr[0];

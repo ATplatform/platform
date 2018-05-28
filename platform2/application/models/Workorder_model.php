@@ -105,11 +105,11 @@ and M .building_code = b.code
             foreach ($arr as $key => $value) {
                 foreach ($value as $key2 => $value2) {
                     if ($key2 == "material_type") {
-                        if ($value2 == "101") {$arr[$key]['material_type_name'] = '工程物资';}
-                        if ($value2 == "102") {$arr[$key]['material_type_name'] = '安防物资';}
-                        if ($value2 == "103") {$arr[$key]['material_type_name'] = '消防物资';}
-                        if ($value2 == "104") {$arr[$key]['material_type_name'] = '保洁物资';}
-                        if ($value2 == "105") {$arr[$key]['material_type_name'] = '办公物资';}
+                        if ($value2 == "101") {$arr[$key]['material_type_name'] = '自动创建巡检工单';}
+                        if ($value2 == "102") {$arr[$key]['material_type_name'] = '自动创建异常处理工单';}
+                        if ($value2 == "103") {$arr[$key]['material_type_name'] = '物业人员创建工单';}
+                        if ($value2 == "104") {$arr[$key]['material_type_name'] = '住户创建工单';}
+
                     }
                     if ($key2 == 'room') {
                         if( (( empty($arr[$key]['room']) ) && empty($arr[$key]['immeuble']) ) ){
@@ -355,17 +355,15 @@ and M .building_code = b.code
     public function getmaterial_type_name($material_type)
     {
         if ($material_type == 101) {
-            $material_type_name = '工程物资';
+            $material_type_name = '自动创建巡检工单';
         } elseif ($material_type == 102) {
-            $material_type_name = '安防物资';
+            $material_type_name = '自动创建异常处理工单';
         } elseif ($material_type == 103) {
-            $material_type_name = '消防物资';
+            $material_type_name = '物业人员创建工单';
         } elseif ($material_type == 104) {
-            $material_type_name = '保洁物资';
-        } elseif ($material_type == 105) {
-            $material_type_name = '办公物资';
+            $material_type_name = '住户创建工单';
         } else {
-            $material_type_name = '物资类别';
+            $material_type_name = '创建类型';
         }
     return $material_type_name;
     }

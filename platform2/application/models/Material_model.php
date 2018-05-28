@@ -63,6 +63,7 @@ WHERE
 	M .building_code = bs.room_code
 and M .building_code = b.code
     AND bs.room_code = b.code
+    and m.effective_status=true 
     AND  b.id IN (
 		SELECT
 			MAX (id)
@@ -77,7 +78,7 @@ and M .building_code = b.code
 		village_material A
 where M.code=A.code
 	GROUP BY
-		code
+		code 
 ) 	
 
 
@@ -101,7 +102,7 @@ where M.code=A.code
                 $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
             }
         }
-        $sql = $sql . " ORDER BY b.code ASC limit ".$rows." offset ".$start;
+        $sql = $sql . " ORDER BY m.code ASC limit ".$rows." offset ".$start;
         return $sql;
     }
 
@@ -238,6 +239,7 @@ WHERE
 	M .building_code = bs.room_code
 and M .building_code = b.code
     AND bs.room_code = b.code
+    and m.effective_status=true 
     AND  b.id IN (
 		SELECT
 			MAX (id)
@@ -383,7 +385,7 @@ where M.code=A.code
         } elseif ($material_type == 105) {
             $material_type_name = '办公物资';
         } else {
-            $material_type_name = '物资类别';
+            $material_type_name = '物资类型';
         }
     return $material_type_name;
     }
@@ -476,7 +478,7 @@ left join 	village_person as p on mtr.person_code=p.code
 WHERE
 	mtr.material_code=m.code 
 and m.building_code=bs.room_code
-and mtr.person_code=p.code
+
 and M .effective_date = (
 	SELECT  MAX(A.effective_date)
 	FROM
@@ -529,7 +531,7 @@ left join 	village_person as p on mtr.person_code=p.code
 WHERE
 	mtr.material_code=m.code 
 and m.building_code=bs.room_code
-and mtr.person_code=p.code
+
 and M .effective_date = (
 	SELECT  MAX(A.effective_date)
 	FROM
@@ -613,8 +615,11 @@ where mtr.material_code=A.material_code
                         $arr[$key][$key2] = $value2 ? $value2 : '无';
                     }
                     if ($key2 == 'person_code'){
-                        $arr[$key]['person_name'] = $value['last_name'].$value['first_name'];
+
+                        $arr[$key]['person_name'] = $value['last_name'].$value['first_name']? $value['last_name'].$value['first_name'] : '无';
                     }
+
+
 
                 }
             }
@@ -680,13 +685,17 @@ and
         $sql="select count(*) as count from (";
         $sql.= " SELECT
   mtr.material_code,
-	mtr.effective_date
+  mtr.effective_date,
+  m.effective_date,
+  m.code
 FROM 
  village_mtr_mgt as mtr
+left join  village_material as m on mtr.material_code=m.code 
 where
-mtr.material_code=$material_code and
-mtr.effective_date=$effective_date 
-
+(mtr.material_code=m.code and
+mtr.material_code=$material_code )and
+( mtr.effective_date=$effective_date  or 
+$effective_date=m.effective_date )
 	";
        $sql.=" ) as sss";
         $q = $this->db->query($sql);
@@ -823,10 +832,10 @@ where M.code=A.code
             and M .effective_date = (
 	SELECT  MAX(A.effective_date)
 	FROM
-		village_material A
-where M.code=A.code
-	GROUP BY
-		code)
+		        village_material A
+              where M.code=A.code
+	          GROUP BY
+		      code)
 					
 )
 

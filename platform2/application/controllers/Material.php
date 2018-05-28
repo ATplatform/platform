@@ -104,6 +104,7 @@ class Material extends CI_Controller
         $initial_no = $this->input->post('initial_no');
         $remark = $this->input->post('remark');
         $this->load->model('Material_model');
+
         foreach ($building_code as $row) {
             $res = $this->Material_model->insertMaterial($code, $effective_date, $effective_status, $name, $pcs, $material_type, $row['code'], $function,$supplier, $internal_no, $initial_no, $remark, $create_time);
         }
@@ -290,6 +291,10 @@ public function insertMaterialUsage()
         $data['datebug']=true;
     } else {
         $data['datebug']=false;
+
+
+
+
     foreach($person_codes as $row){
 
         $result=$this->Material_model->insertMaterialUsage($material_code,$mgt_status,$effective_date,$row['person_code'],$remark,$create_time);

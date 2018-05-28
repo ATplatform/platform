@@ -50,7 +50,7 @@ function getMaterialListbySearch(){
 }
 
 //搜索模式页面跳转
-function PageChangeToMaterialList(){
+function PageChangeToMaterialList(page){
     window.location.href = "materialList?keyword=" + search_keyword + "&page=" + page+'&material_type='+search_material_type+'&building_code='+search_building_code+'&parent_code='+search_parent_code+'&effective_date='+search_effective_date;
 }
 
@@ -144,32 +144,36 @@ function getMaterialBuildingCode(){
     }
 
     //点击分页go,判断页面跳转
-    $('.fenye_btn').click(function() {
-        var page = $('input[name="fenye_input"]').val();
-        var pagenumber = Number(page) + "";
+//点击分页go,判断页面跳转
+$('.fenye_btn').click(function(){
+    var page = $('input[name="fenye_input"]').val();
+    if(!/^[0-9]*$/.test(page)){
+        openLayer('请输入数字');
+        $('input[name="fenye_input"]').val('');
+        return;
+    }
+    var pagenumber=Number(page)+"";
+    var myCurrent = $('#current').text().split('/')[0];
+    var myTotal = $('#current').text().split('/')[1];
+    if(page!=pagenumber)
+    {
+        $('input[name="fenye_input"]').val(pagenumber);
+        page=pagenumber;
+    }
+    if(Number(page)>Number(myTotal))
+    {
+        $('input[name="fenye_input"]').val(myTotal);
+        page=myTotal;
+    }
+    if(Number(page)<1)
+    {
+        openLayer('请输入合法页数');
+        $('input[name="fenye_input"]').val('');
+        return;
+    }
 
-        var myTotal = $('#current').text().split('/')[1];
-        if (!/^[0-9]*$/.test(page)) {
-            openLayer('请输入数字');
-            $('input[name="fenye_input"]').val('');
-            return;
-        }
-        if (page != pagenumber) {
-            $('input[name="fenye_input"]').val(pagenumber);
-            page = pagenumber;
-        }
-        if (Number(page) > Number(myTotal)) {
-            $('input[name="fenye_input"]').val(myTotal);
-            page = myTotal;
-        }
-        if (Number(page) < 1) {
-            openLayer('请输入合法页数');
-            $('input[name="fenye_input"]').val('');
-            return;
-        }
-
-
-        PageChangeToMaterialList();
+console.log(page)
+        PageChangeToMaterialList(page);
     })
 
 
@@ -266,8 +270,14 @@ $('#add_Item .confirm').click(function(){
 	}
 	if(!pcs){
 		openLayer('请输入物资数量');
+
 		return;
 	}
+    if(!/^[0-9]*$/.test(pcs))
+    {
+        openLayer('物资数量请输入数字');
+        return;
+    }
 	if(!material_type){
 		openLayer('请选择物资类型');
 		return;

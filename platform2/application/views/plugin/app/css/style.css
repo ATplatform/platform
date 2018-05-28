@@ -214,7 +214,9 @@ a:hover { color:#37ACFF; }
 	margin-right:14px;
 	text-align: center;
 	position: relative;
+
 }
+
 .searc_bar>a.active {
 	background-color: #37ACFF;
 	color:#fff;
@@ -671,6 +673,8 @@ top: 10%;
 .person_wrap .ka_drop {
 	left:122px;
 }
+
+
 .ka_drop {
     width: 160px;
     position: absolute;
@@ -732,6 +736,7 @@ top: 10%;
 .query_wrap {
 	position: relative;
 }
+
 .search_person_result .query_wrap .model_input,.query_wrap .model_input {
 	width: 100px;
 	height: 42px;
@@ -741,6 +746,7 @@ top: 10%;
 	border-radius: 5px;
 	text-align: center;
 }
+
 .search_person_result .query_wrap .ka_drop,.query_wrap .ka_drop {
 	width: 100px;
 	left:0;
@@ -871,3 +877,35 @@ top: 10%;
     box-shadow: none;
     border-radius: 0;
 }
+
+
+/*           workorder部分修改           */
+
+.treeWrapSearch {
+	margin-left:10px;
+}
+
+
+/*
+
+.selectWorkorder  .query_wrap .ka_drop {
+	width: 150px;
+	left: 0;
+	top: 42px;
+	color: #37ACFF;
+}
+*/
+
+
+/*
+.selectWorkorder .ka_drop {
+	width: 160px;
+	position: absolute;
+	top: 48px;
+	left:107px;
+	background: #f8f8f8;
+	border: 1px solid #e6e6e6;
+	display: none;
+	z-index: 1003;
+}
+*/

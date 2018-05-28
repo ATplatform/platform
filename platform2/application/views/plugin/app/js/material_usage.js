@@ -50,7 +50,7 @@ function getMaterialUsagebySearch(){
 }
 
 //搜索模式页面跳转
-function PageChangeToMaterialUsage(){
+function PageChangeToMaterialUsage(page){
     window.location.href = "materialUsage?keyword=" + search_keyword + "&page=" + page+'&material_type='+search_material_type+'&building_code='+search_building_code+'&parent_code='+search_parent_code+'&effective_date='+search_effective_date;
 }
 
@@ -145,33 +145,36 @@ function getMaterialAllCode(){
         })
     }
 
-    //点击分页go,判断页面跳转
-    $('.fenye_btn').click(function() {
-        var page = $('input[name="fenye_input"]').val();
-        var pagenumber = Number(page) + "";
+//点击分页go,判断页面跳转
+$('.fenye_btn').click(function(){
+    var page = $('input[name="fenye_input"]').val();
+    if(!/^[0-9]*$/.test(page)){
+        openLayer('请输入数字');
+        $('input[name="fenye_input"]').val('');
+        return;
+    }
+    var pagenumber=Number(page)+"";
+    var myCurrent = $('#current').text().split('/')[0];
+    var myTotal = $('#current').text().split('/')[1];
+    if(page!=pagenumber)
+    {
+        $('input[name="fenye_input"]').val(pagenumber);
+        page=pagenumber;
+    }
+    if(Number(page)>Number(myTotal))
+    {
+        $('input[name="fenye_input"]').val(myTotal);
+        page=myTotal;
+    }
+    if(Number(page)<1)
+    {
+        openLayer('请输入合法页数');
+        $('input[name="fenye_input"]').val('');
+        return;
+    }
 
-        var myTotal = $('#current').text().split('/')[1];
-        if (!/^[0-9]*$/.test(page)) {
-            openLayer('请输入数字');
-            $('input[name="fenye_input"]').val('');
-            return;
-        }
-        if (page != pagenumber) {
-            $('input[name="fenye_input"]').val(pagenumber);
-            page = pagenumber;
-        }
-        if (Number(page) > Number(myTotal)) {
-            $('input[name="fenye_input"]').val(myTotal);
-            page = myTotal;
-        }
-        if (Number(page) < 1) {
-            openLayer('请输入合法页数');
-            $('input[name="fenye_input"]').val('');
-            return;
-        }
 
-
-        PageChangeToMaterialUsage();
+        PageChangeToMaterialUsage(page);
     })
 
 
@@ -209,6 +212,7 @@ $.ajax({
             var d = data[i];
             var name = d['name'];
             var code = d['code'];
+
             if($(".select_room #"+code).length==0){
                 $('.select_room ul').append('<li><a href="javascript:;" id='+code+' data-ajax='+code+'>'+code+'-'+name+'</a></li>');
             }
@@ -255,18 +259,24 @@ $('#add_Item .confirm').click(function(){
     //人员信息
     var p_bs = $(this).closest('.modal-content').find('.person_building_data ul li');
 
+if(p_bs.length==0){
+    console.log(p_bs)
+    var person_codes=[];
+    var person_code = {
+        person_code: '0',
+    }
+    person_codes[0]=person_code;
+}else {
     var person_codes = [];
-    for(var i=0;i<p_bs.length;i++){
+    for (var i = 0; i < p_bs.length; i++) {
         var p_b = p_bs.eq(i);
         var person_code = p_b.data('code');
         person_code = {
-            person_code:person_code,
+            person_code: person_code,
         }
         person_codes[i] = person_code;
     }
-
-
-
+}
     if(!material_code){
         openLayer('请输入物资编号');
         return;
@@ -281,34 +291,8 @@ $('#add_Item .confirm').click(function(){
         openLayer('请输入生效日期');
         return;
     }
-    if(!person_code){
-        openLayer('请输入物资使用人');
-        return;
-    }
 
 
-           /* $.ajax({
-                url : getRootPath()+'/index.php/Building/getMaterialCode',
-                dataType:"text",
-                success:function(message){
-                    var data=JSON.parse(message);
-                    console.log(data);
-                    for(var i=0;i<data.length;i++){
-                        var d = data[i];
-                        var name = d['name'];
-                        var code = d['code'];
-                        if($(".select_room #"+code).length==0){
-                            $('.select_room ul').append('<li><a href="javascript:;" id='+code+' data-ajax='+code+'>'+code+'-'+name+'</a></li>');
-                        }
-                    }
-                },
-                error:function(jqXHR,textStatus,errorThrown){
-                    // console.log(jqXHR);
-                    // console.log(textStatus);
-                    // console.log(errorThrown);
-                }
-            })
-    */
 
     //传数据
 	$.ajax({
@@ -391,6 +375,7 @@ $('.search_person_wrap .search_person_btn').click(function(){
                 data = JSON.parse(data);
                 for(var i=0;i<data.length;i++){
                     var d = data[i];
+
                     var html = '<div class="single_person" data-last_name="'+d['last_name']+'" data-first_name="'+d['first_name']+'" data-code="'+d['code']+'"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a>'
                         +'<div class="fl">'
                         +'<span class="name">'+d['full_name']+'</span>'

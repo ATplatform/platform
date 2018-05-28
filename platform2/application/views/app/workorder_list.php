@@ -30,25 +30,23 @@
 <!--<?php echo 'x'; ?>-->
     <div class="col-md-10 col-xm-12 pl0 pr0">
     <!-- 筛选条件 -->
-    <div class="searc_bar search_wrap" id="search_wrap" >
+    <div class="searc_bar search_wrap " id="search_wrap" >
 
         <span class="col_37A fl">筛选条件</span>
         <input type="text" class="effective_date date col_37A fl form-control" name="effective_date"  value="<?php echo $now=date('Y-m-d H:i:s',time()); ?>">
 
-        <!-- 筛选条件 物资类别-->
-        <div class="Search_Item_wrap  selectMaterial select_pull_down query_wrap col_37A fl">
+        <!-- 筛选条件 创建类型-->
+        <div class="Search_Item_wrap   select_pull_down query_wrap col_37A fl">
             <div >
-                <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="物资类别" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly>
+                <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="创建类型" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly style="width:150px;" >
             </div>
-            <div class="ka_drop"  style="display: none;">
-                <div class="ka_drop_list">
-                    <ul>
-                        <li><a href="javascript:;" data-ajax="101">工程物资</a></li>
-                        <li><a href="javascript:;" data-ajax="102">安防物资</a></li>
-                        <li><a href="javascript:;" data-ajax="103">消防物资</a></li>
-                        <li><a href="javascript:;" data-ajax="104">保洁物资</a></li>
-                        <li><a href="javascript:;" data-ajax="105">办公物资</a></li>
-                        <li><a href="javascript:;" data-ajax="">取消</a></li>
+            <div class="ka_drop"  style="display: none;width:150px;">
+                <div class="ka_drop_list" >
+                    <ul >
+                        <li><a href="javascript:;" data-ajax="101">自动创建巡检工单</a></li>
+                        <li><a href="javascript:;" data-ajax="102">自动创建异常处理工单</a></li>
+                        <li><a href="javascript:;" data-ajax="103">物业人员创建工单</a></li>
+                        <li><a href="javascript:;" data-ajax="104">住户创建工单</a></li>
                     </ul>
                 </div>
             </div>
@@ -69,7 +67,30 @@
                 </div>
             </div>
         </div>-->
-     <a href="javascript:;" id="treeNav" class="treeWrap"><span></span></a>
+
+<!--筛选地点-->
+     <a href="javascript:;" id="treeNav" class="treeWrap treeWrapSearch"><span></span></a>
+
+<!--筛选工单类型-->
+        <div class="Search_Item_wrap   select_pull_down query_wrap col_37A fl">
+            <div >
+                <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="工单类型" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly style="width:100px;" >
+            </div>
+            <div class="ka_drop"  style="display: none;width:100px;">
+                <div class="ka_drop_list" >
+                    <ul >
+                        <li><a href="javascript:;" data-ajax="101">安防</a></li>
+                        <li><a href="javascript:;" data-ajax="102">环境-绿化</a></li>
+                        <li><a href="javascript:;" data-ajax="103">环境-保洁</a></li>
+                        <li><a href="javascript:;" data-ajax="104">维修</a></li>
+                        <li><a href="javascript:;" data-ajax="105">电梯</a></li>
+                        <li><a href="javascript:;" data-ajax="106">消防</a></li>
+                        <li><a href="javascript:;" data-ajax="107">其他</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
 
      <!--   <a id="sendSelect" href="javascript:;">yes</a>-->
         <!-- 筛选条件 查找-->
@@ -89,27 +110,26 @@
 
     <!-- 物资数据-->
         <div class="table_wrap">
-            <div class="oh pt10">
+          <!--  <div class="oh pt10">
                 <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增物资</span>
-            </div>
+            </div>-->
             <table id="table"
                    data-toolbar="#toolbar">
                 <thead>
                 <tr>
                     <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
-                    <th  data-title="物资类型" data-align="center" data-field="material_type_name"></th>
-                    <th data-title="物资编号" data-align="center" data-field="code"></th>
-                    <th data-title="物资名称" data-align="center" data-field="name" ></th>
-                    <th  data-title="地点" data-align="center" data-field="room_name"></th>
-                    <th  data-title="数量" data-align="center" data-field="pcs"></th>
-                    <th  data-title="状态" data-align="center" data-field="effective_status_name"></th>
-                    <th data-title="生效日期" data-align="center" data-field="effective_date_name"></th>
-                    <th  data-title="用途" data-align="center" data-field="function"></th>
-                    <th  data-title="供应商" data-align="center" data-field="supplier"></th>
-                    <th  data-title="内部编号" data-align="center" data-field="internal_no"></th>
-                    <th  data-title="出厂编号" data-align="center" data-field="initial_no"></th>
-                    <th  data-title="备注" data-align="center" data-field="remark"></th>
-                    <th  data-title="详情" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
+                    <th data-title="工单编号" data-align="center" data-field="code"></th>
+                    <th  data-title="创建类型" data-align="center" data-field="create_type_name"></th>
+                    <th data-title="创建时间" data-align="center" data-field="create_time_name"></th>
+                    <th  data-title="创建人" data-align="center" data-field="Cperson_name"></th>
+                    <th  data-title="对应设备" data-align="center" data-field="equipment_code"></th>
+                    <th data-title="工单对象" data-align="center" data-field="object" ></th>
+                    <th  data-title="工单类型" data-align="center" data-field="order_type"></th>
+                    <th  data-title="发生地点" data-align="center" data-field="building_code"></th>
+                    <th  data-title="接单人" data-align="center" data-field="Rperson_code_name"></th>
+                    <th  data-title="接单时间" data-align="center" data-field="accept_time_name"></th>
+                    <th  data-title="对应管家" data-align="center" data-field="Hperson_code_name"></th>
+                    <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
                 </tr>
                 </thead>
 
@@ -143,7 +163,7 @@
         </ul>
 
         <!-- 增加物资 -->
-        <div class="modal fade" id="add_Item" tabindex="-1" role="dialog" aria-hidden="true">
+       <div class="modal fade" id="add_Item" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog"  style="width: 630px;">
                 <div class="modal-content model_wrap">
                     <div class="model_content">
@@ -239,7 +259,7 @@
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
-        </div>
+        </div>-->
 
 
 
