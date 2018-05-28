@@ -1,9 +1,0 @@
-INSERT INTO "village_building" VALUES (41, 100001, NULL, '2018-4-25 00:00:00', 't', '和正·智汇谷', 100, NULL, 100001, '无', NULL, '2018-5-5 17:57:47', 10);
-INSERT INTO "village_building" VALUES (43, 100002, NULL, '2018-4-26 00:00:00', 't', '3栋', 103, NULL, 100001, '无', NULL, '2018-4-26 02:21:58', 1);
-INSERT INTO "village_building" VALUES (51, 100007, NULL, '2018-4-26 00:00:00', 't', '205', 106, NULL, 100002, '', NULL, '2018-4-26 02:33:32', 2);
-INSERT INTO "village_building" VALUES (52, 100008, NULL, '2018-4-26 00:00:00', 't', '4栋', 103, NULL, 100001, '无', NULL, '2018-4-26 15:24:10', 1);
-INSERT INTO "village_building" VALUES (56, 100006, NULL, '2018-4-2 00:00:00', 't', '204', 106, NULL, 100002, '无', NULL, '2018-4-26 15:42:15', 2);
-INSERT INTO "village_building" VALUES (61, 100003, NULL, '2018-5-2 00:00:00', 't', '201', 106, NULL, 100002, '无', NULL, '2018-5-4 18:08:02', 2);
-INSERT INTO "village_building" VALUES (62, 100009, NULL, '2018-5-5 00:00:00', 't', '1303', 106, NULL, 100002, '', NULL, '2018-5-5 02:38:00', 2);
-INSERT INTO "village_building" VALUES (63, 100010, NULL, '2018-5-5 00:00:00', 't', '5栋', 103, NULL, 100001, '无', NULL, '2018-5-5 17:53:43', 7);
-INSERT INTO "village_building" VALUES (64, 100011, NULL, '2018-5-5 00:00:00', 't', '201', 106, NULL, 100010, '', NULL, '2018-5-5 02:39:16', 3);

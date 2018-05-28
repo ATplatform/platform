@@ -59,6 +59,7 @@ left join 	village_building_stage AS bs on M .building_code = bs.room_code
 left join 		village_building AS b on M .building_code = b.code
 
 WHERE
+
 	M .building_code = bs.room_code
 and M .building_code = b.code
     AND bs.room_code = b.code
@@ -69,8 +70,17 @@ and M .building_code = b.code
 			village_building
 		GROUP BY
 			code
+			)
+	and  M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code
+) 	
 
-)
+
 ";
         if(!empty($effective_date)){
             $sql .= " and M.effective_date<='$effective_date' ";
@@ -236,6 +246,14 @@ and M .building_code = b.code
 		GROUP BY
 			code
 )
+	and  M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code
+) 	
 ";
 
         if(!empty($effective_date)){

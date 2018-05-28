@@ -33,7 +33,7 @@
     <div class="searc_bar search_wrap" id="search_wrap" >
 
         <span class="col_37A fl">筛选条件</span>
-        <input type="text" class="effective_date date col_37A fl form-control" name="effective_date"  value="<?php echo $effective_date; ?>">
+        <input type="text" class="effective_date date col_37A fl form-control" name="effective_date"  value="<?php echo $now=date('Y-m-d H:i:s',time()); ?>">
 
         <!-- 筛选条件 物资类别-->
         <div class="Search_Item_wrap  selectMaterial select_pull_down query_wrap col_37A fl">
@@ -365,8 +365,12 @@
             }
         })
 
+
+
+
         //树节点点击后将节点赋值
         $('#treeNavAdd>span,#treeNavWrite>span').on("select_node.jstree", function (e, node) {
+            $('#treeNavWrite>span').jstree("close_all")
             var arr = node.node.id.split("_");
             var parent_code = arr[0];
             //当前节点的id

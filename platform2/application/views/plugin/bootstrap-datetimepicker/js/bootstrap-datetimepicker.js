@@ -399,6 +399,7 @@
       if (this.forceParse) {
         this.update();
       }
+      this.element[0].disabled = true;
       this.place();
       $(window).on('resize', $.proxy(this.place, this));
       if (e) {
@@ -422,7 +423,7 @@
       if (!this.isInput) {
         $(document).off('mousedown', this.hide);
       }
-
+        this.element[0].disabled = false;
       if (
         this.forceParse &&
           (
