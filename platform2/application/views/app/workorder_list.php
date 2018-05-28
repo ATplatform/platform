@@ -74,7 +74,7 @@
 <!--筛选工单类型-->
         <div class="Search_Item_wrap   select_pull_down query_wrap col_37A fl">
             <div >
-                <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="工单类型" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly style="width:100px;" >
+                <input type="text" id="order_type_select" class="model_input order_type ka_input3" placeholder="工单类型" name="order_type" data-ajax="" value="" readonly style="width:100px;" >
             </div>
             <div class="ka_drop"  style="display: none;width:100px;">
                 <div class="ka_drop_list" >
@@ -96,7 +96,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称等" value="<?php echo $keyword ?>">
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入工单编号等" value="<?php echo $keyword ?>">
 
                 <input type="hidden" value='<?php echo $material_type;?>' name="material_type" />
                 <input type="hidden" value='<?php echo $building_code;?>' name="building_code" />
