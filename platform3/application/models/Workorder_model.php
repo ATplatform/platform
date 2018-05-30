@@ -13,12 +13,17 @@ class Workorder_model extends CI_Model
     ///////////////////////////////////获取数据////////////////////////////////////
     /////////////数据内容////////对sql进行分类：普通查询sql和搜索查询sql//////////////////////
     /////////////数据数目////////对sql进行分类：普通查询sql和搜索查询sql//////////////////////
-
-   ////////普通查询数据内容的sql语句/////////
-    public function getWorkorderListbyNormal($page, $rows)
+    public function sqlTogetWorkorderList($create_time,$create_type,$order_kind, $keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-        $sql = "select *,
+
+
+         /////////////////判断为普通查询或搜索查询////////////////////////////
+         if (empty($parent_code) && empty($building_code) && empty($create_type) && empty($keyword) && empty($create_time) && empty($order_kind))
+
+         /////////////////////////普通查询sql语句/////////////////////////
+         {
+             $sql = "select *,
 w_o.create_time as w_o_create_time,
 p1.first_name as create_person_first_name,
 p1.last_name  as create_person_last_name,
@@ -29,16 +34,13 @@ left join village_order_record as o_r on o_r.work_code=w_o.code
 left join  village_person_position as pp on pp.person_code=o_r.accept_person_code and pp.code=(select max(code) from village_person_position A where A.person_code=o_r.accept_person_code group by A.person_code)
 left join village_person as p1 on p1.code=w_o.person_code 
 left join village_person as p2 on p2.code=o_r.accept_person_code
-";
-        $sql .=  " ORDER BY w_o.Code ASC limit ".$rows." offset ".$start;
-        return $sql;
-    }
+";}
 
-    ////////搜索查询数据内容的sql语句//////////
-    public function getWorkorderListbySearch($create_time,$create_type,$order_kind, $keyword, $page, $rows)
-    {
-        $start = ($page - 1) * $rows;
-        $sql = "select *,
+
+
+         /////////////////////////搜索查询sql语句/////////////////////////
+         else {
+             $sql = "select *,
 w_o.create_time as w_o_create_time,
 p1.first_name as create_person_first_name,
 p1.last_name  as create_person_last_name,
@@ -51,30 +53,32 @@ left join village_person as p1 on p1.code=w_o.person_code
 left join village_person as p2 on p2.code=o_r.accept_person_code
 where o_r.work_code=w_o.code
 ";
-        if(!empty($create_time)){
-            $sql .= " and w_o.create_time<='$create_time' ";
-        }
+             if(!empty($create_time)){
+                 $sql .= " and w_o.create_time<='$create_time' ";
+             }
 
-        if(!empty($create_type)){
-            $sql .= " and w_o.create_type=$create_type ";
-        }
+             if(!empty($create_type)){
+                 $sql .= " and w_o.create_type=$create_type ";
+             }
 
-        if(!empty($order_kind)){
-            $sql .= " and w_o.order_kind=$order_kind ";
-        }
+             if(!empty($order_kind)){
+                 $sql .= " and w_o.order_kind=$order_kind ";
+             }
 
-      /*  if (!empty($keyword)) {
-            if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
-                $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
-            }
-            if (preg_match("/^\d*$/", $keyword)) {
-                $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
-            }
-        }*/
+             /*  if (!empty($keyword)) {
+                   if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
+                       $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
+                   }
+                   if (preg_match("/^\d*$/", $keyword)) {
+                       $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
+                   }
+               }*/
 
-        /* if(!empty($building_code)){
-         $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
-       }*/
+             /* if(!empty($building_code)){
+              $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
+            }*/
+
+         }
         $sql = $sql . " ORDER BY w_o.code ASC limit ".$rows." offset ".$start;
         return $sql;
     }
@@ -147,11 +151,14 @@ where o_r.work_code=w_o.code
     }
 
 
-    ////////////////////普通查询数据数目的数据总条数///////////////
-    public function getWorkorderListTotalbyNormal( $rows)
+    //////////////////////搜索查询数据数目的数据总条数/////////////
+    public function getWorkorderListTotal($create_time,$parent_code, $building_code, $create_type, $keyword, $order_kind,$rows)
     {
         $sql="select count(*) as count from (";
-        $sql.="
+
+        if (empty($parent_code) && empty($building_code) && empty($create_type) && empty($keyword) && empty($create_time) && empty($order_kind))
+        {
+            $sql.="
 select *,
 w_o.create_time as w_o_create_time,
 p1.first_name as create_person_first_name,
@@ -165,30 +172,9 @@ left join village_person as p1 on p1.code=w_o.person_code
 left join village_person as p2 on p2.code=o_r.accept_person_code
 
 		
-";
+"; } else{
 
-
-        $sql.=" ) as sss";
-        $q = $this->db->query($sql); //自动转义
-        if ($q->num_rows() > 0) {
-            $row = $q->row_array();
-            $items = $row["count"];
-            if ($items % $rows != 0) {
-                $total = (int)((int)$items / $rows) + 1;
-            } else {
-                $total = $items / $rows;
-            }
-            return $total;
-        }
-        return 0;
-    }
-
-    //////////////////////搜索查询数据数目的数据总条数/////////////
-    public function getWorkorderListTotalbySearch($create_time,$parent_code, $building_code, $create_type, $keyword, $order_kind,$rows)
-    {
-        $sql="select count(*) as count from (";
-
-        $sql .= "select *,
+    $sql .= "select *,
 w_o.create_time as w_o_create_time,
 p1.first_name as create_person_first_name,
 p1.last_name  as create_person_last_name,
@@ -201,33 +187,33 @@ left join village_person as p1 on p1.code=w_o.person_code
 left join village_person as p2 on p2.code=o_r.accept_person_code
 where o_r.work_code=w_o.code
 ";
-        if(!empty($create_time)){
-            $sql .= " and w_o.create_time<='$create_time' ";
-        }
+    if(!empty($create_time)){
+        $sql .= " and w_o.create_time<='$create_time' ";
+    }
 
-        if(!empty($create_type)){
-            $sql .= " and w_o.create_type=$create_type ";
-        }
+    if(!empty($create_type)){
+        $sql .= " and w_o.create_type=$create_type ";
+    }
 
-        if(!empty($order_kind)){
-            $sql .= " and w_o.order_kind=$order_kind ";
-        }
+    if(!empty($order_kind)){
+        $sql .= " and w_o.order_kind=$order_kind ";
+    }
 
-        /*  if (!empty($keyword)) {
-              if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
-                  $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
-              }
-              if (preg_match("/^\d*$/", $keyword)) {
-                  $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
-              }
-          }*/
+    /*  if (!empty($keyword)) {
+          if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
+              $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
+          }
+          if (preg_match("/^\d*$/", $keyword)) {
+              $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
+          }
+      }*/
 
-        /* if(!empty($building_code)){
-         $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
-       }*/
+    /* if(!empty($building_code)){
+     $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
+   }*/
+    }
         $sql.=" ) as sss";
         $q = $this->db->query($sql); //自动转义
-
         if ($q->num_rows() > 0) {
             $row = $q->row_array();
             $items = $row["count"];

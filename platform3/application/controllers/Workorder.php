@@ -47,61 +47,26 @@ class Workorder extends CI_Controller
         $keyword = $this->input->get('keyword');
         $page = $this->input->get('page');
         $page = $page ? $page : '1';
-
-
-        //判断是普通查询还是搜索查询
-        if (empty($parent_code) && empty($building_code) && empty($create_type) && empty($keyword) && empty($create_time) && empty($order_kind)) {
-            $total = $this->Workorder_model->getWorkorderListTotalbyNormal($this->user_per_page);
-            $dataNormal['nav'] = 'workorderList';
-            $dataNormal['keyword'] = $keyword;
-            $dataNormal['create_type'] = $create_type;
-            $dataNormal['order_kind'] = $order_kind;
-            $dataNormal['building_code'] = $building_code;
-            $dataNormal['parent_code'] = $parent_code;
-            $dataNormal['create_time'] = $create_time;
-            $dataNormal['username'] = $username;
-
-            $dataNormal['treeNav_data'] = $treeNav_data;
-            $dataNormal['total'] = $total;
-            $dataNormal['page'] = $page >= $total ? $total : $page;
-            $dataNormal['pagesize'] = $this->user_per_page;
-            $this->load->view('app/workorder_list', $dataNormal);
-        } else {
-            $total = $this->Workorder_model->getWorkorderListTotalbySearch($create_time,$parent_code, $building_code, $create_type, $keyword, $order_kind,$this->user_per_page);
-            $dataSearch['nav'] = 'workorderList';
-            $dataSearch['keyword'] = $keyword;
-            $dataSearch['create_type'] = $create_type;
-            $dataSearch['order_kind'] = $order_kind;
-            $dataSearch['building_code'] = $building_code;
-            $dataSearch['parent_code'] = $parent_code;
-            $dataSearch['create_time'] = $create_time;
-            $dataSearch['username'] = $username;
-
-            $dataSearch['treeNav_data'] = $treeNav_data;
-            $dataSearch['total'] = $total;
-            $dataSearch['page'] = $page >= $total ? $total : $page;
-            $dataSearch['pagesize'] = $this->user_per_page;
-
-            $this->load->view('app/workorder_list', $dataSearch);
-        }
-
+        $data['nav'] = 'workorderList';
+        $data['keyword'] = $keyword;
+        $data['create_type'] = $create_type;
+        $data['order_kind'] = $order_kind;
+        $data['building_code'] = $building_code;
+        $data['parent_code'] = $parent_code;
+        $data['create_time'] = $create_time;
+        $data['username'] = $username;
+        $data['treeNav_data'] = $treeNav_data;
+        $total = $this->Workorder_model->getWorkorderListTotal($create_time,$parent_code, $building_code, $create_type, $keyword, $order_kind,$this->user_per_page);
+        $data['total'] = $total;
+        $data['page'] = $page >= $total ? $total : $page;
+        $data['pagesize'] = $this->user_per_page;
+        $this->load->view('app/workorder_list', $data);
     }
 
 
-    //////////////////////普通查询数据///////////////
-    public function getWorkorderListbyNormal()
-    {
-        $page = $this->input->get('page');
-        $page = $page ? $page : '1';
-        $this->load->model('Workorder_model');
-        $sqlNormal = $this->Workorder_model->getWorkorderListbyNormal($page, $this->user_per_page);
-        $dataNormal = $this->Workorder_model->getWorkorderList($sqlNormal);
-        echo $dataNormal;
-    }
+    //////////////////////查询数据///////////////
 
-
-    ///////////////////搜索查询数据 get方法 查询参数//////////////
-    public function getWorkorderListbySearch()
+    public function getWorkorderList()
     {
         $create_time=$this->input->get('create_time');
         $create_type = $this->input->get('create_type');
@@ -112,9 +77,9 @@ class Workorder extends CI_Controller
         $page = $page ? $page : '1';
         $this->load->model('Workorder_model');
 
-        $sqlSearch = $this->Workorder_model->getWorkorderListbySearch($create_time,$create_type, $order_kind, $keyword, $page, $this->user_per_page);
-        $dataSearch = $this->Workorder_model->getWorkorderList($sqlSearch);
-        echo $dataSearch;
+        $sql = $this->Workorder_model->sqlTogetWorkorderList($create_time,$create_type, $order_kind, $keyword, $page, $this->user_per_page);
+        $data = $this->Workorder_model->getWorkorderList($sql);
+        echo $data;
     }
 
 

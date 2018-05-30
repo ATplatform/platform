@@ -66,16 +66,20 @@ switch(search_order_kind){
 }
 
 
-/////////////////////////////////////传入参数//////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////////所有的地址跳转//////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+////////////////////////////传入参数//////////////////////////////
 //搜索模式url
-function ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page){
+function List(create_time,create_type,order_kind,keyword,building_code,parent_code,page){
     window.location.href="workorderList?keyword="+keyword+"&page=1"+"&building_code="+building_code+"&parent_code="+parent_code+'&create_type='+create_type+'&order_kind='+order_kind+'&create_time='+create_time+'&keyword='+keyword;
 }
 
 //对应获得搜索模式数据方法的地址
-function getListbySearch(){
-    return getRootPath() + '/index.php/Workorder/getWorkorderListbySearch?page=' + page+'&parent_code='+parent_code+'&building_code='+building_code+'&create_type='+create_type+'&order_kind='+order_kind+'&create_time='+create_time+'&keyword='+keyword;
+function getList(){
+    return getRootPath() + '/index.php/Workorder/getWorkorderList?page=' + page+'&parent_code='+parent_code+'&building_code='+building_code+'&create_type='+create_type+'&order_kind='+order_kind+'&create_time='+create_time+'&keyword='+keyword;
 }
+
 
 //搜索模式页面跳转
 function PageChangeToList(page){
@@ -83,19 +87,7 @@ function PageChangeToList(page){
 }
 
 
-/////////////////////////////////调取方法////////////////////////////////////
-//普通模式页面跳转
-function List(){
-    window.location = getRootPath() + "/index.php/Workorder/workorderList"
-}
-//对应插入数据方法的地址
-function insert(){
-    return getRootPath()+'/index.php/Workorder/insertWorkorder'
-}
-//对应获得普通模式数据方法的地址
-function getListbyNormal(){
-   return getRootPath() + '/index.php/Workorder/getWorkorderListbyNormal?page=' + page
-}
+//////////////////方法///////////////////////
 //对应获得协同人和管家
 function getOrderRecordPerson(){
     return getRootPath()+'/index.php/Workorder/getOrderRecordPerson'
@@ -104,9 +96,15 @@ function getOrderRecordPerson(){
 function getBuildingCode(){
 	return getRootPath()+'/index.php/Workorder/getMaterialBuildingCode'
 }
+
+///////////搜索框X的href赋值//////////////
+$('#clear').attr("href",'workorderList')
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////调用函数//////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 show(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
@@ -114,46 +112,20 @@ search(create_time,create_type,order_kind,keyword,building_code,parent_code,page
 
 
 
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////数据展示功能/////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-   ///////////////////////////////普通模式的数据展示/////////////////////////
+///////////////////////////////普通模式的数据展示/////////////////////////
 function show(create_time,create_type,order_kind,keyword,building_code,parent_code,page){
-    if( !$.trim(keyword) && !$.trim(create_type) && !$.trim(building_code) && !$.trim(create_time) && !$.trim(order_kind)){
-        $('#table').bootstrapTable({
-            method: "get",
-            undefinedText: '/',
-            url: getListbyNormal(),
-            dataType: 'json',
-            // pagination:true,
-            // pageSize: 15,
-            // pageNumber: 1,
-            // sortName: 'id',
-            // sortOrder: 'desc',
-            responseHandler: function (res) {
-                //用于处理后端返回数据
-                console.log(res);
-                return res;
-            },
-            onLoadSuccess: function (data) {  //加载成功时执行
-                console.log(data);
-            },
-            onLoadError: function () {  //加载失败时执行
-                console.info("加载数据失败");
-            }
-        })
-    }
 
-    ///////////////////////////////////搜索模式的数据展示///////////////////////
-    else{
+
+    ///////////////////////////////////数据展示///////////////////////
+
         $('#table').bootstrapTable({
             method: "get",
             undefinedText: '/',
-            url: getListbySearch(),
+            url: getList(),
             dataType: 'json',
             // pagination:true,
             // pageSize: 15,
@@ -172,7 +144,7 @@ function show(create_time,create_type,order_kind,keyword,building_code,parent_co
                 console.info("加载数据失败");
             }
         })
-    }
+
 
 /////////////////////////////////////////////分页//////////////////////////////
     $('.fenye_btn').click(function(){
@@ -202,14 +174,6 @@ function show(create_time,create_type,order_kind,keyword,building_code,parent_co
     })
 
 ////////////////////////////////////////////信息管理////////////////////////////////
-    function operateFormatter(value,row,index){
-        return [
-            '<a class="detail" href="javascript:void(0)" style="margin-left: 10px;" title="详情">',
-            '<i class=" fa fa-trash-o fa-lg fa-file-text-o"></i>',
-            '</a>',
-
-        ].join('');
-    }
 
     window.operateEvents = {
         'click .detail': function (e, value, row, index) {
@@ -258,8 +222,8 @@ function show(create_time,create_type,order_kind,keyword,building_code,parent_co
                 //成功之后,将结果生成
                 success:function(data){
                     var data = JSON.parse(data);
-                    var team_person_name=data.team_person_first_name+data.team_person_last_name;
-                    var property_person_name=data.property_person_first_name+data.property_person_last_name;
+                    var team_person_name=data.team_person_last_name+data.team_person_first_name;
+                    var property_person_name=data.property_person_last_name+data.property_person_first_name;
                     $('#person_detail').find('.team_person_name').html(team_person_name);
                     $('#person_detail').find('.property_person_name').html(property_person_name);
                 },
@@ -286,20 +250,20 @@ function search(create_time,create_type,order_kind,keyword,building_code,parent_
 $('.search_wrap .create_time').datetimepicker().on('changeDate',function(e){
     var create_time=$('input[name="create_time"]').val();
     create_time=create_time +' 23:59:59';
-    ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
+    List(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
 })
 
 /////////////////////搜索创建类型////////////////
 $(' .create_type_search_wrap .ka_drop_list li').click(function(){
     var create_type = $(this).find('a').data('ajax');
-    ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
+    List(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
 
 })
 
 /////////////////搜索工单类型////////////
 $('.order_kind_search_wrap .ka_drop_list li').click(function(){
     var order_kind =$(this).find('a').data('ajax');
-     ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
+     List(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
 })
 
 ////////////////搜索楼宇///////////////////
@@ -307,7 +271,7 @@ $('.order_kind_search_wrap .ka_drop_list li').click(function(){
 $('#treeNav>span').on("select_node.jstree", function (e, node) {
     var building_code=node.node.original.code;
     var parent_code=node.node.original.code;
-    ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
+    List(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
 })
 
 }

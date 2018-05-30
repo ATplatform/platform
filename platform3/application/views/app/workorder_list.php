@@ -81,7 +81,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入工单编号等" value=""><a id="clear" href="<?=base_url().'index.php/Workorder/workorderList'?>">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入工单编号等" value=""><a id="clear" href="">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -253,19 +253,24 @@
             data: treeNav_data
         }
     })
-
-
     //新增框楼宇层级树形菜单展示
     $('#treeNavAdd>span,#treeNavWrite>span').jstree({
         'core': {
             data: treeNav_data
         }
     })
+
+
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="detail" href="javascript:void(0)" style="margin-left: 10px;" title="详情">',
+            '<i class=" fa fa-trash-o fa-lg fa-file-text-o"></i>',
+            '</a>',
+
+        ].join('');
+    }
+
 </script>
-
-
-
-
 <script src='<?=base_url().'application/views/plugin/app/js/workorder_list.js'?>'></script>
 </body>
 </html>
