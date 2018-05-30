@@ -40,6 +40,7 @@ var search_effective_date = getUrlParam('effective_date');
 
 //需要变动参数
 //搜索模式url
+
 function materialListbySearch(effective_date,page,material_type,building_code,parent_code,keyword){
     window.location.href="materialList?keyword="+keyword+"&page=1"+'&material_type='+material_type+"&building_code="+building_code+"&parent_code="+parent_code+"&effective_date="+effective_date;
 }
@@ -264,7 +265,9 @@ $('#add_Item .confirm').click(function(){
 		openLayer('请输入生效日期');
 		return;
 	}
-	if(!name){
+	if((!name)||(/^\s+$/.test(name))){
+
+
 		openLayer('请输入物资名称');
 		return;
 	}

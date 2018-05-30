@@ -65,14 +65,14 @@ where o_r.work_code=w_o.code
                  $sql .= " and w_o.order_kind=$order_kind ";
              }
 
-             /*  if (!empty($keyword)) {
+               if (!empty($keyword)) {
                    if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
-                       $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
+                       $sql .= " and concat ( p1.last_name,p1.first_name,p2.last_name,p2.first_name) like '%$keyword%'";
                    }
                    if (preg_match("/^\d*$/", $keyword)) {
-                       $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
+                       $sql .= " and w_o.code = $keyword ";
                    }
-               }*/
+               }
 
              /* if(!empty($building_code)){
               $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
@@ -199,14 +199,14 @@ where o_r.work_code=w_o.code
         $sql .= " and w_o.order_kind=$order_kind ";
     }
 
-    /*  if (!empty($keyword)) {
-          if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
-              $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
-          }
-          if (preg_match("/^\d*$/", $keyword)) {
-              $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
-          }
-      }*/
+            if (!empty($keyword)) {
+                if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
+                    $sql .= " and concat ( p1.last_name,p1.first_name,p2.last_name,p2.first_name) like '%$keyword%'";
+                }
+                if (preg_match("/^\d*$/", $keyword)) {
+                    $sql .= " and w_o.code = $keyword ";
+                }
+            }
 
     /* if(!empty($building_code)){
      $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";

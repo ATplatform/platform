@@ -33,10 +33,11 @@
     <div class="searc_bar search_wrap " id="search_wrap" >
 
         <span class="col_37A fl">筛选条件</span>
+        <!-- 筛选条件 时间-->
         <input type="text" class="create_time date col_37A fl form-control" name="create_time"  value="">
 
         <!-- 筛选条件 创建类型-->
-        <div class="Search_Item_wrap create_type_search_wrap select_pull_down query_wrap col_37A fl">
+        <div class="Search_Item_wrap create_type_search_wrap select_pull_down query_wrap col_37A fl"  style="margin-right:10px;">
             <div >
                 <input type="text"  class="model_input create_type ka_input3" placeholder="创建类型" name="create_type" data-ajax="" value="" readonly style="width:150px;" >
             </div>
@@ -81,7 +82,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入工单编号等" value=""><a id="clear" href="">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入工单编号、创建人、接单人" value=""><a id="clear" href="">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>

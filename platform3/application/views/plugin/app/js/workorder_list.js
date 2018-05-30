@@ -70,18 +70,18 @@ switch(search_order_kind){
 ///////////////////////////////所有的地址跳转//////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 ////////////////////////////传入参数//////////////////////////////
-//搜索模式url
+
 function List(create_time,create_type,order_kind,keyword,building_code,parent_code,page){
     window.location.href="workorderList?keyword="+keyword+"&page=1"+"&building_code="+building_code+"&parent_code="+parent_code+'&create_type='+create_type+'&order_kind='+order_kind+'&create_time='+create_time+'&keyword='+keyword;
 }
 
-//对应获得搜索模式数据方法的地址
+
 function getList(){
     return getRootPath() + '/index.php/Workorder/getWorkorderList?page=' + page+'&parent_code='+parent_code+'&building_code='+building_code+'&create_type='+create_type+'&order_kind='+order_kind+'&create_time='+create_time+'&keyword='+keyword;
 }
 
 
-//搜索模式页面跳转
+
 function PageChangeToList(page){
     window.location.href = "workorderList?keyword=" + search_keyword + "&page=" + page+'&create_type='+search_create_type+'&building_code='+search_building_code+'&parent_code='+search_parent_code+'&create_time='+search_create_time+'&order_kind='+search_order_kind;
 }

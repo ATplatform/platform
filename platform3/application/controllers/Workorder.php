@@ -71,8 +71,8 @@ class Workorder extends CI_Controller
         $create_time=$this->input->get('create_time');
         $create_type = $this->input->get('create_type');
         $order_kind = $this->input->get('order_kind');
-        //$keyword = $this->input->get('keyword');
-        $keyword='';
+        $keyword = $this->input->get('keyword');
+
         $page = $this->input->get('page');
         $page = $page ? $page : '1';
         $this->load->model('Workorder_model');

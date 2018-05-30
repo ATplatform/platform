@@ -94,12 +94,13 @@ where M.code=A.code
         }
 
         if (!empty($keyword)) {
-            if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
-                $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
+
+            if (preg_match("/^\d+$/", $keyword)) {
+                $sql .= " and M.code = $keyword ";
+            }else if (preg_match('/^[\x80-\xff]*\d*[a-zA-Z]*\S*$/', $keyword)) {
+                $sql .= " and concat(M.name,M.supplier,M.remark,M.function) like '%$keyword%'";
             }
-            if (preg_match("/^\d*$/", $keyword)) {
-                $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
-            }
+
         }
         $sql = $sql . " ORDER BY b.code ASC limit ".$rows." offset ".$start;
         return $sql;
@@ -269,13 +270,12 @@ where M.code=A.code
         }
 
         if (!empty($keyword)) {
-            if (preg_match("/^\d*$/", $keyword)) {
-                $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
-                // or M.material_type like '%$keyword%'
+            if (preg_match("/^\d+$/", $keyword)) {
+                $sql .= " and M.code = $keyword ";
+            }else if (preg_match('/^[\x80-\xff]*\d*[a-zA-Z]*\S*$/', $keyword)) {
+                $sql .= " and concat(M.name,M.supplier,M.remark,M.function) like '%$keyword%'";
             }
-            if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
-                $sql .= " and concat(M.supplier,M.remark,M.function,M.name) like '%$keyword%'";
-            }
+
         }
         $sql.=" ) as sss";
         $q = $this->db->query($sql); //自动转义
