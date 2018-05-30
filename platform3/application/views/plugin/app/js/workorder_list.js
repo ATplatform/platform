@@ -1,10 +1,6 @@
+//////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////日期控件初始化////////////////////////////////
-var now = new Date();
-now = formatDate(now);
-//新增模块的时间赋值
-$('.add_Item').find('input[name="effective_date"]').val(now);
-
-
+//////////////////////////////////////////////////////////////////////////////////
 $('.date').datetimepicker({
     language:  'zh-CN',
     format: 'yyyy-mm-dd',
@@ -16,87 +12,122 @@ $('.date').datetimepicker({
     forceParse: 1
 });
 
-
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////用户名初始化//////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 var username=$('input[name="username"]').val();
 username=JSON.parse(username)
 $('.user span').html(username.name)
 
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////参数与内容初始化赋值/////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////参数初始化赋值///////////////////////////////////////
 var page = $('input[name="page"]').val();
-var keyword = $('input[name="keywords"]').val()
-var material_type = $('input[name="material_types"]').val();
 var building_code = $('input[name="building_codes"]').val();
 var parent_code = $('input[name="parent_codes"]').val();
-var effective_date = $('input[name="effective_dates"]').val();
+var keyword = $('input[name="keywords"]').val()
+var create_type = $('input[name="create_types"]').val();
+var order_kind=$('input[name="order_kinds"]').val();
+var create_time=$('input[name="create_times"]').val();
 
 //带search的参数用于异步刷新页面时做分页和查询总条数
-var search_material_type = getUrlParam('material_type');
 var search_building_code = getUrlParam('building_code');
 var search_parent_code = getUrlParam('parent_code');
 var search_keyword = getUrlParam('keyword');
-var search_effective_date = getUrlParam('effective_date');
+var search_create_time = getUrlParam('create_time');
+var search_create_type = getUrlParam('create_type');
+var search_order_kind = getUrlParam('order_kind');
 
-//需要变动参数
+
+//初始化搜索框的内容以及保存搜索内容
+var now = getDate();
+search_create_time = search_create_time?search_create_time:now;
+$('.search_wrap .create_time').val(search_create_time);
+$('.searc_room_text').val(search_keyword);
+switch(search_create_type){
+    case '101':$('.search_wrap .create_type').val('自动创建巡检工单');break;
+    case '102':$('.search_wrap .create_type').val('自动创建异常处理工单');break;
+    case '103':$('.search_wrap .create_type').val('循环创建工单');break;
+    case '201':$('.search_wrap .create_type').val('物业人员创建工单');break;
+    case '202':$('.search_wrap .create_type').val('住户/商户创建工单');break;
+    default:$('.search_wrap .create_type').val('创建类型');break;
+}
+switch(search_order_kind){
+    case '101':$('.search_wrap .order_kind').val('安防');break;
+    case '102':$('.search_wrap .order_kind').val('环境-绿化');break;
+    case '103':$('.search_wrap .order_kind').val('环境-保洁');break;
+    case '104':$('.search_wrap .order_kind').val('维修');break;
+    case '104':$('.search_wrap .order_kind').val('维修');break;
+    case '105':$('.search_wrap .order_kind').val('电梯');break;
+    case '106':$('.search_wrap .order_kind').val('消防');break;
+    case '999':$('.search_wrap .order_kind').val('其他');break;
+    default:$('.search_wrap .order_kind').val('工单类型');break;
+}
+
+
+/////////////////////////////////////传入参数//////////////////////////////
 //搜索模式url
-function materialListbySearch(effective_date,page,material_type,building_code,parent_code,keyword){
-    window.location.href="workorderList?keyword="+keyword+"&page=1"+'&material_type='+material_type+"&building_code="+building_code+"&parent_code="+parent_code+"&effective_date="+effective_date;
+function ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page){
+    window.location.href="workorderList?keyword="+keyword+"&page=1"+"&building_code="+building_code+"&parent_code="+parent_code+'&create_type='+create_type+'&order_kind='+order_kind+'&create_time='+create_time+'&keyword='+keyword;
 }
 
 //对应获得搜索模式数据方法的地址
-function getMaterialListbySearch(){
-    return getRootPath() + '/index.php/Workorder/getWorkorderListbySearch?page=' + page+'&parent_code='+parent_code+'&building_code='+building_code+'&material_type='+material_type+'&keyword='+keyword+"&effective_date="+effective_date;
+function getListbySearch(){
+    return getRootPath() + '/index.php/Workorder/getWorkorderListbySearch?page=' + page+'&parent_code='+parent_code+'&building_code='+building_code+'&create_type='+create_type+'&order_kind='+order_kind+'&create_time='+create_time+'&keyword='+keyword;
 }
 
 //搜索模式页面跳转
-function PageChangeToMaterialList(){
-    window.location.href = "workorderList?keyword=" + search_keyword + "&page=" + page+'&material_type='+search_material_type+'&building_code='+search_building_code+'&parent_code='+search_parent_code+'&effective_date='+search_effective_date;
+function PageChangeToList(page){
+    window.location.href = "workorderList?keyword=" + search_keyword + "&page=" + page+'&create_type='+search_create_type+'&building_code='+search_building_code+'&parent_code='+search_parent_code+'&create_time='+search_create_time+'&order_kind='+search_order_kind;
 }
 
 
-//不需要变动参数
+/////////////////////////////////调取方法////////////////////////////////////
 //普通模式页面跳转
-function materialList(){
+function List(){
     window.location = getRootPath() + "/index.php/Workorder/workorderList"
 }
-
-
 //对应插入数据方法的地址
-function insertMaterial(){
+function insert(){
     return getRootPath()+'/index.php/Workorder/insertWorkorder'
 }
-
-
 //对应获得普通模式数据方法的地址
-function getMaterialListbyNormal(){
+function getListbyNormal(){
    return getRootPath() + '/index.php/Workorder/getWorkorderListbyNormal?page=' + page
 }
-
-
-//对应获得最新的code方法的地址
-function getMaterialLatestCode(){
-    return getRootPath()+'/index.php/Workorder/getMaterialLatestCode'
+//对应获得协同人和管家
+function getOrderRecordPerson(){
+    return getRootPath()+'/index.php/Workorder/getOrderRecordPerson'
 }
-
 //对应展示楼宇信息方法的地址
-function getMaterialBuildingCode(){
+function getBuildingCode(){
 	return getRootPath()+'/index.php/Workorder/getMaterialBuildingCode'
 }
+//////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////调用函数//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+show(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
+search(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
 
 
 
 
+
+
+////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////数据展示功能/////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
 
-//判断是普通模式还是搜索模式
-
-    //普通模式的数据展示
-    if( !$.trim(keyword) && !$.trim(material_type) && !$.trim(building_code) && !$.trim(effective_date)){
+   ///////////////////////////////普通模式的数据展示/////////////////////////
+function show(create_time,create_type,order_kind,keyword,building_code,parent_code,page){
+    if( !$.trim(keyword) && !$.trim(create_type) && !$.trim(building_code) && !$.trim(create_time) && !$.trim(order_kind)){
         $('#table').bootstrapTable({
             method: "get",
             undefinedText: '/',
-            url: getMaterialListbyNormal(),
+            url: getListbyNormal(),
             dataType: 'json',
             // pagination:true,
             // pageSize: 15,
@@ -117,12 +148,12 @@ function getMaterialBuildingCode(){
         })
     }
 
-    //搜索模式的数据展示
+    ///////////////////////////////////搜索模式的数据展示///////////////////////
     else{
         $('#table').bootstrapTable({
             method: "get",
             undefinedText: '/',
-            url: getMaterialListbySearch(),
+            url: getListbySearch(),
             dataType: 'json',
             // pagination:true,
             // pageSize: 15,
@@ -143,61 +174,148 @@ function getMaterialBuildingCode(){
         })
     }
 
-    //点击分页go,判断页面跳转
-    $('.fenye_btn').click(function() {
+/////////////////////////////////////////////分页//////////////////////////////
+    $('.fenye_btn').click(function(){
         var page = $('input[name="fenye_input"]').val();
-        var pagenumber = Number(page) + "";
-
-        var myTotal = $('#current').text().split('/')[1];
-        if (!/^[0-9]*$/.test(page)) {
+        if(!/^[0-9]*$/.test(page)){
             openLayer('请输入数字');
             $('input[name="fenye_input"]').val('');
             return;
         }
-        if (page != pagenumber) {
+        var pagenumber=Number(page)+"";
+        var myCurrent = $('#current').text().split('/')[0];
+        var myTotal = $('#current').text().split('/')[1];
+        if(page!=pagenumber) {
             $('input[name="fenye_input"]').val(pagenumber);
-            page = pagenumber;
+            page=pagenumber;
         }
-        if (Number(page) > Number(myTotal)) {
+        if(Number(page)>Number(myTotal)) {
             $('input[name="fenye_input"]').val(myTotal);
-            page = myTotal;
+            page=myTotal;
         }
-        if (Number(page) < 1) {
+        if(Number(page)<1) {
             openLayer('请输入合法页数');
             $('input[name="fenye_input"]').val('');
             return;
         }
-
-
-        PageChangeToMaterialList();
+        PageChangeToList(page);
     })
 
+////////////////////////////////////////////信息管理////////////////////////////////
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="detail" href="javascript:void(0)" style="margin-left: 10px;" title="详情">',
+            '<i class=" fa fa-trash-o fa-lg fa-file-text-o"></i>',
+            '</a>',
+
+        ].join('');
+    }
+
+    window.operateEvents = {
+        'click .detail': function (e, value, row, index) {
+            $('#person_detail').modal('show');
+            var work_code = row.work_code;
+            var create_type_name = row.create_type_name;
+            var create_time = row.w_o_create_time;
+            var create_person_name = row.create_person_name;
+            var order_kind_name = row.order_kind_name;
+            var accept_person_name = row.accept_person_name;
+            var accept_time = row.accept_time;
+            var work_state_name = row.work_state_name;
+            var team_person_code=row.team_person_code;
+            var property_person_code=row.property_person_code;
+            var onsite_time=row.onsite_time;
+            var if_false_name=row.if_false_name;
+            var complete_time=row.complete_time;
+            var process_pic=row.process_pic;
+            var confirm_time=row.confirm_time;
+            var comment_time=row.comment_time;
+            var comment_score_name=row.comment_score_name;
+            var comment=row.comment;
+            $('#person_detail').find('.work_code').html(work_code);
+            $('#person_detail').find('.create_type_name').html(create_type_name);
+            $('#person_detail').find('.create_time').html(create_time);
+            $('#person_detail').find('.create_person_name').html(create_person_name);
+            $('#person_detail').find('.order_kind_name').html(order_kind_name);
+            $('#person_detail').find('.accept_person_name').html(accept_person_name);
+            $('#person_detail').find('.accept_time').html(accept_time);
+            $('#person_detail').find('.work_state_name').html(work_state_name);
+            $('#person_detail').find('.onsite_time').html(onsite_time);
+            $('#person_detail').find('.if_false_name').html(if_false_name);
+            $('#person_detail').find('.complete_time').html(complete_time);
+            $('#person_detail').find('.process_pic').html(process_pic);
+            $('#person_detail').find('.confirm_time').html(confirm_time);
+            $('#person_detail').find('.comment_time').html(comment_time);
+            $('#person_detail').find('.comment_score_name').html(comment_score_name);
+            $('#person_detail').find('.comment').html(comment);
+            $.ajax({
+                data:{
+                    team_person_code:team_person_code,
+                    property_person_code:property_person_code,
+                },
+                method:'post',
+                url:getOrderRecordPerson(),
+                //成功之后,将结果生成
+                success:function(data){
+                    var data = JSON.parse(data);
+                    var team_person_name=data.team_person_first_name+data.team_person_last_name;
+                    var property_person_name=data.property_person_first_name+data.property_person_last_name;
+                    $('#person_detail').find('.team_person_name').html(team_person_name);
+                    $('#person_detail').find('.property_person_name').html(property_person_name);
+                },
+                error:function(){
+                }
+            })
+        }
+    }
+
+}
 
 
 
 
-
+//////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////搜索功能////////////////////////////////////////
-$('.Search_Item_wrap .ka_drop_list li').click(function(){
-    var page = $('input[name="page"]').val();
-    var material_type = $(this).find('a').data('ajax');
-    var building_code = $('input[name="building_codes"]').val();
-    var parent_code = $('input[name="parent_codes"]').val();
-    var keyword = $('input[name="keywords"]').val();
-    var effective_date=$('input[name="effective_dates"]').val();
+//////////////////////////////////////////////////////////////////////////////////////
 
-    materialListbySearch(effective_date,page,material_type,building_code,parent_code,keyword);
+
+///////////////////////搜索时间//////////////////
+function search(create_time,create_type,order_kind,keyword,building_code,parent_code,page)
+{
+///////////////////////搜索时间////////////////
+$('.search_wrap .create_time').datetimepicker().on('changeDate',function(e){
+    var create_time=$('input[name="create_time"]').val();
+    create_time=create_time +' 23:59:59';
+    ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
+})
+
+/////////////////////搜索创建类型////////////////
+$(' .create_type_search_wrap .ka_drop_list li').click(function(){
+    var create_type = $(this).find('a').data('ajax');
+    ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
 
 })
 
+/////////////////搜索工单类型////////////
+$('.order_kind_search_wrap .ka_drop_list li').click(function(){
+    var order_kind =$(this).find('a').data('ajax');
+     ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
+})
+
+////////////////搜索楼宇///////////////////
+//树节点点击后跳转到相应的楼宇列表页面
+$('#treeNav>span').on("select_node.jstree", function (e, node) {
+    var building_code=node.node.original.code;
+    var parent_code=node.node.original.code;
+    ListbySearch(create_time,create_type,order_kind,keyword,building_code,parent_code,page);
+})
+
+}
 
 
 
 
-
-
-
-
+/*
 //////////////////////////////////////////新增功能////////////////////////////////////////
 //点击新增按钮,从后端取得楼宇编号信息
 $('.add_btn').click(function(){
@@ -220,7 +338,7 @@ $('.add_btn').click(function(){
 $('.select_parent_code').click(function(){
     $.ajax({
         type:"POST",
-        url : getMaterialBuildingCode(),
+        url : getBuildingCode(),
         dataType:"json",
         success:function(data){
 
@@ -236,6 +354,60 @@ $('.select_parent_code').click(function(){
     })
 })
 
+////////////////////////////////在新增功能内点击树形菜单的效果////////////////////
+//树节点点击后将节点赋值
+$('#treeNavAdd>span,#treeNavWrite>span').on("select_node.jstree", function (e, node) {
+    $('#treeNavWrite>span').jstree("close_all")
+    var arr = node.node.id.split("_");
+    var parent_code = arr[0];
+    //当前节点的id
+    var id = arr[1];
+    //当前节点的文本值
+    var name = node.node.text;
+    //当前节点的房号code
+    var room_code = node.node.original.code;
+    console.log(room_code);
+    console.log(node.node);
+    // console.log($(this));
+    //当前对象为包裹层元素(这里是span)
+    var that = $(this);
+
+    //父节点数组
+    var parents_arr = node.node.parents;
+    if (parents_arr.length == 3) {
+        //表示到了室这一层级,需要获取到父节点,把父节点的名称拼接
+        var imm_id = parents_arr[0];
+        var imm_node = that.jstree("get_node", imm_id);
+        var imm_name = imm_node.text;
+        console.log(imm_node);
+    }
+    //表示是栋这一层级
+    else if (parents_arr.length == 2) {
+
+    }
+
+    imm_name = imm_name ? imm_name : '';
+    var html_tmp = "<em id=" + id + " data-room_code=" + room_code + ">" + imm_name + name + "<i class='fa fa-close'></i></em>";
+    console.log(html_tmp);
+    /*   if (that.closest('.model_content').find('.select_buliding #' + id).length == 0) {
+           that.closest('.model_content').find('.select_buliding').append(html_tmp);
+       }*/
+/*
+if($('.model_content').find('.select_buliding em i').length==0){
+    $('.model_content').find('.select_buliding').append(html_tmp);
+}
+
+     if($(".person_building_data ul #"+code).length==0){
+         $('.person_building_data ul').append(html);
+     }
+
+
+})
+
+//点击删除当前节点
+$('.select_buliding_wrap').on('click', '.select_buliding em i', function () {
+    $(this).closest('em').remove();
+})
 
 
 //点击保存新增楼宇信息
@@ -300,7 +472,7 @@ $('#add_Item .confirm').click(function(){
 
     //传数据
 	$.ajax({
-		url:insertMaterial(),
+		url:insert(),
 		method:'post',
 		data:{
 			code:code,
@@ -329,7 +501,7 @@ $('#add_Item .confirm').click(function(){
 				  content: data.message,
 				  cancel: function(){ 
 				    //右上角关闭回调
-                     /* asynRefreshPage(getRootPath()+'/index.php/Material/materialList','Material/getMaterialList',table,data.total,'&keyword='+search_keyword);*/
+                     /!* asynRefreshPage(getRootPath()+'/index.php/Material/materialList','Material/getMaterialList',table,data.total,'&keyword='+search_keyword);*!/
                       materialList();
 				  }
 			});
@@ -340,6 +512,8 @@ $('#add_Item .confirm').click(function(){
 	})
 
 })
+
+*/
 
 
 

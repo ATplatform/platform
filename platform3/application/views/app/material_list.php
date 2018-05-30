@@ -13,7 +13,7 @@
 
 <div class="header oh">
 	<div class="fl logo">
-		<i></i>艾特智汇谷云平台
+		<i></i>艾特智能AI社区云平台
 	</div>
 	<div class="top_login_wrap fr">
 		<span class="user"><i></i> <span></span></span>
@@ -34,6 +34,11 @@
 
         <span class="col_37A fl">筛选条件</span>
         <input type="text" class="effective_date date col_37A fl form-control" name="effective_date"  value="<?php echo $now=date('Y-m-d H:i:s',time()); ?>" >
+
+
+
+        <!-- 筛选条件 地点-->
+        <a href="javascript:;" id="treeNav" class="treeWrap treeWrapSearch"><span></span></a>
 
         <!-- 筛选条件 物资类别-->
         <div class="Search_Item_wrap  selectMaterial select_pull_down query_wrap col_37A fl">
@@ -69,7 +74,7 @@
                 </div>
             </div>
         </div>-->
-     <a href="javascript:;" id="treeNav" class="treeWrap treeWrapSearch"><span></span></a>
+
 
      <!--   <a id="sendSelect" href="javascript:;">yes</a>-->
         <!-- 筛选条件 查找-->

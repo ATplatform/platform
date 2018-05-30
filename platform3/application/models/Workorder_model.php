@@ -18,80 +18,64 @@ class Workorder_model extends CI_Model
     public function getWorkorderListbyNormal($page, $rows)
     {
         $start = ($page - 1) * $rows;
-        $sql = "SELECT
-	*
-FROM
-	village_material M
-LEFT JOIN village_tmp_building AS bs ON M .building_code = bs.room_code
-WHERE
-	M .building_code = bs.room_code 
-and M .effective_status=true
-and M .effective_date = (
-	SELECT  MAX(A.effective_date)
-	FROM
-		village_material A
-where M.code=A.code
-	GROUP BY
-		code
-) 
+        $sql = "select *,
+w_o.create_time as w_o_create_time,
+p1.first_name as create_person_first_name,
+p1.last_name  as create_person_last_name,
+p2.first_name as accept_person_first_name,
+p2.last_name  as accept_person_last_name
+FROM village_work_order as w_o
+left join village_order_record as o_r on o_r.work_code=w_o.code
+left join  village_person_position as pp on pp.person_code=o_r.accept_person_code and pp.code=(select max(code) from village_person_position A where A.person_code=o_r.accept_person_code group by A.person_code)
+left join village_person as p1 on p1.code=w_o.person_code 
+left join village_person as p2 on p2.code=o_r.accept_person_code
 ";
-        $sql .=  " ORDER BY code ASC limit ".$rows." offset ".$start;
+        $sql .=  " ORDER BY w_o.Code ASC limit ".$rows." offset ".$start;
         return $sql;
     }
 
     ////////搜索查询数据内容的sql语句//////////
-    public function getWorkorderListbySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $page, $rows)
+    public function getWorkorderListbySearch($create_time,$create_type,$order_kind, $keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-        $sql = "SELECT
-m.*,
-b.effective_date as b_effective_date,
-b.code as b_code,
-b.id,
-b.parent_code as b_parent_code,
-bs.room,
-bs.immeuble,
-bs.room_code
-
-
-FROM village_material AS M 
-left join 	village_tmp_building AS bs on M .building_code = bs.room_code
-left join 		village_building AS b on M .building_code = b.code
-
-WHERE
-	M .building_code = bs.room_code
-and M .building_code = b.code
-    AND bs.room_code = b.code
-    AND  b.id IN (
-		SELECT
-			MAX (id)
-		FROM
-			village_building
-		GROUP BY
-			code
-
-)
+        $sql = "select *,
+w_o.create_time as w_o_create_time,
+p1.first_name as create_person_first_name,
+p1.last_name  as create_person_last_name,
+p2.first_name as accept_person_first_name,
+p2.last_name  as accept_person_last_name
+FROM village_work_order as w_o
+left join village_order_record as o_r on o_r.work_code=w_o.code
+left join  village_person_position as pp on pp.person_code=o_r.accept_person_code and pp.code=(select max(code) from village_person_position A where A.person_code=o_r.accept_person_code group by A.person_code)
+left join village_person as p1 on p1.code=w_o.person_code 
+left join village_person as p2 on p2.code=o_r.accept_person_code
+where o_r.work_code=w_o.code
 ";
-        if(!empty($effective_date)){
-            $sql .= " and M.effective_date<='$effective_date' ";
+        if(!empty($create_time)){
+            $sql .= " and w_o.create_time<='$create_time' ";
         }
 
-        if(!empty($material_type)){
-            $sql .= " and M.material_type=$material_type ";
-        }
-        if(!empty($building_code)){
-            $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
+        if(!empty($create_type)){
+            $sql .= " and w_o.create_type=$create_type ";
         }
 
-        if (!empty($keyword)) {
+        if(!empty($order_kind)){
+            $sql .= " and w_o.order_kind=$order_kind ";
+        }
+
+      /*  if (!empty($keyword)) {
             if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
                 $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
             }
             if (preg_match("/^\d*$/", $keyword)) {
                 $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
             }
-        }
-        $sql = $sql . " ORDER BY b.code ASC limit ".$rows." offset ".$start;
+        }*/
+
+        /* if(!empty($building_code)){
+         $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
+       }*/
+        $sql = $sql . " ORDER BY w_o.code ASC limit ".$rows." offset ".$start;
         return $sql;
     }
 
@@ -104,60 +88,56 @@ and M .building_code = b.code
 
             foreach ($arr as $key => $value) {
                 foreach ($value as $key2 => $value2) {
-                    if ($key2 == "material_type") {
-                        if ($value2 == "101") {$arr[$key]['material_type_name'] = '工程物资';}
-                        if ($value2 == "102") {$arr[$key]['material_type_name'] = '安防物资';}
-                        if ($value2 == "103") {$arr[$key]['material_type_name'] = '消防物资';}
-                        if ($value2 == "104") {$arr[$key]['material_type_name'] = '保洁物资';}
-                        if ($value2 == "105") {$arr[$key]['material_type_name'] = '办公物资';}
+                    if ($key2 == "create_type") {
+                        if ($value2 == "101") {$arr[$key]['create_type_name'] = '自动创建巡检工单';}
+                        if ($value2 == "102") {$arr[$key]['create_type_name'] = '自动创建异常处理工单';}
+                        if ($value2 == "103") {$arr[$key]['create_type_name'] = '循环创建工单';}
+                        if ($value2 == "201") {$arr[$key]['create_type_name'] = '物业人员创建工单';}
+                        if ($value2 == "202") {$arr[$key]['create_type_name'] = '住户创建工单';}
+
                     }
-                    if ($key2 == 'room') {
-                        if( (( empty($arr[$key]['room']) ) && empty($arr[$key]['immeuble']) ) ){
-                            $arr[$key]['room_name']='和正·智汇谷';
-                        }else{
-                            $arr[$key]['room_name'] = $value['immeuble'] . '栋';
-                            if (!empty($value2)) {$arr[$key]['room_name'] .= $value['room'];}
-                        }
+                    if ($key2 == "order_kind") {
+                        if ($value2 == "101") {$arr[$key]['order_kind_name'] = '安防';}
+                        if ($value2 == "102") {$arr[$key]['order_kind_name'] = '环境-绿化';}
+                        if ($value2 == "103") {$arr[$key]['order_kind_name'] = '环境-保洁';}
+                        if ($value2 == "104") {$arr[$key]['order_kind_name'] = '维修';}
+                        if ($value2 == "105") {$arr[$key]['order_kind_name'] = '电梯';}
+                        if ($value2 == "106") {$arr[$key]['order_kind_name'] = '消防';}
+                        if ($value2 == "999") {$arr[$key]['order_kind_name'] = '其他';}
                     }
-                    if ($key2 == 'code') {
-                        $arr[$key][$key2] = intval($value2, 10);
+                    if ($key2 == "work_state") {
+                        if ($value2 == "101") {$arr[$key]['work_state_name'] = '待分配';}
+                        if ($value2 == "102") {$arr[$key]['work_state_name'] = '待处理';}
+                        if ($value2 == "103") {$arr[$key]['work_state_name'] = '已结案';}
+
                     }
-                    if ($key2 == 'effective_date') {
-                        $arr[$key]["effective_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
+                    if ($key2 == "if_false") {
+                        if ($value2 == 't') {$arr[$key]['if_false_name'] = '是';}
+                        if ($value2 == 'f') {$arr[$key]['if_false_name'] = '否';}
+                    }
+                    if ($key2 == "comment_score") {
+                        if ($value2 == '101') {$arr[$key]['comment_score_name'] = '5分';}
+                        if ($value2 == '102') {$arr[$key]['comment_score_name'] = '4分';}
+                        if ($value2 == '103') {$arr[$key]['comment_score_name'] = '3分';}
+                        if ($value2 == '104') {$arr[$key]['comment_score_name'] = '2分';}
+                        if ($value2 == '105') {$arr[$key]['comment_score_name'] = '1分';}
+                        if ($value2 == '106') {$arr[$key]['comment_score_name'] = '0分';}
+                    }
+
+                    if ($key2 == 'w_o_create_time') {
+                        $arr[$key]["create_time_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
                         // $item["effective_date"]=$value;
                     }
-                    if ($key2 == 'effective_status') {
-                        if ($value2 == 't') {
-                            $arr[$key]["effective_status_name"] = "有效";
-                        } elseif ($value2 == 'f') {
-                            $arr[$key]["effective_status_name"] = "无效";
-                        } else {
-                            $arr[$key]["effective_status_name"] = "未知";
-                        }
+                    if ($key2 == 'accept_time') {
+                        $arr[$key]["accept_time_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
+                        // $item["effective_date"]=$value;
                     }
-                    if ($key2 == 'name') {
-                        $arr[$key][$key2] = $value2;
+                    if ($key2 == 'person_code'){
+                        $arr[$key]['create_person_name'] = $value['create_person_last_name'].$value['create_person_first_name']? $value['create_person_last_name'].$value['create_person_first_name'] : '无';
                     }
-
-                    if ($key2 == 'pcs') {
-                        $arr[$key][$key2] = intval($value2, 10);
+                    if ($key2 == 'accept_person_code'){
+                        $arr[$key]['accept_person_name'] = $value['accept_person_last_name'].$value['accept_person_first_name']? $value['accept_person_last_name'].$value['accept_person_first_name'] : '无';
                     }
-                    if ($key2 == 'function') {
-                        $arr[$key][$key2] = $value2 ? $value2 : '无';
-                    }
-                    if ($key2 == 'supplier') {
-                        $arr[$key][$key2] = $value2 ? $value2 : '无';
-                    }
-                    if ($key2 == 'internal_no') {
-                        $arr[$key][$key2] = intval($value2, 10);
-                    }
-                    if ($key2 == 'initial_no') {
-                        $arr[$key][$key2] = intval($value2, 10);
-                    }
-                    if ($key2 == 'remark') {
-                        $arr[$key][$key2] = $value2 ? $value2 : '无';
-                    }
-
                 }
             }
             $json = json_encode($arr);
@@ -172,23 +152,22 @@ and M .building_code = b.code
     {
         $sql="select count(*) as count from (";
         $sql.="
-SELECT
-	*
-FROM
-	village_material M
-LEFT JOIN village_tmp_building AS bs ON M .building_code = bs.room_code
-WHERE
-	M .building_code = bs.room_code 
-and M .effective_status=true
-and M .effective_date = (
-	SELECT  MAX(A.effective_date)
-	FROM
-		village_material A
-where M.code=A.code
-	GROUP BY
-		code
+select *,
+w_o.create_time as w_o_create_time,
+p1.first_name as create_person_first_name,
+p1.last_name  as create_person_last_name,
+p2.first_name as accept_person_first_name,
+p2.last_name  as accept_person_last_name
+FROM village_work_order as w_o
+left join village_order_record as o_r on o_r.work_code=w_o.code
+left join  village_person_position as pp on pp.person_code=o_r.accept_person_code and pp.code=(select max(code) from village_person_position A where A.person_code=o_r.accept_person_code group by A.person_code)
+left join village_person as p1 on p1.code=w_o.person_code 
+left join village_person as p2 on p2.code=o_r.accept_person_code
+
 		
-)";
+";
+
+
         $sql.=" ) as sss";
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {
@@ -205,60 +184,47 @@ where M.code=A.code
     }
 
     //////////////////////搜索查询数据数目的数据总条数/////////////
-    public function getWorkorderListTotalbySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $rows)
+    public function getWorkorderListTotalbySearch($create_time,$parent_code, $building_code, $create_type, $keyword, $order_kind,$rows)
     {
         $sql="select count(*) as count from (";
 
-        $sql .= "SELECT
-m.*,
-b.effective_date as b_effective_date,
-b.code as b_code,
-b.id,
-b.parent_code as b_parent_code,
-bs.room,
-bs.immeuble,
-bs.room_code
-
-
-FROM village_material AS M 
-left join 	village_tmp_building AS bs on M .building_code = bs.room_code
-left join 		village_building AS b on M .building_code = b.code
-
-WHERE
-	M .building_code = bs.room_code
-and M .building_code = b.code
-    AND bs.room_code = b.code
-    AND  b.id IN (
-		SELECT
-			MAX (id)
-		FROM
-			village_building
-		GROUP BY
-			code
-)
+        $sql .= "select *,
+w_o.create_time as w_o_create_time,
+p1.first_name as create_person_first_name,
+p1.last_name  as create_person_last_name,
+p2.first_name as accept_person_first_name,
+p2.last_name  as accept_person_last_name
+FROM village_work_order as w_o
+left join village_order_record as o_r on o_r.work_code=w_o.code
+left join  village_person_position as pp on pp.person_code=o_r.accept_person_code and pp.code=(select max(code) from village_person_position A where A.person_code=o_r.accept_person_code group by A.person_code)
+left join village_person as p1 on p1.code=w_o.person_code 
+left join village_person as p2 on p2.code=o_r.accept_person_code
+where o_r.work_code=w_o.code
 ";
-
-        if(!empty($effective_date)){
-            $sql .= " and M.effective_date<='$effective_date' ";
+        if(!empty($create_time)){
+            $sql .= " and w_o.create_time<='$create_time' ";
         }
 
-
-        if(!empty($material_type)){
-            $sql .= " and M.material_type=$material_type ";
-        }
-        if(!empty($building_code)){
-            $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code)";
+        if(!empty($create_type)){
+            $sql .= " and w_o.create_type=$create_type ";
         }
 
-        if (!empty($keyword)) {
-            if (preg_match("/^\d*$/", $keyword)) {
-                $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
-                // or M.material_type like '%$keyword%'
-            }
-            if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
-                $sql .= " and concat(M.supplier,M.remark,M.function,M.name) like '%$keyword%'";
-            }
+        if(!empty($order_kind)){
+            $sql .= " and w_o.order_kind=$order_kind ";
         }
+
+        /*  if (!empty($keyword)) {
+              if (preg_match('/^\d*[\x7f-\xff]+\d*$/', $keyword)) {
+                  $sql .= " and concat(M.supplier,M.remark,M.function,M.name,M.internal_no,M.initial_no) like '%$keyword%'";
+              }
+              if (preg_match("/^\d*$/", $keyword)) {
+                  $sql .= " and M.code=$keyword or M.material_type=$keyword or M.internal_no like '%$keyword%' or M.initial_no like '%$keyword%' ";
+              }
+          }*/
+
+        /* if(!empty($building_code)){
+         $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
+       }*/
         $sql.=" ) as sss";
         $q = $this->db->query($sql); //自动转义
 
@@ -278,53 +244,7 @@ and M .building_code = b.code
 
 
 
-    ////////////////////////////////////插入数据/////////////////////////////////////
-    public function insertWorkorder($code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark, $create_time)
-    {
-        $now="'".date('Y-m-d H:i:s',time())."'";
-        //先查出最新的code;
-        $sql = " select code from village_material order by code desc";
-        $query = $this->db->query($sql);
-        $row = $query->row_array();
-        if(empty($row['code'])){
-            $code = '1000001';
-        }
-        else {
-            $code = $row['code'] +1;
-        }
-        $sql = "INSERT INTO village_material (code,effective_date,effective_status,name,pcs,material_type,building_code,function,supplier,internal_no,initial_no,remark,create_time) values (".
-
-            $this->db->escape($code).", ".
-            $this->db->escape($effective_date).", ".
-            $this->db->escape($effective_status).", ".
-            $this->db->escape($name).", ".
-            $this->db->escape($pcs).", ".
-            $this->db->escape($material_type).",".
-            $this->db->escape($building_code).", ".
-            $this->db->escape($function).", ".
-            $this->db->escape($supplier).", ".
-            $this->db->escape($internal_no).", ".
-            $this->db->escape($initial_no).", ".
-            $this->db->escape($remark).", ".$now.")"
-        ;
-        $this->db->query($sql);
-        return $this->db->affected_rows();
-    }
-
-
-
-
     //////////////////////////////////一些辅助功能///////////////////////////////////
-    //获排名最前的数据
-    public function getMaterialLatestCode()
-    {
-        $sql = "select code from village_material order by code desc limit 1";
-        $query = $this->db->query($sql);
-        $row = $query->row_array();
-        return $row['code'];
-    }
-
-
     //动态获取所有楼宇信息
     public function getMaterialBuildingCode()
     {
@@ -339,7 +259,7 @@ and M .building_code = b.code
     }
 
 
-////////////////////获取用户名/////////////
+  ///////////////////获取用户名/////////////
     public function getUserName($username)
   {
         $sql = "select name from admin_login where name='$username'";
@@ -351,55 +271,16 @@ and M .building_code = b.code
         }
     }
 
-///////////////////////获取物资类别名称///////////////////
-    public function getmaterial_type_name($material_type)
-    {
-        if ($material_type == 101) {
-            $material_type_name = '工程物资';
-        } elseif ($material_type == 102) {
-            $material_type_name = '安防物资';
-        } elseif ($material_type == 103) {
-            $material_type_name = '消防物资';
-        } elseif ($material_type == 104) {
-            $material_type_name = '保洁物资';
-        } elseif ($material_type == 105) {
-            $material_type_name = '办公物资';
-        } else {
-            $material_type_name = '物资类别';
-        }
-    return $material_type_name;
-    }
-
-////////////////////////////////////获取物资编码//////////////////////
-    public function getMaterialAllCode()
-    {
-        $sql = "SELECT code,name,effective_date FROM village_material as M where
- M .effective_status=true
-and M .effective_date = (
-	SELECT  MAX(A.effective_date)
-	FROM
-		village_material A
-where M.code=A.code
-	GROUP BY
-		code
-)
-
-
-
-
-
-	";
-        $q = $this->db->query($sql);
-        if ($q->num_rows() > 0) {
-            $arr = $q->result_array();
-            $json = json_encode($arr);
-            return $json;
-        }
-    }
-
-
-
-
+  /////////获得协同人与管家信息/////////////
+public function getOrderRecordPerson($team_person_code,$property_person_code)
+{
+        $sql="select p1.code as team_person_code,p2.code as property_person_code,p1.first_name as team_person_first_name,p1.last_name as team_person_last_name,p2.first_name as property_person_first_name,p2.last_name as property_person_last_name from  village_person as p1,village_person as p2 
+        where p1.code=$team_person_code and p2.code=$property_person_code
+        ";
+         $query = $this->db->query($sql);
+         $result = $query->row_array();
+         return $result;
+}
 
 
 

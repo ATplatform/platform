@@ -38,43 +38,45 @@ class Workorder extends CI_Controller
         $username=$_SESSION['username'];
         $username= $this->Workorder_model->getUserName($username);
         $treeNav_data = $this->Building_model->getBuildingTreeData();
-        $effective_date=$this->input->get('effective_date');
+
+        $create_time=$this->input->get('create_time');
         $parent_code = $this->input->get('parent_code');
         $building_code = $this->input->get('building_code');
-        $material_type = $this->input->get('material_type');
+        $create_type = $this->input->get('create_type');
+        $order_kind=$this->input->get('order_kind');
         $keyword = $this->input->get('keyword');
-        $material_type_name=$this->Workorder_model->getmaterial_type_name($material_type);
-
         $page = $this->input->get('page');
         $page = $page ? $page : '1';
 
 
         //判断是普通查询还是搜索查询
-        if (empty($parent_code) && empty($building_code) && empty($material_type) && empty($keyword) && empty($effective_date)) {
+        if (empty($parent_code) && empty($building_code) && empty($create_type) && empty($keyword) && empty($create_time) && empty($order_kind)) {
             $total = $this->Workorder_model->getWorkorderListTotalbyNormal($this->user_per_page);
             $dataNormal['nav'] = 'workorderList';
             $dataNormal['keyword'] = $keyword;
-            $dataNormal['material_type'] = $material_type;
+            $dataNormal['create_type'] = $create_type;
+            $dataNormal['order_kind'] = $order_kind;
             $dataNormal['building_code'] = $building_code;
             $dataNormal['parent_code'] = $parent_code;
-            $dataNormal['effective_date'] = $effective_date;
+            $dataNormal['create_time'] = $create_time;
             $dataNormal['username'] = $username;
-            $dataNormal['material_type_name'] = $material_type_name;
+
             $dataNormal['treeNav_data'] = $treeNav_data;
             $dataNormal['total'] = $total;
             $dataNormal['page'] = $page >= $total ? $total : $page;
             $dataNormal['pagesize'] = $this->user_per_page;
             $this->load->view('app/workorder_list', $dataNormal);
         } else {
-            $total = $this->Workorder_model->getWorkorderListTotalbySearch($effective_date,$parent_code, $building_code, $material_type, $keyword, $this->user_per_page);
+            $total = $this->Workorder_model->getWorkorderListTotalbySearch($create_time,$parent_code, $building_code, $create_type, $keyword, $order_kind,$this->user_per_page);
             $dataSearch['nav'] = 'workorderList';
             $dataSearch['keyword'] = $keyword;
-            $dataSearch['material_type'] = $material_type;
+            $dataSearch['create_type'] = $create_type;
+            $dataSearch['order_kind'] = $order_kind;
             $dataSearch['building_code'] = $building_code;
             $dataSearch['parent_code'] = $parent_code;
-            $dataSearch['effective_date'] = $effective_date;
+            $dataSearch['create_time'] = $create_time;
             $dataSearch['username'] = $username;
-            $dataSearch['material_type_name'] = $material_type_name;
+
             $dataSearch['treeNav_data'] = $treeNav_data;
             $dataSearch['total'] = $total;
             $dataSearch['page'] = $page >= $total ? $total : $page;
@@ -83,38 +85,6 @@ class Workorder extends CI_Controller
             $this->load->view('app/workorder_list', $dataSearch);
         }
 
-    }
-
-
-    //////////////////////插入数据/////////////////////
-    public function insertMaterial()
-    {
-        //收集数据
-        $create_time = date('Y-m-d h:i:s', time());
-        $code = $this->input->post('code');
-        $effective_date = $this->input->post('effective_date');
-        $effective_status = $this->input->post('effective_status');
-        $name = $this->input->post('name');
-        $pcs = $this->input->post('pcs');
-        $material_type = $this->input->post('material_type');
-        $building_code = $this->input->post('building_code');
-        $function = $this->input->post('materialfunction');
-        $supplier = $this->input->post('supplier');
-        $internal_no = $this->input->post('internal_no');
-        $initial_no = $this->input->post('initial_no');
-        $remark = $this->input->post('remark');
-        $this->load->model('Workorder_model');
-        foreach ($building_code as $row) {
-            $res = $this->Workorder_model->insertMaterial($code, $effective_date, $effective_status, $name, $pcs, $material_type, $row['code'], $function,$supplier, $internal_no, $initial_no, $remark, $create_time);
-        }
-        if ($res) {
-            $data['message'] = '新增物资成功';
-        } else {
-            $data['message'] = '新增物资失败';
-        }
-        $total = $this->Workorder_model->getWorkorderListTotalbyNormal($this->user_per_page);
-        $data['total'] = $total;
-        print_r(json_encode($data));
     }
 
 
@@ -133,30 +103,30 @@ class Workorder extends CI_Controller
     ///////////////////搜索查询数据 get方法 查询参数//////////////
     public function getWorkorderListbySearch()
     {
-        $effective_date=$this->input->get('effective_date');
-        $parent_code = $this->input->get('parent_code');
-        $building_code = $this->input->get('building_code');
-        $material_type = $this->input->get('material_type');
-        $keyword = $this->input->get('keyword');
+        $create_time=$this->input->get('create_time');
+        $create_type = $this->input->get('create_type');
+        $order_kind = $this->input->get('order_kind');
+        //$keyword = $this->input->get('keyword');
+        $keyword='';
         $page = $this->input->get('page');
         $page = $page ? $page : '1';
         $this->load->model('Workorder_model');
-        $sqlSearch = $this->Workorder_model->getWorkorderListbySearch($effective_date,$parent_code, $building_code, $material_type, $keyword, $page, $this->user_per_page);
+
+        $sqlSearch = $this->Workorder_model->getWorkorderListbySearch($create_time,$create_type, $order_kind, $keyword, $page, $this->user_per_page);
         $dataSearch = $this->Workorder_model->getWorkorderList($sqlSearch);
         echo $dataSearch;
     }
 
 
-   /////////////////获得目前数据库里的最高序列+1
-    public function getMaterialLatestCode()
+    public function getOrderRecordPerson()
     {
-        $this->load->model('Material_model');
-        $res = $this->Material_model->getMaterialLatestCode();
-        echo $res;
+        $team_person_code = $this->input->post('team_person_code');
+        $property_person_code = $this->input->post('property_person_code');
+        $this->load->model('Workorder_model');
+        $res = $this->Workorder_model->getOrderRecordPerson($team_person_code,$property_person_code);
+        print_r(json_encode($res));
+
     }
-
-
-
 
     //动态获取所有楼宇信息
     public function getMaterialBuildingCode()
@@ -165,18 +135,6 @@ class Workorder extends CI_Controller
         $res = $this->Material_model->getMaterialNameCode();
         echo $res;
     }
-
-    //动态获取所有物资的编号
-    public function getMaterialAllCode()
-    {
-        $this->load->model('Material_model');
-        $res = $this->Material_model->getMaterialAllCode();
-        echo $res;
-    }
-
-
-
-
 
 
 }
