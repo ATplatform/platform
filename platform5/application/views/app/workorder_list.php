@@ -274,6 +274,10 @@
     }
 
 </script>
+
+
+
+
 <script src='<?=base_url().'application/views/plugin/app/js/workorder_list.js'?>'></script>
 </body>
 </html>

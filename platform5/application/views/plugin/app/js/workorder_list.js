@@ -68,21 +68,72 @@ switch(search_order_type){
 ///////////////////////////////所有的地址跳转//////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 ////////////////////////////传入参数//////////////////////////////
-
-function List(create_time,create_type,order_type,keyword,building_code,parent_code,page){
-    window.location.href="workorderList?keyword="+keyword+"&page=1"+"&building_code="+building_code+"&parent_code="+parent_code+'&create_type='+create_type+'&order_type='+order_type+'&create_time='+create_time+'&keyword='+keyword;
+function href(index){
+    var keys = [];
+    var href='';
+    for (var p in index){ keys.push(p);}
+    href=index[keys[0]]+'?'+keys[1]+'='+index[keys[1]];
+    if(keys.length>2)
+    {
+        for(var i=2;i<keys.length;i++){
+            href +='&'+keys[i]+'='+index[keys[i]]
+        }
+    }
+    return href
 }
 
+
+
+var List  = {
+    method:'workorderList',
+    page : 1,
+    building_code: building_code,
+    parent_code:parent_code,
+    create_type:create_type,
+    order_type:order_type,
+    create_time:create_time,
+    keyword:keyword
+};
+
+var getList  = {
+    method:'getWorkorderList',
+    page : page,
+    building_code: building_code,
+    parent_code:parent_code,
+    create_type:create_type,
+    order_type:order_type,
+    create_time:create_time,
+    keyword:keyword
+};
+
+var PageChangeToList={
+    method:'workorderList',
+    page : page,
+    building_code: search_building_code,
+    parent_code:search_parent_code,
+    create_type:search_create_type,
+    order_type:search_order_type,
+    create_time:search_create_time,
+    keyword:search_keyword
+}
+
+var Listhref=href(List);
+var getListhref=href(getList);
+var PageChangeToListhref=href(PageChangeToList)
+
+
+console.log(getList)
+/*
 
 function getList(){
     return getRootPath() + '/index.php/Workorder/getWorkorderList?page=' + page+'&parent_code='+parent_code+'&building_code='+building_code+'&create_type='+create_type+'&order_type='+order_type+'&create_time='+create_time+'&keyword='+keyword;
 }
 
 
-
 function PageChangeToList(page){
     window.location.href = "workorderList?keyword=" + search_keyword + "&page=" + page+'&create_type='+search_create_type+'&building_code='+search_building_code+'&parent_code='+search_parent_code+'&create_time='+search_create_time+'&order_type='+search_order_type;
 }
+*/
 
 
 //////////////////方法///////////////////////
@@ -105,8 +156,8 @@ $('#clear').attr("href",'workorderList')
 
 
 
-show(create_time,create_type,order_type,keyword,building_code,parent_code,page);
-search(create_time,create_type,order_type,keyword,building_code,parent_code,page);
+
+
 
 
 
@@ -115,7 +166,7 @@ search(create_time,create_type,order_type,keyword,building_code,parent_code,page
 ////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////普通模式的数据展示/////////////////////////
-function show(create_time,create_type,order_type,keyword,building_code,parent_code,page){
+
 
 
     ///////////////////////////////////数据展示///////////////////////
@@ -123,7 +174,7 @@ function show(create_time,create_type,order_type,keyword,building_code,parent_co
         $('#table').bootstrapTable({
             method: "get",
             undefinedText: '/',
-            url: getList(),
+            url: getListhref,
             dataType: 'json',
             // pagination:true,
             // pageSize: 15,
@@ -168,7 +219,7 @@ function show(create_time,create_type,order_type,keyword,building_code,parent_co
             $('input[name="fenye_input"]').val('');
             return;
         }
-        PageChangeToList(page);
+        window.location.href=PageChangeToListhref;
     })
 
 ////////////////////////////////////////////信息管理////////////////////////////////
@@ -244,7 +295,7 @@ function show(create_time,create_type,order_type,keyword,building_code,parent_co
         }
     }
 
-}
+
 
 
 
@@ -255,26 +306,28 @@ function show(create_time,create_type,order_type,keyword,building_code,parent_co
 
 
 ///////////////////////搜索时间//////////////////
-function search(create_time,create_type,order_type,keyword,building_code,parent_code,page)
-{
+
 ///////////////////////搜索时间////////////////
 $('.search_wrap .create_time').datetimepicker().on('changeDate',function(e){
     var create_time=$('input[name="create_time"]').val();
     create_time=create_time +' 23:59:59';
-    List(create_time,create_type,order_type,keyword,building_code,parent_code,page);
+    List.create_time=create_time
+    window.location.href=href(List)
 })
 
 /////////////////////搜索创建类型////////////////
 $(' .create_type_search_wrap .ka_drop_list li').click(function(){
     var create_type = $(this).find('a').data('ajax');
-    List(create_time,create_type,order_type,keyword,building_code,parent_code,page);
+    List.create_type=create_type
+    window.location.href=href(List)
 
 })
 
 /////////////////搜索工单类型////////////
 $('.order_type_search_wrap .ka_drop_list li').click(function(){
     var order_type =$(this).find('a').data('ajax');
-     List(create_time,create_type,order_type,keyword,building_code,parent_code,page);
+    List.order_type=order_type
+    window.location.href=href(List)
 })
 
 ////////////////搜索楼宇///////////////////
@@ -282,10 +335,12 @@ $('.order_type_search_wrap .ka_drop_list li').click(function(){
 $('#treeNav>span').on("select_node.jstree", function (e, node) {
     var building_code=node.node.original.code;
     var parent_code=node.node.original.code;
-    List(create_time,create_type,order_type,keyword,building_code,parent_code,page);
+    List.building_code=building_code
+    List.parent_code=parent_code
+    window.location.href=href(List)
 })
 
-}
+
 
 
 

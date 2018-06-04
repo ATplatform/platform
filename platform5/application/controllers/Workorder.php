@@ -38,15 +38,17 @@ class Workorder extends CI_Controller
         $username=$_SESSION['username'];
         $username= $this->Workorder_model->getUserName($username);
         $treeNav_data = $this->Building_model->getBuildingTreeData();
-
-        $create_time=$this->input->get('create_time');
+        $page = $this->input->get('page');
+        $page = $page ? $page : '1';
         $parent_code = $this->input->get('parent_code');
         $building_code = $this->input->get('building_code');
+        $create_time=$this->input->get('create_time');
+
+
         $create_type = $this->input->get('create_type');
         $order_type=$this->input->get('order_type');
         $keyword = $this->input->get('keyword');
-        $page = $this->input->get('page');
-        $page = $page ? $page : '1';
+
         $data['nav'] = 'workorderList';
         $data['keyword'] = $keyword;
         $data['create_type'] = $create_type;
