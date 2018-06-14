@@ -4,14 +4,14 @@
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-table/css/bootstrap-table.css'?>'/>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css'?>'/>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/jstree/dist/themes/default/style.min.css'?>'/>
-<link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-select/css/bootstrap-select.min.css'?>'/>
+
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table-zh-CN.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/moment-with-locales.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/jstree/dist/jstree.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js'?>'></script>
-<script src='<?=base_url().'application/views/plugin/bootstrap-select/js/bootstrap-select.min.js'?>'></script>
+
 <div class="header oh">
 	<div class="fl logo">
 		<i></i>艾特智能AI社区云平台

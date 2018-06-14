@@ -139,6 +139,7 @@ function getMaterialAllCode(){
             // sortName: 'id',
             // sortOrder: 'desc',
             responseHandler: function (res) {
+
                 //用于处理后端返回数据
                 console.log(res);
                 return res;

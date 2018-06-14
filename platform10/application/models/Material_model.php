@@ -774,27 +774,43 @@ mtr.effective_date=$effective_date
     {
         $start = ($page - 1) * $rows;
         $sql = "		SELECT
-				mtr.*, bs.*, M .code,
-				M . NAME as m_name,
-				m.code as m_code,
-				M .material_type,
-				M .pcs,
-				M .building_code,
-				M .effective_date AS m_effective_date,
-				P .code,
-				P .first_name,
-				P .last_name,
-				bs.code as bs_building_code,
-				bs.parent_code as bs_parent_code
-			FROM
-				village_mtr_mgt AS mtr,
-				village_material AS M,
-				village_tmp_building AS bs,
-				village_person AS P
-			WHERE
-				mtr.material_code = M .code
-			AND M .building_code = bs.code
-			AND mtr.person_code = P .code
+mtr.*,
+bs.*,
+m.code as m_code,
+m.name as m_name,
+m.material_type,
+m.pcs,
+m.building_code,
+m.effective_date as m_effective_date,
+p.code,
+p.first_name,
+p.last_name,
+bs.code as bs_building_code
+
+ 
+FROM village_mtr_mgt AS mtr 
+LEFT JOIN 	village_material AS m on 	mtr.material_code=m.code 
+left join 	village_tmp_building AS bs on m.building_code=bs.code 
+left join 	village_person as p on mtr.person_code=p.code
+	
+WHERE
+	mtr.material_code=m.code 
+and m.building_code=bs.code
+
+and M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code)
+and mtr.effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_mtr_mgt A
+where mtr.material_code=A.material_code
+	GROUP BY
+		material_code)
 
 ";
         if(!empty($effective_date)){
@@ -831,27 +847,43 @@ mtr.effective_date=$effective_date
 
         $sql .= "
 		SELECT
-				mtr.*, bs.*, M .code,
-				M . NAME as m_name,
-				m.code as m_code,
-				M .material_type,
-				M .pcs,
-				M .building_code,
-				M .effective_date AS m_effective_date,
-				P .code,
-				P .first_name,
-				P .last_name,
-				bs.code as bs_building_code,
-				bs.parent_code as bs_parent_code
-			FROM
-				village_mtr_mgt AS mtr,
-				village_material AS M,
-				village_tmp_building AS bs,
-				village_person AS P
-			WHERE
-				mtr.material_code = M .code
-			AND M .building_code = bs.code
-			AND mtr.person_code = P .code
+mtr.*,
+bs.*,
+m.code as m_code,
+m.name as m_name,
+m.material_type,
+m.pcs,
+m.building_code,
+m.effective_date as m_effective_date,
+p.code,
+p.first_name,
+p.last_name,
+bs.code as bs_building_code
+
+ 
+FROM village_mtr_mgt AS mtr 
+LEFT JOIN 	village_material AS m on 	mtr.material_code=m.code 
+left join 	village_tmp_building AS bs on m.building_code=bs.code 
+left join 	village_person as p on mtr.person_code=p.code
+	
+WHERE
+	mtr.material_code=m.code 
+and m.building_code=bs.code
+
+and M .effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_material A
+where M.code=A.code
+	GROUP BY
+		code)
+and mtr.effective_date = (
+	SELECT  MAX(A.effective_date)
+	FROM
+		village_mtr_mgt A
+where mtr.material_code=A.material_code
+	GROUP BY
+		material_code)
 
 ";
 
