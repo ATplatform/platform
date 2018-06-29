@@ -49,7 +49,7 @@
                 <thead>
                 <tr>
 
-                    <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+                   <!-- <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
                     <th data-title="车位编号" data-align="center" data-field="lot_code_name"></th>
                     <th data-title="生效日期" data-align="center" data-field="lot_effective_date_name"></th>
                     <th data-title="停车场" data-align="center" data-field="par_parkname"></th>
@@ -61,6 +61,8 @@
                     <th  data-title="占用开始日期" data-align="center" data-field="lot_begin_date_name"></th>
                     <th  data-title="占用结束日期" data-align="center" data-field="lot_end_date_name"></th>
                     <th  data-title="车位租金" data-align="center" data-field="lot_monthly_rent_name"></th>
+                    <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>-->
+
                     <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
                 </tr>
                 </thead>
