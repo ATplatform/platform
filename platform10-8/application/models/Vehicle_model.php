@@ -1125,7 +1125,11 @@ lot.monthly_rent as lot_monthly_rent,
 lot.remark as lot_remark,
 lot.linked_lot_code as lot_linked_lot_code,
 lot.area as lot_area,
+<<<<<<< HEAD
 par.parkname as lot_parkcode_name
+=======
+par.parkname as par_parkname
+>>>>>>> 57e5d248fa9f07adcd6b5c12733742c9b038e0c7
 from village_parking_lot as lot
 left join village_park as par on par.parkcode=lot.parkcode
 left join village_person as p on lot.owner=p.code 
@@ -1153,7 +1157,11 @@ lot.monthly_rent as lot_monthly_rent,
 lot.remark as lot_remark,
 lot.linked_lot_code as lot_linked_lot_code,
 lot.area as lot_area,
+<<<<<<< HEAD
 par.parkname as lot_parkcode_name
+=======
+par.parkname as par_parkname
+>>>>>>> 57e5d248fa9f07adcd6b5c12733742c9b038e0c7
 from village_parking_lot as lot
 left join village_park as par on par.parkcode=lot.parkcode
 left join village_person as p on lot.owner=p.code 
@@ -1232,6 +1240,7 @@ public function getparkinglotTotal($sqlorigin,$rows){
                     if ($key2 == 'lot_monthly_rent') {
                         $arr[$key]['lot_monthly_rent_name'] = $value2.'元/月';
                     }
+<<<<<<< HEAD
                   /*  if ($key2 == 'lot_parkcode') {
                         $arr[$key]['lot_parkcode_name'] = $value2;
                     }*/
@@ -1241,6 +1250,17 @@ public function getparkinglotTotal($sqlorigin,$rows){
                  /*   if ($key2 == 'lot_parkcode') {
                         $arr[$key]['lot_parkcode_name'] = $value2;
                     }*/
+=======
+                    if ($key2 == 'par_parkname') {
+                        $arr[$key]['par_parkname'] = $value2;
+                    }
+                    if ($key2 == 'lot_linked_lot_code') {
+                        $arr[$key]['lot_linked_lot_code_name'] = $value2;
+                    }
+                    if ($key2 == 'lot_parkcode') {
+                        $arr[$key]['lot_parkcode_name'] = $value2;
+                    }
+>>>>>>> 57e5d248fa9f07adcd6b5c12733742c9b038e0c7
 
                     if ($key2 == 'lot_area') {
                         $arr[$key]['lot_area_name'] = $value2.'平方米';
@@ -1406,7 +1426,11 @@ public function getparkingcode()
     $sql="SELECT
 
 	par.parkcode as lot_parkcode,
+<<<<<<< HEAD
 	par.parkname as lot_parkcode_name
+=======
+	par.parkname as par_parkname
+>>>>>>> 57e5d248fa9f07adcd6b5c12733742c9b038e0c7
 FROM
 	village_park AS par
 ";

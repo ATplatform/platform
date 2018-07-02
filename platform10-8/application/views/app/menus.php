@@ -136,11 +136,19 @@
 				else{
 					echo 'class="collapse secondmenu"';
 				} 
+<<<<<<< HEAD
 			?>   
 		aria-expanded="true" >
 			<li <?php if($nav=="vehicleList") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Vehicle/vehicleList'?>"><i class="glyphicon"></i>车辆管理列表</a></li>
             <li <?php if($nav=="vehicleAuz") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Vehicle/vehicleAuz'?>"><i class="glyphicon"></i>车辆授权信息</a></li>
             <li <?php if($nav=="parkinglot") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Vehicle/parkinglot'?>"><i class="glyphicon"></i>小区车位管理</a></li>
+=======
+			?>
+		aria-expanded="true" >
+			<li <?php if($nav=="vehicleList") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Vehicle/vehicleList'?>"><i class="glyphicon"></i>车辆管理列表</a></li>
+            <li <?php if($nav=="vehicleAuz") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Vehicle/vehicleAuz'?>"><i class="glyphicon"></i>车辆授权信息</a></li>
+            <li <?php if($nav=="parkinglot") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Activity/activityList'?>"><i class="glyphicon"></i>小区车位管理</a></li>
+>>>>>>> 57e5d248fa9f07adcd6b5c12733742c9b038e0c7
 			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>车辆进出记录</a></li>
 			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>车辆缴费记录</a></li>
 		</ul>

@@ -49,7 +49,11 @@
                 <thead>
                 <tr>
 
+<<<<<<< HEAD
                    <!-- <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+=======
+                    <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+>>>>>>> 57e5d248fa9f07adcd6b5c12733742c9b038e0c7
                     <th data-title="车位编号" data-align="center" data-field="lot_code_name"></th>
                     <th data-title="生效日期" data-align="center" data-field="lot_effective_date_name"></th>
                     <th data-title="停车场" data-align="center" data-field="par_parkname"></th>
@@ -61,8 +65,11 @@
                     <th  data-title="占用开始日期" data-align="center" data-field="lot_begin_date_name"></th>
                     <th  data-title="占用结束日期" data-align="center" data-field="lot_end_date_name"></th>
                     <th  data-title="车位租金" data-align="center" data-field="lot_monthly_rent_name"></th>
+<<<<<<< HEAD
                     <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>-->
 
+=======
+>>>>>>> 57e5d248fa9f07adcd6b5c12733742c9b038e0c7
                     <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
                 </tr>
                 </thead>
@@ -166,14 +173,22 @@
 <input type="hidden" value='<?php echo $total;?>' name="total" />
 <script>
     //////////////////////////////搜索模块的树形地点///////////////////////////////////
+<<<<<<< HEAD
     var treeNav_data = <?php echo $treeNav_data?>;
+=======
+    /*var treeNav_data = ;
+>>>>>>> 57e5d248fa9f07adcd6b5c12733742c9b038e0c7
     //搜索框楼宇层级树形菜单
     $('#treeNav>span').jstree({
         'core' : {
             data: treeNav_data
         }
     })
+<<<<<<< HEAD
 
+=======
+*/
+>>>>>>> 57e5d248fa9f07adcd6b5c12733742c9b038e0c7
 
      /*  $('.additionalurl').click(function(e){
 
