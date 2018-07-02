@@ -84,7 +84,7 @@ function platform() {
             input:{
                 v_code:null,
                 v_effective_date:null,
-                licence:null,
+                v_licence:null,
                 owner:null,
                 color:null,
                 model:null,

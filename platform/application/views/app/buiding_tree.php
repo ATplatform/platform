@@ -27,15 +27,6 @@ path.link {
   stroke-width: 1.5px;
 }
 </style>
-<div class="header oh">
-	<div class="fl logo">
-		<i></i>艾特智汇谷云平台
-	</div>
-	<div class="top_login_wrap fr">
-		<span class="user"><i></i>180940320</span>
-		|<a class="login_out" href="<?=base_url().'index.php/Login/logout'?>">退出登录</a>
-	</div>
-</div>	
 
 <div class="oh pt10">
 
@@ -45,18 +36,18 @@ path.link {
 
 <!--<?php echo 'x'; ?>-->
 
-	<div class="col-md-10 col-xm-9">
+	<div class="col-sm-12 main_wrap">
 		<div class="oh">
-			<div class="searc_bar oh">
+			<div class="searc_bar search_wrap">
 				<a class="active" href="<?=base_url().'index.php/Building/buildingtree'?>">树状图模式</a>
 				<a href="<?=base_url().'index.php/Building/buildinglist'?>">列表模式</a>
-				<form class="search_room" action="<?=base_url().'index.php/Building/buildinglist'?>" method="get">
+				<div class="search_room">
 					<p>
-						<input type="text" class="searc_room_text" name="keyword" placeholder="请输入楼宇名称" value="" />
-						<a id="clear" href="<?=base_url().'index.php/Building/buildingtree'?>">X</a>
+						<input type="text" class="searc_room_text" name="keyword" placeholder="可输入楼宇名称" value="" />
+						<a id="clear" href="javascript:;">X</a>
 					</p>
 					<button type="submit"><i class="fa fa-search"></i></button>
-				</form>
+				</div>
 			</div>
 		</div>
 		<!--绘制树状图容器-->
@@ -66,7 +57,7 @@ path.link {
 	</div>
 </div>	
 <script type="text/javascript">
-var w = 1280,
+var w = '100%',
     h = 800,
     i = 0,
     root;
@@ -84,11 +75,12 @@ var vis = d3.select("#tree").append("svg:svg")
     .attr("width", w )
     .attr("height", h)
     .append("svg:g")
-    .attr("transform", "translate(" + 140 + "," + 10 + ")");
+    .attr("transform", "translate(" + 140 + "," + 0 + ")");
 
 d3.json(data, function(json) {
   root = json;
   root.x0 = h / 2;
+  // root.x0 = 0;
   root.y0 = 0;
 
   console.log(root);
@@ -100,7 +92,6 @@ d3.json(data, function(json) {
     }
   }
 
-  // Initialize the display to show a few nodes.
   root.children.forEach(toggleAll);
   //默认打开第2个子节点
   // toggle(root.children[1]);
@@ -114,7 +105,7 @@ function update(source) {
   var nodes = tree.nodes(root).reverse();
 
   // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.y = d.depth * 180; });
+  nodes.forEach(function(d) { d.y = d.depth * 200; });
 
   // Update the nodes…
   var node = vis.selectAll("g.node")
@@ -130,7 +121,7 @@ function update(source) {
   nodeEnter.append("svg:circle")
       .attr("r", 8.5)
       .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
-      .on("click", function(d) { toggle(d); update(d); });
+      .on("click", function(d) { togglefornode(d); update(d); });
 
   //绘制文字
   nodeEnter.append("svg:text")
@@ -142,7 +133,6 @@ function update(source) {
       .attr("target",function(d){ return "_blank" })
       .attr("xlink:href",function(d){ return getRootPath()+'/index.php/Building/buildinglist?page=1&id='+d.real_id+"&parent_code="+d.code })
       // .attr("xlink:href",function(d){ return d.id })
-      // .attr("xlink:href",function(d){ return "#" })
       .text(function(d) { return d.text; })
 
 
@@ -174,6 +164,8 @@ function update(source) {
   var link = vis.selectAll("path.link")
       .data(tree.links(nodes), function(d) { return d.target.id; });
 
+
+  //绘制连线
   // Enter any new links at the parent's previous position.
   link.enter().insert("svg:path", "g")
       .attr("class", "link")
@@ -216,6 +208,77 @@ function toggle(d) {
         d._children = null; //将 _children 设置为 null
     }
 }
+function findall(d){
+
+    var height=0;
+    if(d.children){
+         height=d.children.length*20;
+        for (var i=0;i<d.children.length;i++){
+        if (d.children[i]) {
+            var c={};
+            c=d.children[i];
+            height += findall(c)
+        }
+      }
+    }
+    return height;
+}
+
+function togglefornode(d) {
+      var heightnow= $('#tree svg').attr("height")
+        heightnow=parseInt(heightnow)
+    if (d.children) {
+        //如果有子节点
+        var height = findall(d)
+        if (height != 0 && (d.children && !d._children)) {
+            $('#tree svg').attr("height", heightnow - height)
+            tree = d3.layout.tree().size([heightnow - height, w]);
+        }
+
+        d._children = d.children; //将该子节点保存到 _children
+        d.children = null;  //将子节点设置为null
+        var height = findall(d)
+        /*if (height != 0 && (!d.children && d._children)) {
+            $('#tree svg').attr("height", heightnow)
+            tree = d3.layout.tree().size([heightnow, w]);
+
+        }*/
+      } else {
+
+            //如果没有子节点
+            d.children = d._children; //从 _children 取回原来的子节点
+            d._children = null; //将 _children 设置为 null
+
+            var height = findall(d)
+            if (!d.children && !d._children) {
+                $('#tree svg').attr("height", heightnow)
+                tree = d3.layout.tree().size([heightnow, w]);
+            }
+            if (d.children && !d._children) {
+                $('#tree svg').attr("height", height + heightnow)
+                tree = d3.layout.tree().size([height + heightnow, w]);
+            }
+
+
+        }
+    }
+
+</script>
+<script>
+//点击搜索按钮,跳转
+$('.search_room button[type="submit"]').click(function(){
+  var keyword = $('.search_room .searc_room_text').val();
+  keyword = trim(keyword);
+  if(!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(keyword))){
+    openLayer('搜索框只能输入数字、汉字、字母!');
+    return;
+  }
+  window.location.href="buildinglist?keyword="+keyword+"&page=1";
+})
+//清除搜索条件
+$('.search_room #clear').click(function(){
+  window.location.href="buildinglist?page=1";
+})
 </script>	
 </body>
 </html>
