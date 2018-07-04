@@ -3,13 +3,14 @@
 ?>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-table/css/bootstrap-table.css'?>'/>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css'?>'/>
+<link rel="stylesheet" href='<?=base_url().'application/views/plugin/iconfont/iconfont.css'?>'/>
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table-zh-CN.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/moment-with-locales.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/d3/d3.min.js'?>'></script>
-<script src="//at.alicdn.com/t/font_693062_g03gik4c0dn7y14i.js"></script>
+<script src='<?=base_url().'application/views/plugin/iconfont/iconfont.js'?>'></script>
 <style>
 .node circle {
   cursor: pointer;
