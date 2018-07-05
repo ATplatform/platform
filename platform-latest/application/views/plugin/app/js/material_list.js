@@ -4,6 +4,11 @@ now = formatDate(now);
 //新增模块的时间赋值
 $('.add_Item').find('input[name="effective_date"]').val(now);
 
+///////////搜索框X的href赋值//////////////
+$('#reset').attr("href",'materialList')
+$('#clear').click(function(){
+    $('.search_room ').find('input[name=keyword]').val('')
+})
 
 
 $('.date').datetimepicker({
@@ -223,11 +228,6 @@ $('.search_room button[type="submit"]').click(function(e){
         materialListbySearch(effective_date,page,material_type,building_code,parent_code,keyword);
     }
 })
-//清除搜索条件
-$('.search_room #clear').click(function(){
-    window.location.href= materialList();
-})
-
 
 
 
@@ -360,7 +360,7 @@ console.log(building_code)
             materialfunction:materialfunction,
 		},
 		success:function(data){
-			var data = JSON.parse(data);
+			//var data = JSON.parse(data);
             $('#add_Item').modal('hide');
 			//成功之后自动刷新页面
 			layer.open({
@@ -370,7 +370,7 @@ console.log(building_code)
 				  closeBtn: 1,
 				  shadeClose: false,
 				  skin: 'tanhcuang',
-				  content: data.message,
+				  content: '新增物资成功',
 				  cancel: function(){ 
 				    //右上角关闭回调
                      /* asynRefreshPage(getRootPath()+'/index.php/Material/materialList','Material/getMaterialList',table,data.total,'&keyword='+search_keyword);*/

@@ -423,7 +423,7 @@ class Building_model extends CI_Model {
     }
 
     public function getBuilding($code,$village_id){
-        $sql = "select * from village_tmp_building where code = $code and village_id = $village_id limit 1";
+        $sql = "select * from village_tmp_building where code=$code and village_id=$village_id limit 1";
         // echo $sql;exit;
         $query = $this->db->query($sql);
         $row = $query->row_array();
@@ -509,8 +509,14 @@ class Building_model extends CI_Model {
         $query = $this->db->query($sql);
 
     }
-    
-    
+
+    public function getvillagename($village_id)
+    {
+        $sql = "select name from village_tmp_building as b where b.code=$village_id";
+        $query = $this->db->query($sql);
+        $query=$query->result_array();
+        return  $query['0']['name'];
+    }
     
     
     

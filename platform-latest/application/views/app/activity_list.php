@@ -59,7 +59,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="请输入活动名称、物业负责人..." value="" title="请输入活动名称、物业负责人、业主名称"><a id="clear" href="">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="请输入活动名称、物业负责人..." value="" title="请输入活动名称、物业负责人进行查找">  <a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -70,6 +70,7 @@
         <div class="table_wrap">
            <div class="oh pt10">
                 <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增活动圈</span>
+               <a class="fr add_btn" id="reset" >重置</a>
             </div>
             <table id="table"
                    data-toolbar="#toolbar">

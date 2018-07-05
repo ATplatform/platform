@@ -25,7 +25,7 @@ var info_index={
             lot_code_name:'车位编号',
             lot_effective_date_name:'生效日期',
             lot_effective_status_name:'状态',
-            par_parkname:'停车场',
+            lot_parkcode_name:'停车场',
             lot_floor_name: '所属车库楼层',
             lot_biz_type_name: '车位区域',
             lot_biz_status_name:'车位状态',
@@ -93,7 +93,7 @@ var rowkeys={
     lot_monthly_rent_name:null,
 
 
-    par_parkname:null,
+    lot_parkcode_name:null,
     lot_floor_name: null,
     lot_biz_type_name: null,
     lot_biz_status_name:null,
@@ -369,7 +369,10 @@ var PageChangeToListhref=href(PageChangeToList)
 
 
 ///////////搜索框X的href赋值//////////////
-$('#clear').attr("href",router.List)
+$('#reset').attr("href",router.List)
+$('#clear').click(function(){
+    $('.search_room ').find('input[name=keyword]').val('')
+})
 
 
 
@@ -446,6 +449,7 @@ var PageChange  =  new platform();
 PageChange.findpage()
 
 page=PageChange.pagechange.page
+page=parseInt(page)
 total=PageChange.pagechange.total
 
 PageChange.urlParam.method=router.List
@@ -460,7 +464,7 @@ currenthref=href(urlParam)
 urlParam.page=page-1
 prevhref=href(urlParam)
 
-urlParam.page=page-1
+urlParam.page=page+1
 nexthref=href(urlParam)
 
 urlParam.page=total
@@ -752,10 +756,7 @@ function search(){
             window.location.href=href(List)
         }
     })
-    //清除搜索条件
-    $('.search_room #clear').click(function(){
-        window.location.href=href(List);
-    })
+
 
 }
 
@@ -770,13 +771,13 @@ function search(){
             console.log(message)
             for (var i = 0; i < data.length; i++) {
                 var d = data[i];
-                var par_parkname = d['par_parkname'];
+                var lot_parkcode_name = d['lot_parkcode_name'];
                 var lot_parkcode = d['lot_parkcode']
                 if ($("#rewrite .lot_parkcode  #" + lot_parkcode).length == 0) {
-                    $('#rewrite .lot_parkcode  ul').append('<li><a href="javascript:;" id=' + lot_parkcode + ' data-ajax=' + lot_parkcode + '>' + par_parkname + '</a></li>');
+                    $('#rewrite .lot_parkcode  ul').append('<li><a href="javascript:;" id=' + lot_parkcode + ' data-ajax=' + lot_parkcode + '>' + lot_parkcode_name + '</a></li>');
                 }
                 if ($("#search_wrap .lot_parkcode  #" + lot_parkcode).length == 0) {
-                    $('#search_wrap .lot_parkcode  ul').append('<li><a href="javascript:;" id=' + lot_parkcode + ' data-ajax=' + lot_parkcode + '>' + par_parkname + '</a></li>');
+                    $('#search_wrap .lot_parkcode  ul').append('<li><a href="javascript:;" id=' + lot_parkcode + ' data-ajax=' + lot_parkcode + '>' + lot_parkcode_name + '</a></li>');
                 }
             }
         },
@@ -1021,7 +1022,7 @@ function search_render(index){
         var html= '\n' +
             '<form class="search_room" action="" method="get">' +
             '       <p>' +
-            '            <input type="text" class="searc_room_text" name="keyword" placeholder="'+keyword+'"><a id="clear" href="">X</a>' +
+            '            <input type="text" class="searc_room_text" name="keyword" placeholder="'+keyword+'"><a id="clear" onclick="return false">X</a>' +
             '       </p>' +
             '       <button type="submit"><i class="fa fa-search"></i></button>' +
             '</form>';

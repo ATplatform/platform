@@ -40,7 +40,7 @@
         <!-- 筛选条件 创建类型-->
         <div class="Search_Item_wrap search_wrap_1 select_pull_down query_wrap col_37A fl"  style="margin-right:10px;">
             <div >
-                <input type="text"  class="model_input search_1 ka_input3" placeholder="常驻/临时" name="if_resident" data-ajax="" value="" readonly style="width:100px;" >
+                <input type="text"  class="model_input search_1 ka_input3" placeholder="小区车/访客车" name="if_resident" data-ajax="" value="" readonly style="width:100px;" >
             </div>
             <div class="ka_drop"  style="display: none;width:100px;">
                 <div class="ka_drop_list" >
@@ -55,7 +55,7 @@
 
         <div class="Search_Item_wrap search_wrap_2 select_pull_down query_wrap col_37A fl"  style="margin-right:10px;">
             <div >
-                <input type="text"  class="model_input search_2 ka_input3" placeholder="车辆类型" name="auz_2" data-ajax="" value="" readonly style="width:150px;" >
+                <input type="text"  class="model_input search_2 ka_input3" placeholder="当前授权/未来授权" name="auz_2" data-ajax="" value="" readonly style="width:150px;" >
             </div>
             <div class="ka_drop"  style="display: none;width:150px;">
                 <div class="ka_drop_list" >
@@ -88,7 +88,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入授权编号、车牌号、授权人发起..." value="" title="可输入授权编号、车牌号、授权人发起人、车辆使用人进行搜索"><a id="clear" href="">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入授权编号、车牌号、授权人发起..." value="" title="可输入授权编号、车牌号、授权人发起人、车辆使用人进行搜索"><a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -97,15 +97,16 @@
 
     <!-- 物资数据-->
         <div class="table_wrap">
-           <!--<div class="oh pt10">
-                <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增车辆及授权</span>
-            </div>-->
+          <div class="oh pt10">
+              <!--  <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增车辆及授权</span>-->
+              <a class="fr add_btn" id="reset" >重置</a>
+            </div>
             <table id="table"
                    data-toolbar="#toolbar">
                 <thead>
                 <tr>
                     <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
-                    <th data-title="小区车/访客车" data-align="center" data-field="v_if_temp_name"></th>
+                    <th data-title="小区车/访客车" data-align="center" data-field="v_if_resident_name"></th>
                     <th data-title="授权编号" data-align="center" data-field="auz_code"></th>
                     <th  data-title="车牌号" data-align="center" data-field="v_licence"></th>
                     <th data-title="授权发起人" data-align="center" data-field="auz_person_name"></th>
@@ -162,7 +163,7 @@
                                 <p><span class="des">车辆类型:</span>
                                     <span class="v_vehicle_type_name col_37A"></span>
                                 </p>
-                                <p><span class="des">是否常驻:</span>
+                                <p><span class="des">小区车/访客车:</span>
                                     <span class="v_if_resident_name col_37A"></span>
                                 </p>
                                 <p><span class="des">是否电动汽车:</span>
@@ -294,7 +295,7 @@
                                 </div>
 
 
-                                <p class="if_resident"> <span class="red_star">*</span>是否常驻：
+                                <p class="if_resident"> <span class="red_star">*</span>小区车/访客车：
                                     <span style="margin-left:70px;">
 							<input type="radio" id="radio-6-1" name="radio-6-set" class="regular-radio" >
 							<label for="radio-6-1"></label>

@@ -32,7 +32,7 @@ function platform() {
             keyword: '',
             building_code: '',
             parent_code: '',
-            if_temp: '',
+            if_resident: '',
             vehicle_type: '',
             vehicle_auz: '',
             effective_date:'',
@@ -167,7 +167,7 @@ function platform() {
             if(!this.insert.must.effective_status) {openLayer('请输入状态');return;}
             if(!this.insert.must.person_code) {openLayer('请输入车辆登记人');return;}
             if(!this.insert.must.vehicle_type) {openLayer('请输入车辆类型');return;}
-            if(!this.insert.must.if_resident) {openLayer('请输入是否常驻');return;}
+            if(!this.insert.must.if_resident) {openLayer('请输入小区车/访客车');return;}
             if(!this.insert.must.licence) {openLayer('请输入车牌号');return;}
             if(!this.insert.must.auz_person_code) {openLayer('请输入授权发起人');return;}
             if(!this.insert.must.begin_date) {openLayer('请输入授权开始日期');return;}
@@ -276,7 +276,7 @@ var param=urlParam.findUrlParam();  //从url获取的参数
 
 var init_time=param.effective_date
 var init_keyword=param.keyword
-var init_search_index_1=param.if_temp
+var init_search_index_1=param.if_resident
 var init_search_index_2=param.vehicle_type
 var init_search_index_3=param.vehicle_auz
 //初始化时间
@@ -349,9 +349,10 @@ var PageChangeToListhref=href(PageChangeToList)
 
 
 ///////////搜索框X的href赋值//////////////
-$('#clear').attr("href",router.List)
-
-
+$('#reset').attr("href",router.List)
+$('#clear').click(function(){
+    $('.search_room ').find('input[name=keyword]').val('')
+})
 
 
 ///////////////获取href//////////////
@@ -375,7 +376,7 @@ function href(index){
 showdata(getListhref)
 information(router,rowkeys)
 pageChange(PageChangeToListhref)
-search(List,'effective_date','building_code','parent_code','if_temp','vehicle_type','vehicle_auz','keyword')
+search(List,'effective_date','building_code','parent_code','if_resident','vehicle_type','vehicle_auz','keyword')
 insert(router.getLatestCode,router.getLatestCodeforauz,router.insert,router.getservice_code,List)
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -436,9 +437,13 @@ function pageChange(PageChangeToListhref){
 }
 
 var PageChange  =  new platform();
+
 PageChange.findpage()
+PageChange.findUrlParam()
+console.log(PageChange)
 
 page=PageChange.pagechange.page
+page=parseInt(page)
 total=PageChange.pagechange.total
 
 PageChange.urlParam.method=router.List
@@ -453,7 +458,7 @@ currenthref=href(urlParam)
 urlParam.page=page-1
 prevhref=href(urlParam)
 
-urlParam.page=page-1
+urlParam.page=page+1
 nexthref=href(urlParam)
 
 urlParam.page=total
@@ -853,10 +858,6 @@ function search(){
             console.log( List[keys[7]])
             window.location.href=href(List)
         }
-    })
-    //清除搜索条件
-    $('.search_room #clear').click(function(){
-        window.location.href=href(List);
     })
 
 }

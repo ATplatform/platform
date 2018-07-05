@@ -33,9 +33,11 @@
 
     <!-- 物资数据-->
         <div class="table_wrap">
-           <!--div class="oh pt10">
-                <span class="fr add_btn" data-target="#verify_auz" data-toggle="modal">新增车辆及授权</span>
-            </div>-->
+          <div class="oh pt10">
+            <!-- <span class="fr add_btn" data-target="#verify_auz" data-toggle="modal">新增车辆及授权</span>-->
+              <a class="fr add_btn" id="reset" >重置</a>
+            </div>
+
             <table id="table"
                    data-toolbar="#toolbar">
                 <thead>

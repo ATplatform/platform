@@ -568,6 +568,8 @@ function addbuilding(d){
         },
         success:function(data){
             var data = JSON.parse(data);
+            console.log('1111')
+            console.log(data)
             var name='';
             data.level=parseInt(data.level)+1;
             data.level=data.level.toString();
@@ -579,7 +581,8 @@ function addbuilding(d){
             if( data.level=='105'){name='层'}
             if( data.level=='106'){name='室'}
             if( data.level=='107'){name='公共设施'}
-           $('.add_building').find('input[name="parent_code"]').val(data.code)
+            $('.add_building').find('input[name="parent_code"]').val(data.name)
+            $('.add_building').find('input[name="parent_code"]').data('ajax',data.code)
            $('.add_building').find('input[name="level"]').val(name);
             $('.add_building').find('input[name="level"]').data('ajax',data.level);
         }
@@ -594,10 +597,10 @@ function addbuilding(d){
         var effective_date = $('.add_building').find('input[name="effective_date"]').val();
         var name = $('.add_building').find('input[name="name"]').val();
         var rank = $('.add_building').find('input[name="rank"]').val();
-        var parent_code = $('.add_building').find('input[name="parent_code"]').val();
+        var parent_code = $('.add_building').find('input[name="parent_code"]').data('ajax');
         var remark = $('.add_building').find('input[name="remark"]').val();
         var level_data = $('.add_building').find('input[name="level"]').data('ajax');
-        var parent_code_data = $('.add_building').find('input[name="parent_code"]').val();
+        var parent_code_data = $('.add_building').find('input[name="parent_code"]').data('ajax');
         remark = remark?remark:'';
         rank = trim(rank);
         if(!effective_date){
@@ -649,7 +652,10 @@ function addbuilding(d){
                 remark:remark
             },
             success:function(data){
+                $('#add_building').modal('hide');
+
                 var data = JSON.parse(data);
+
                 //成功之后自动刷新页面
                 layer.open({
                     type: 1,
@@ -658,7 +664,7 @@ function addbuilding(d){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: data.message,
+                    content: '新增楼宇成功',
                     cancel: function(){
                         //右上角关闭回调
                         window.location = getRootPath() + "/index.php/Building/buildingtree";
@@ -781,7 +787,7 @@ function updatebuilding(d){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: data.message,
+                    content: '编辑楼宇成功',
                     cancel: function(){
                         //右上角关闭回调
                         //刷新列表

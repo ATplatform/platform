@@ -280,7 +280,7 @@ class Building extends CI_Controller{
 		//根据code查出当前的building_level
 		$level = " ";
 		if(!empty($search_parent_code)){
-			$buidling = $this->Building_model->getBuilding($search_parent_code);
+			$buidling = $this->Building_model->getBuilding($search_parent_code,$village_id);
 			$level = $buidling['level'];
 		}
 		$total=$this->Building_model->getBuildingTotal($level,$keyword,$search_id,$search_parent_code,$this->user_per_page,$village_id);
@@ -428,4 +428,7 @@ class Building extends CI_Controller{
         $res = $this->Building_model->updatevillageInfo($id,$brief);
         echo $res;
     }
+
+
+
 }

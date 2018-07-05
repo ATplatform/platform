@@ -189,7 +189,10 @@ var PageChangeToListhref=href(PageChangeToList)
 
 
 ///////////搜索框X的href赋值//////////////
-$('#clear').attr("href",router.List)
+$('#reset').attr("href",router.List)
+$('#clear').click(function(){
+    $('.search_room ').find('input[name=keyword]').val('')
+})
 
 
 
@@ -363,10 +366,6 @@ function search(){
             console.log( List[keys[3]])
             window.location.href=href(List)
         }
-    })
-    //清除搜索条件
-    $('.search_room #clear').click(function(){
-        window.location.href=href(List);
     })
 
 }
@@ -605,7 +604,7 @@ function viewAll(value, row, index){
 
 var PageChange  =  new platform();
 PageChange.findpage()
-
+PageChange.findUrlParam()
 page=PageChange.pagechange.page
 page=parseInt(page)
 total=PageChange.pagechange.total

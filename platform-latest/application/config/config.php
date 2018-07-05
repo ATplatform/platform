@@ -561,3 +561,4 @@ $config['annual_check_arr'] = array(array('code'=>'101','name'=>'不需要外审
 $config['if_cycle_arr'] = array(array('code'=>'101','name'=>'一次性立即消息'),array('code'=>'102','name'=>'一次性定时消息'),array('code'=>'103','name'=>'循环消息'));
 $config['qr_code_type_arr'] = array(array('code'=>'100','name'=>'设备网络配置'),array('code'=>'101','name'=>'设备'),array('code'=>'102','name'=>'楼宇地点'),array('code'=>'103','name'=>'社区活动'),array('code'=>'104','name'=>'物资'));
 $config['equipment_type_sip_arr'] = array(array('code'=>'301','name'=>'c'),array('code'=>'302','name'=>'w'),array('code'=>'303','name'=>'d'),array('code'=>'304','name'=>'v'),array('code'=>'305','name'=>'g'),array('code'=>'306','name'=>'独立指纹机'),array('code'=>'307','name'=>'m'));
+$config['material_type_arr'] = array(array('code'=>'101','name'=>'工程物资'),array('code'=>'102','name'=>'安防物资'),array('code'=>'103','name'=>'消防物资'),array('code'=>'104','name'=>'保洁物资'),array('code'=>'105','name'=>'办公物资'));

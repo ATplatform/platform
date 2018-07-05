@@ -76,7 +76,7 @@
                 <input type="hidden" value='<?php echo $material_type;?>' name="material_type" />
                 <input type="hidden" value='<?php echo $building_code;?>' name="building_code" />
                 <input type="hidden" value='<?php echo $parent_code;?>' name="parent_code" />
-                <a id="clear" href="<?=base_url().'index.php/Material/materialList'?>">X</a>
+                <a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -86,7 +86,9 @@
     <!-- 物资数据-->
         <div class="table_wrap">
             <div class="oh pt10">
+
                 <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增物资</span>
+                <a class="fr add_btn" id="reset" >重置</a>
             </div>
             <table id="table"
                    data-toolbar="#toolbar">
@@ -481,9 +483,9 @@
             $('#person_detail').modal('show');
             var code = row.code;
             var material_type_name = row.material_type_name;
-            var name = row.name;
+            var name = row.m_name;
             var effective_date_name = row.effective_date_name;
-            var room_name = row.room_name;
+            var room_name = row.building_name;
             var pcs = row.pcs;
             var materialfunction = row.function;
             var supplier = row.supplier;

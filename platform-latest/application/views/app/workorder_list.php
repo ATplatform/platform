@@ -76,7 +76,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="请输入工单编号等" value=""><a id="clear" href="">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="请输入工单编号、创建人..." value="" title="请输入工单编号、创建人、接单人进行搜索"><a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -85,9 +85,9 @@
 
     <!-- 物资数据-->
         <div class="table_wrap">
-          <!--  <div class="oh pt10">
-                <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增物资</span>
-            </div>-->
+            <div class="oh pt10">
+                <a class="fr add_btn" id="reset" >重置</a>
+            </div>
             <table id="table"
                    data-toolbar="#toolbar">
                 <thead>

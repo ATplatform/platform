@@ -59,12 +59,6 @@ left join village_person as p on a.service_code=p.code
 where a.service_code=p.code  
 ";
 
-         /*    where pp.code= (
-             SELECT  MAX(A.code)
-	FROM
-		village_person_position A
-where pp.person_code=A.person_code
-)*/
              if(!empty($begin_date)){
                  $sql .= " and a.begin_date<='$begin_date' ";
                  $sql .= " and '$begin_date'<=a.end_date ";
@@ -80,14 +74,8 @@ where pp.person_code=A.person_code
                    if (preg_match('/^[\x7f-\xff]*\w*\d*$/', $keyword)) {
                        $sql .= " and concat ( a.code,a.name,p.last_name,p.first_name) like '%$keyword%'";
                    }
-                 /*  if (preg_match("/^\d*$/", $keyword)) {
-                       $sql .= " and a.code = $keyword ";
-                   }*/
-               }
 
-             /* if(!empty($building_code)){
-              $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
-            }*/
+               }
 
          }
         $sqlshow = $sql . " ORDER BY a.code ASC limit ".$rows." offset ".$start;
@@ -162,26 +150,6 @@ where pp.person_code=A.person_code
     }
 
 
-    //////////////////////搜索查询数据数目的数据总条数/////////////
-    public function getListTotal($sqlorigin, $rows)
-    {
-        $sql="select count(*) as count from (";
-        $sql.=$sqlorigin;
-        $sql.=" ) as sss";
-        $q = $this->db->query($sql); //自动转义
-        if ($q->num_rows() > 0) {
-            $row = $q->row_array();
-            $items = $row["count"];
-
-            if ($items % $rows != 0) {
-                $total = (int)((int)$items / $rows) + 1;
-            } else {
-                $total = $items / $rows;
-            }
-            return $total;
-        }
-        return 0;
-    }
 
 
     public function sqlTogetRecord($date,$type, $keyword, $page, $rows)
@@ -468,6 +436,28 @@ public function getactivity_codeUrl(){
     $row = $query->result_array();
     return $row;
 }
+
+
+    //////////////////////搜索查询数据数目的数据总条数/////////////
+    public function getTotal($sqlorigin, $rows)
+    {
+        $sql="select count(*) as count from (";
+        $sql.=$sqlorigin;
+        $sql.=" ) as sss";
+        $q = $this->db->query($sql); //自动转义
+        if ($q->num_rows() > 0) {
+            $row = $q->row_array();
+            $items = $row["count"];
+
+            if ($items % $rows != 0) {
+                $total = (int)((int)$items / $rows) + 1;
+            } else {
+                $total = $items / $rows;
+            }
+            return $total;
+        }
+        return 0;
+    }
 
 }
 

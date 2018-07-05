@@ -38,7 +38,7 @@
         <!-- 筛选条件 创建类型-->
         <div class="Search_Item_wrap search_wrap_1 select_pull_down query_wrap col_37A fl"  style="margin-right:10px;">
             <div >
-                <input type="text"  class="model_input search_1 ka_input3" placeholder="小区车/访客车" name="if_temp" data-ajax="" value="" readonly style="width:100px;" >
+                <input type="text"  class="model_input search_1 ka_input3" placeholder="小区车/访客车" name="if_resident" data-ajax="" value="" readonly style="width:100px;" >
             </div>
             <div class="ka_drop"  style="display: none;width:100px;">
                 <div class="ka_drop_list" >
@@ -91,7 +91,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入车辆编号、车牌号、登记人姓名..." value="" title="可输入车辆编号、车牌号、登记人姓名、车主姓名、型号进行搜索"><a id="clear" href="">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入车辆编号、车牌号、登记人姓名..." value="" title="可输入车辆编号、车牌号、登记人姓名、车主姓名、型号进行搜索"><a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -102,6 +102,7 @@
         <div class="table_wrap">
            <div class="oh pt10">
                 <span class="fr add_btn" data-target="#verify_auz" data-toggle="modal">新增车辆及授权</span>
+               <a class="fr add_btn" id="reset" >重置</a>
             </div>
             <table id="table"
                    data-toolbar="#toolbar">
@@ -111,7 +112,7 @@
                     <th data-title="车辆编号" data-align="center" data-field="v_code"></th>
                     <th data-title="生效日期" data-align="center" data-field="v_effective_date_name"></th>
                     <th data-title="车辆登记人" data-align="center" data-field="v_person_name"></th>
-                    <th  data-title="小区车/访客车" data-align="center" data-field="v_if_temp_name"></th>
+                    <th  data-title="小区车/访客车" data-align="center" data-field="v_if_resident_name"></th>
                     <th data-title="车辆类型" data-align="center" data-field="v_vehicle_type_name"></th>
                     <th  data-title="车牌号" data-align="center" data-field="v_licence"></th>
                     <th  data-title="车主" data-align="center" data-field="v_owner"></th>
@@ -228,7 +229,7 @@
                             </div>
 
 
-                            <p class="if_temp"> <span class="red_star">*</span>小区车/访客车：
+                            <p class="if_resident"> <span class="red_star">*</span>小区车/访客车：
                                 <span style="margin-left:44px;">
 							<input type="radio" id="radio-2-1" name="radio-2-set" class="regular-radio" checked="">
 							<label for="radio-2-1"></label>
@@ -241,7 +242,7 @@
 							访客车
 						</span>
                             </p>
-                            <p class="if_eletro">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是否是电动车：
+                            <p class="if_electro">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是否是电动车：
                                 <span style="margin-left:45px;">
 							<input type="radio" id="radio-3-1" name="radio-3-set" class="regular-radio" checked="">
 							<label for="radio-3-1"></label>
@@ -359,7 +360,7 @@
                                 <p><span class="des">车辆类型:</span>
                                     <span class="v_vehicle_type_name col_37A"></span>
                                 </p>
-                                <p><span class="des">是否常驻:</span>
+                                <p><span class="des">小区车/访客车:</span>
                                     <span class="v_if_resident_name col_37A"></span>
                                 </p>
                                 <p><span class="des">是否电动汽车:</span>

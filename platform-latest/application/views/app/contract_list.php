@@ -76,7 +76,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="请输入合同编号、签订对象" value=""><a id="clear" href="">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="请输入合同编号、签订对象" value="">  <a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -87,6 +87,7 @@
         <div class="table_wrap">
            <div class="oh pt10">
                 <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增合同信息</span>
+               <a class="fr add_btn" id="reset" >重置</a>
             </div>
             <table id="table"
                    data-toolbar="#toolbar">

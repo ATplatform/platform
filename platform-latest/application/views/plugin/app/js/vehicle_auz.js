@@ -30,11 +30,8 @@ function platform() {
             method: '',
             page: '',
             keyword: '',
-            building_code: '',
-            parent_code: '',
-            if_temp: '',
+            if_resident: '',
             auz_2: '',
-            effective_status: '',
             effective_date:'',
         },
         insert:{
@@ -273,9 +270,9 @@ var param=urlParam.findUrlParam();  //从url获取的参数
 
 var init_time=param.effective_date
 var init_keyword=param.keyword
-var init_search_index_1=param.type
-var init_search_index_2=param.level
-var init_search_index_3=param.level
+var init_search_index_1=param.if_resident
+var init_search_index_2=param.auz_2
+
 //初始化时间
 var now = getDate();
 init_time = init_time?init_time:now;
@@ -341,9 +338,10 @@ var PageChangeToListhref=href(PageChangeToList)
 
 
 ///////////搜索框X的href赋值//////////////
-$('#clear').attr("href",router.List)
-
-
+$('#reset').attr("href",router.List)
+$('#clear').click(function(){
+    $('.search_room ').find('input[name=keyword]').val('')
+})
 
 
 ///////////////获取href//////////////
@@ -367,7 +365,7 @@ function href(index){
 showdata(getListhref)
 information(router,rowkeys)
 pageChange(PageChangeToListhref)
-search(List,'effective_date','building_code','parent_code','if_temp','auz_2','vehicle_auz','keyword')
+search(List,'effective_date','if_resident','auz_2','keyword')
 insert(router.getLatestCode,router.getLatestCodeforauz,router.insert,router.getservice_code,List)
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -429,8 +427,9 @@ function pageChange(PageChangeToListhref){
 
 var PageChange  =  new platform();
 PageChange.findpage()
-
+PageChange.findUrlParam()
 page=PageChange.pagechange.page
+page=parseInt(page)
 total=PageChange.pagechange.total
 
 PageChange.urlParam.method=router.List
@@ -445,7 +444,7 @@ currenthref=href(urlParam)
 urlParam.page=page-1
 prevhref=href(urlParam)
 
-urlParam.page=page-1
+urlParam.page=page+1
 nexthref=href(urlParam)
 
 urlParam.page=total
@@ -748,6 +747,7 @@ function search(){
         List[keys[1]]=time
         window.location.href=href(List)
     })
+/*
 ///////////////////////搜索地点//////////////////
     $('#treeNav>span').on("select_node.jstree", function (e, node) {
         var building_code=node.node.original.code;
@@ -756,13 +756,14 @@ function search(){
         List[keys[3]]=parent_code
         window.location.href=href(List)
     })
+*/
 
 
 
 /////////////////////搜索创建类型////////////////
     $(' .search_wrap_1 .ka_drop_list li').click(function(){
         var search_index_1 = $(this).find('a').data('ajax');
-        List[keys[4]]=search_index_1
+        List[keys[2]]=search_index_1
         window.location.href=href(List)
 
     })
@@ -770,16 +771,16 @@ function search(){
 /////////////////搜索工单类型////////////
     $('.search_wrap_2 .ka_drop_list li').click(function(){
         var search_index_2 =$(this).find('a').data('ajax');
-        List[keys[5]]=search_index_2
+        List[keys[3]]=search_index_2
         window.location.href=href(List)
     })
 
-
+/*
     $('.search_wrap_3 .ka_drop_list li').click(function(){
         var search_index_3 =$(this).find('a').data('ajax');
         List[keys[6]]=search_index_3
         window.location.href=href(List)
-    })
+    })*/
 
 ///////////////////输入框搜索不在此处，在初始化的位置///////////////////////
     $('.search_room button[type="submit"]').click(function(e){
@@ -790,14 +791,10 @@ function search(){
             openLayer('搜索框只能输入数字、汉字、字母!');
             return;
         }else{
-            List[keys[7]]=keyword
-            console.log( List[keys[7]])
+            List[keys[4]]=keyword
+            console.log( List[keys[4]])
             window.location.href=href(List)
         }
-    })
-    //清除搜索条件
-    $('.search_room #clear').click(function(){
-        window.location.href=href(List);
     })
 
 }

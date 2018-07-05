@@ -4,6 +4,10 @@ now = formatDate(now);
 //新增模块的时间赋值
 $('.add_Item').find('input[name="effective_date"]').val(now);
 
+$('#reset').attr("href",'materialUsage')
+$('#clear').click(function(){
+    $('.search_room ').find('input[name=keyword]').val('')
+})
 
 
 $('.date').datetimepicker({
@@ -226,10 +230,6 @@ $('.search_room button[type="submit"]').click(function(e){
     }else{
         materialUsagebySearch(effective_date,page,material_type,building_code,parent_code,keyword);
     }
-})
-//清除搜索条件
-$('.search_room #clear').click(function(){
-    window.location.href= materialUsage();
 })
 
 

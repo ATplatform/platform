@@ -16,6 +16,7 @@
 <script src='<?=base_url().'application/views/plugin/bootstrap-fileinput/js/zh.js'?>'></script>
 
 
+
 <div class="oh pt10">
 
 <?php
@@ -32,20 +33,19 @@
 
     <!-- 物资数据-->
         <div class="table_wrap">
-          <div class="oh pt10">
-            <!--<span class="fr add_btn" data-target="#verify_auz" data-toggle="modal">新增车辆及授权</span>-->
-            <a class="fr add_btn" id="reset" >重置</a>
+         <div class="oh pt10">
+            <!-- <span class="fr add_btn" data-target="#verify_auz" data-toggle="modal">新增车辆及授权</span>-->
+             <a class="fr add_btn" id="reset" >重置</a>
             </div>
-
             <table id="table"
                    data-toolbar="#toolbar">
                 <thead>
                 <tr>
 
-                    <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+                   <!-- <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
                     <th data-title="车位编号" data-align="center" data-field="lot_code_name"></th>
                     <th data-title="生效日期" data-align="center" data-field="lot_effective_date_name"></th>
-                    <th data-title="停车场" data-align="center" data-field="lot_parkcode_name"></th>
+                    <th data-title="停车场" data-align="center" data-field="par_parkname"></th>
                     <th  data-title="楼层" data-align="center" data-field="lot_floor_name"></th>
                     <th data-title="车位区域" data-align="center" data-field="lot_biz_type_name"></th>
                     <th  data-title="车位状态" data-align="center" data-field="lot_biz_status_name"></th>
@@ -54,6 +54,8 @@
                     <th  data-title="占用开始日期" data-align="center" data-field="lot_begin_date_name"></th>
                     <th  data-title="占用结束日期" data-align="center" data-field="lot_end_date_name"></th>
                     <th  data-title="车位租金" data-align="center" data-field="lot_monthly_rent_name"></th>
+                    <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>-->
+
                     <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
                 </tr>
                 </thead>
@@ -242,6 +244,6 @@
 
 
 </script>
-<script src='<?=base_url().'application/views/plugin/app/js/parkinglot_list.js'?>'></script>
+<script src='<?=base_url().'application/views/plugin/app/js/vehicle_payment.js'?>'></script>
 </body>
 </html>

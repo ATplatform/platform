@@ -13,6 +13,7 @@ class Material extends CI_Controller
         $this->load->database();
         $this->user_per_page = $this->config->item('user_per_page');
         $this->at_url=$this->config->item('at_url');
+        $this->material_type_arr=$this->config->item('material_type_arr');
     }
 
     public function index()
@@ -88,6 +89,7 @@ class Material extends CI_Controller
     //////////////////////插入数据/////////////////////
     public function insertMaterial()
     {
+        $village_id = $_SESSION['village_id'];
         //收集数据
         $create_time = date('Y-m-d h:i:s', time());
         $code = $this->input->post('code');
@@ -104,7 +106,9 @@ class Material extends CI_Controller
         $remark = $this->input->post('remark');
         $this->load->model('Material_model');
         $this->load->model('Building_model');
-        $building = $this->Building_model->getBuilding($building_code);
+
+        $building = $this->Building_model->getBuilding($building_code,$village_id);
+
         $householdInfo = $this->Building_model->getHouseholdInfo($building);
         // echo $householdInfo;exit;
         //根据设备类型得到设备类型名称
@@ -117,23 +121,25 @@ class Material extends CI_Controller
         //二维码名称
         $fileName = $householdInfo.$material_type_name.$name.'.png';
         //二维码图片地址
-        $village_id = "100001";
-        $village_name = "和正智汇谷";
+        $village_id = $_SESSION['village_id'];
+
+        $village_name= $this->Building_model->getvillagename($village_id);
+
         $temp_path='qrcode/'.$village_id.$village_name.'物资二维码/';
 
         //二维码内容,设备的二维码type为101,village暂时写为100001
         $this->load->model('Building_model');
-        $qrcodeData = $this->Building_model->getQrcodeData(101,100001,$code);
+        $qrcodeData = $this->Building_model->getQrcodeData(101,$village_id,$code);
         $this->Building_model->setQRcode($qrcodeData,$temp_path,$fileName);
 
 
         $url = $_SERVER['SERVER_ADDR'];
         $base_url = 'http://'.$url;
         $pushserver_address=$base_url;
-        $qr_code=$pushserver_address.'/platform10/'.$temp_path.$fileName;
+        $qr_code=$pushserver_address.'/platform/'.$temp_path.$fileName;
 
 
-        $res = $this->Material_model->insertMaterial($code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark, $qr_code,$create_time);
+        $res = $this->Material_model->insertMaterial($village_id,$code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark, $qr_code,$create_time);
         if ($res) {
             $data['message'] = '新增物资成功';
             //新增成功后,生成一张二维码图片

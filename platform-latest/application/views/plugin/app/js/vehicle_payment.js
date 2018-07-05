@@ -23,50 +23,49 @@ pagechange：用于页面跳转和搜索
 router：路由参数
 */
 
-
 var platform_index={
-    pkg_vehicle_code:{
+    pay_id:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'no',
         must:'yes',
-        input:'车辆编码',
+        input:'交易流水号',
         method:'show',
     },
-    v_if_temp:{
-        search:'yes',
-        show:'yes',
-        detail:'yes',
-        update:'no',
-        must:'no',
-        input:'小区车/临时车',
-        method:'select',
-        ajax:{t:'小区车',f:'访客车'}
-
-    },
-    v_vehicle_type:{
-        search:'yes',
-        show:'no',
-        detail:'no',
-        update:'no',
-        must:'no',
-        input:'车辆类型',
-        method:'select',
-        ajax:{101:'轿车',102:'客车',103:'货车',104:'专用汽车',105:'摩托车',106:'电瓶车',107:'自行车',999:'其他车辆'}
-    },
-    v_person_code:{
+    pay_person_code:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'no',
-        input:'车辆登记人',
+        must:'no',
+        input:'缴费人',
         method:'person'
+
+
     },
-    building_code:{
+    pay_status:{
         search:'yes',
         show:'yes',
         detail:'yes',
+        update:'no',
+        must:'no',
+        input:'订单状态',
+        method:'select',
+        ajax:{101:'未支付',102:'支付失败',103:'支付成功',104:'交易完成'}
+    },
+    pay_issued_time:{
+        search:'yes',
+        show:'yes',
+        detail:'yes',
+        update:'no',
+        input:'订单生成时间',
+        method:'time'
+    },
+    building_code:{
+        search:'no',
+        show:'no',
+        detail:'no',
         update:'no',
         input:'登记人所在楼栋',
         method:'building'
@@ -79,153 +78,44 @@ var platform_index={
         input:'登记人所在楼栋',
         method:'building'
     },
-    v_owner:{
+    pay_close_time:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'no',
         must:'no',
-        input:'车主',
-        method:'show'
-    },
-    v_licence:{
-        search:'no',
-        show:'no',
-        detail:'no',
-        update:'no',
-        input:'车牌号',
-        must:'yes',
-        method:'select',
-
-    },
-    pkg_begin_date:{
-        search:'yes',
-        show:'yes',
-        detail:'yes',
-        update:'no',
-        must:'yes',
-        input:'进入时间',
-        method:'time',
-
-    },
-    pkg_end_date:{
-        search:'yes',
-        show:'yes',
-        detail:'yes',
-        update:'no',
-        must:'no',
-        input:'离开时间',
+        input:'订单支付完成时间',
         method:'time'
     },
-    pkg_charge_type:{
+    pay_charge_amount:{
         search:'no',
-        show:'yes',
-        detail:'yes',
+        show:'no',
+        detail:'no',
         update:'no',
-        must:'no',
-        input:'收费类型',
-        method:'select',
-        ajax:{101:'买断车位',102:'租赁车位',103:'计时收费'}
-    },
+        input:'支付总额',
+        must:'yes',
+        method:'input',
 
-    pkg_if_charged:{
-        search:'no',
+    },
+pay_method:{
+        search:'yes',
         show:'yes',
         detail:'yes',
         update:'no',
         must:'yes',
-        input:'是否缴费',
-        method:'radio',
-        options:{t:'是',f:'否'}
+        input:'缴费方式',
+        method:'select',
+        ajax:{101:'现金缴费',102:'APP缴费_微信',103:'APP缴费_支付宝',104:'APP缴费_建行聚合支付',105:'微信小程序缴费',999:'未缴费'}
     },
-/*
-
-    pay_person_code:{
-        search:'no',
-        show:'yes',
-        detail:'no',
-        update:'no',
-        must:'no',
-        input:'缴费人',
-        method:'show'
-    },
-*/
-    par_pay_person_code:{
+    pay_specific:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'no',
         must:'no',
-        input:'缴费人',
-        method:'person'
-    }
-    ,
-
-        pkg_charge_amount:{
-        search:'no',
-        show:'yes',
-        detail:'yes',
-        update:'no',
-        must:'no',
-        input:'缴费金额',
-        method:'input'
-    },
-    pkg_entry_eqp:{
-        search:'no',
-        show:'no',
-        detail:'no',
-        update:'no',
-        must:'no',
-        input:'进入设备',
+        input:'缴费具体情况',
         method:'select',
-        ajax:{101:'买断车位',102:'租赁车位',103:'计时收费'}
-    },
-    pkg_entry_type:{
-        search:'no',
-        show:'no',
-        detail:'no',
-        update:'no',
-        must:'no',
-        input:'进入方式',
-        method:'input'
-    },
-    pkg_exit_eqp:{
-        search:'no',
-        show:'no',
-        detail:'no',
-        update:'no',
-        must:'no',
-        input:'离开设备',
-        method:'select',
-        ajax:{101:'买断车位',102:'租赁车位',103:'计时收费'}
-    },
-    pkg_exit_type:{
-        search:'no',
-        show:'no',
-        detail:'no',
-        update:'no',
-        must:'no',
-        input:'离开方式',
-        method:'select',
-        ajax:{101:'买断车位',102:'租赁车位',103:'计时收费'}
-    },
-    pkg_related_id:{
-        search:'no',
-        show:'no',
-        detail:'no',
-        update:'no',
-        must:'no',
-        input:'追加缴费关联记录',
-        method:'input'
-    },
-    pkg_parking_payment_id:{
-        search:'no',
-        show:'no',
-        detail:'no',
-        update:'no',
-        must:'no',
-        input:'关联停车付款订单',
-        method:'input'
+        ajax:{101:'应收金额',102:'优惠金额',103:'免费金额'}
     },
 
 
@@ -234,21 +124,21 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'no',
-        input:'可输入车辆编码、缴费人进行搜索',
+        input:'可输入交易流水号、缴费人进行搜索',
         method:'keyword'
     },
     update_info:{
-        title:'车辆进出详情',
-        small_title:'车辆进出'
+        title:'车辆缴费详情',
+        small_title:'车辆缴费'
     },
     info_manage:{
         detail:{title:'详情',css:' fa-file-text-o',content:getdetail},
-        rewrite:{title:'更新授权信息',css:'fa-pencil-square-o',content:getrewrite}
+        rewrite:{title:'更新缴费信息',css:'fa-pencil-square-o',content:getrewrite}
     },
     pagechange:{urlparam:{route:'',page:''}, pagesize:'', total:'',page:''},
     router:{
-        root:getRootPath()+'/index.php/Vehicle/vehiclePkg',
-        get:'getvehiclePkg',
+        root:getRootPath()+'/index.php/Vehicle/vehiclePayment',
+        get:'getvehiclepayment',
         insert:'insert',
         updateParkinglot:'updateParkinglot',
         getparkingcode:'getparkingcode',
@@ -849,7 +739,6 @@ function html_render(index){
 function pageChange(index){
 
     index.pagechange.urlparam.route = index.router.root
-
     for(var n in index) {
             if (index[n]['search'] == 'yes') {
                 index.pagechange.urlparam[n] =  getUrlParam(n);
@@ -860,8 +749,6 @@ function pageChange(index){
     index.pagechange.pagesize =  $('input[name="pagesize"]').val()
     index.pagechange.page =  $('input[name="page"]').val()
    var pagechange= index.pagechange.urlparam
-
-
 /*    for (var n in index.pagechange.urlparam) {
 
         index.pagechange.urlparam[n] =  getUrlParam(n);
@@ -894,7 +781,6 @@ function pageChange(index){
             return;
         }
         pagechange.page=page
-
         window.location.href=href(pagechange);
     })
 
@@ -933,7 +819,6 @@ console.log(pagechange)
 
     $('.pager #last').attr("href",Lasthref)
     if(page>1){
-        console.log(prevhref)
         $('.pager #prev').removeClass('disabled')
         $('.pager #prev').addClass('active')
         $('.pager #prev ').attr("href",prevhref)
@@ -1010,13 +895,12 @@ console.log(pagechange)
              }
          }
         }
+
+
         $('#reset').attr("href",index.router.root)
         $('#clear').click(function(){
             $('.search_room ').find('input[name=keyword]').val('')
         })
-
-
-
     }
 
 
@@ -1069,7 +953,6 @@ function getdata(element,index){
 function showdata(render){
     render.pagechange.urlparam.route = render.router.get
     render.pagechange.urlparam.page = getUrlParam('page')
-
     for(var n in render) {
         if (render[n]['search'] == 'yes') {
             render.pagechange.urlparam[n] =  getUrlParam(n);
@@ -1077,7 +960,7 @@ function showdata(render){
     }
 
     var datahref=href(render.pagechange.urlparam)
-console.log(datahref)
+
     $('#table').bootstrapTable({
         method: "get",
         undefinedText: ' ',

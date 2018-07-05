@@ -13,13 +13,13 @@ class Vehicle_model extends CI_Model
     ///////////////////////////////////获取数据////////////////////////////////////
     /////////////数据内容////////对sql进行分类：普通查询sql和搜索查询sql//////////////////////
     /////////////数据数目////////对sql进行分类：普通查询sql和搜索查询sql//////////////////////
-    public function sqlTogetList($effective_date,$building_code, $parent_code,$if_temp,$vehicle_type,$vehicle_auz,$keyword, $page, $rows)
+    public function sqlTogetList($effective_date,$building_code, $parent_code,$if_resident,$vehicle_type,$vehicle_auz,$keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
 
 
          /////////////////判断为普通查询或搜索查询////////////////////////////
-         if (empty($effective_date) && empty($building_code) && empty($parent_code)  && empty($if_temp) && empty($vehicle_type) && empty($vehicle_auz)&& empty($keyword))
+         if (empty($effective_date) && empty($building_code) && empty($parent_code)  && empty($if_resident) && empty($vehicle_type) && empty($vehicle_auz)&& empty($keyword))
 
          /////////////////////////普通查询sql语句/////////////////////////
          {
@@ -93,8 +93,8 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
                  $sql .= " and (pb.building_code=$building_code or tmp.parent_code=$parent_code) ";
              }
 
-             if(!empty($if_temp)){
-                 $sql .= " and v.if_temp='$if_temp' ";
+             if(!empty($if_resident)){
+                 $sql .= " and v.if_resident='$if_resident' ";
              }
              if(!empty($vehicle_type)){
                  $sql .= " and v.vehicle_type=$vehicle_type ";
@@ -120,8 +120,9 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
 
 
          }
-        $sql = $sql . " ORDER BY v.code ASC limit ".$rows." offset ".$start;
-        return $sql;
+        $sqlshow = $sql . " ORDER BY v.code ASC limit ".$rows." offset ".$start;
+        $arrayres=array($sql,$sqlshow);
+        return $arrayres;
     }
 
 
@@ -194,18 +195,18 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
                     }
                     if ($key2 == 'v_if_resident') {
                         if ($arr[$key]['v_if_resident'] == 't') {
-                            $arr[$key]['v_if_resident_name'] = "是";
+                            $arr[$key]['v_if_resident_name'] = "小区车";
                         }
                         if ($arr[$key]['v_if_resident'] == 'f') {
-                            $arr[$key]['v_if_resident_name'] = "否";
+                            $arr[$key]['v_if_resident_name'] = "访客车";
                         }
                     }
                     if ($key2 == 'v_if_temp') {
                         if ($arr[$key]['v_if_temp'] == 't') {
-                            $arr[$key]['v_if_temp_name'] = "小区车";
+                            $arr[$key]['v_if_temp_name'] = "是";
                         }
                         if ($arr[$key]['v_if_temp'] == 'f') {
-                            $arr[$key]['v_if_temp_name'] = "访客车";
+                            $arr[$key]['v_if_temp_name'] = "否";
                         }
                     }
                     if ($key2 == 'v_if_electro') {
@@ -265,7 +266,7 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
 
 
     //////////////////////搜索查询数据数目的数据总条数/////////////
-    public function getListTotal($sqlorigin, $rows)
+    public function getTotal($sqlorigin, $rows)
     {
         $sql="select count(*) as count from (";
         $sql.=$sqlorigin;
@@ -360,8 +361,11 @@ where a_rcd.service_code=p.code
            }*/
 
         }
-        $sql = $sql . " ORDER BY a.code ASC limit ".$rows." offset ".$start;
-        return $sql;
+
+
+        $sqlshow = $sql . " ORDER BY a.code ASC limit ".$rows." offset ".$start;
+        $arrayres=array($sql,$sqlshow);
+        return $arrayres;
     }
 
 
@@ -428,26 +432,7 @@ where a_rcd.service_code=p.code
     }
 
 
-    //////////////////////搜索查询数据数目的数据总条数/////////////
-    public function getRecordTotal($sqlorigin, $rows)
-    {
-        $sql="select count(*) as count from (";
-        $sql.=$sqlorigin;
-        $sql.=" ) as sss";
-        $q = $this->db->query($sql); //自动转义
-        if ($q->num_rows() > 0) {
-            $row = $q->row_array();
-            $items = $row["count"];
 
-            if ($items % $rows != 0) {
-                $total = (int)((int)$items / $rows) + 1;
-            } else {
-                $total = $items / $rows;
-            }
-            return $total;
-        }
-        return 0;
-    }
 
     //////////////////////////////////一些辅助功能///////////////////////////////////
     //动态获取所有楼宇信息
@@ -835,13 +820,13 @@ public function updateAuz($code,$vehicle_code,$begin_date
 
 
 
-public function sqlTogetAuz($effective_date,$if_temp,$auz_2,$keyword, $page, $rows)
+public function sqlTogetAuz($effective_date,$if_resident,$auz_2,$keyword, $page, $rows)
 {
     $start = ($page - 1) * $rows;
 
 
     /////////////////判断为普通查询或搜索查询////////////////////////////
-    if (empty($effective_date) && empty($if_temp) && empty($auz_2) && empty($keyword))
+    if (empty($effective_date) && empty($if_resident) && empty($auz_2) && empty($keyword))
 
         /////////////////////////普通查询sql语句/////////////////////////
     {
@@ -919,8 +904,8 @@ where auz.vehicle_code=v.code
             }
         }
 
-        if(!empty($if_temp)){
-            $sql .= " and v.if_temp='$if_temp' ";
+        if(!empty($if_resident)){
+            $sql .= " and v.if_resident='$if_resident' ";
         }
 
 
@@ -931,9 +916,12 @@ where auz.vehicle_code=v.code
 
         }
     }
-    $sql = $sql . " ORDER BY auz.code ASC limit ".$rows." offset ".$start;
-    return $sql;
+
+    $sqlshow = $sql . " ORDER BY auz.code ASC limit ".$rows." offset ".$start;
+    $arrayres=array($sql,$sqlshow);
+    return $arrayres;
 }
+
 
 
 public function getAuzlist($sql)
@@ -1003,18 +991,18 @@ public function getAuzlist($sql)
                 }
                 if ($key2 == 'v_if_resident') {
                     if ($arr[$key]['v_if_resident'] == 't') {
-                        $arr[$key]['v_if_resident_name'] = "是";
+                        $arr[$key]['v_if_resident_name'] = "小区车";
                     }
                     if ($arr[$key]['v_if_resident'] == 'f') {
-                        $arr[$key]['v_if_resident_name'] = "否";
+                        $arr[$key]['v_if_resident_name'] = "访客车";
                     }
                 }
                 if ($key2 == 'v_if_temp') {
                     if ($arr[$key]['v_if_temp'] == 't') {
-                        $arr[$key]['v_if_temp_name'] = "小区车";
+                        $arr[$key]['v_if_temp_name'] = "是";
                     }
                     if ($arr[$key]['v_if_temp'] == 'f') {
-                        $arr[$key]['v_if_temp_name'] = "访客车";
+                        $arr[$key]['v_if_temp_name'] = "否";
                     }
                 }
                 if ($key2 == 'v_if_electro') {
@@ -1182,29 +1170,12 @@ where lot.begin_date=lot.begin_date
         }
 
     }
-    $sql = $sql . " ORDER BY lot.code ASC limit ".$rows." offset ".$start;
-    return $sql;
+    $sqlshow = $sql . " ORDER BY lot.code ASC limit ".$rows." offset ".$start;
+    $arrayres=array($sql,$sqlshow);
+    return $arrayres;
 }
 
 
-public function getparkinglotTotal($sqlorigin,$rows){
-    $sql="select count(*) as count from (";
-    $sql.=$sqlorigin;
-    $sql.=" ) as sss";
-    $q = $this->db->query($sql); //自动转义
-    if ($q->num_rows() > 0) {
-        $row = $q->row_array();
-        $items = $row["count"];
-
-        if ($items % $rows != 0) {
-            $total = (int)((int)$items / $rows) + 1;
-        } else {
-            $total = $items / $rows;
-        }
-        return $total;
-    }
-    return 0;
-}
 
     public function getparkinglot($sql)
     {
@@ -1532,29 +1503,13 @@ where tmp.code=pb.building_code
             }
 
         }
-        $sql = $sql . " ORDER BY pkg.vehicle_code ASC limit ".$rows." offset ".$start;
-        return $sql;
+        $sqlshow = $sql." ORDER BY pkg.vehicle_code ASC limit ".$rows." offset ".$start;
+        $arrayres=array($sql,$sqlshow);
+        return $arrayres;
     }
 
 
-    public function getvehiclepkgTotal($sqlorigin,$rows){
-        $sql="select count(*) as count from (";
-        $sql.=$sqlorigin;
-        $sql.=" ) as sss";
-        $q = $this->db->query($sql); //自动转义
-        if ($q->num_rows() > 0) {
-            $row = $q->row_array();
-            $items = $row["count"];
 
-            if ($items % $rows != 0) {
-                $total = (int)((int)$items / $rows) + 1;
-            } else {
-                $total = $items / $rows;
-            }
-            return $total;
-        }
-        return 0;
-    }
 
 
 
@@ -1599,10 +1554,10 @@ where tmp.code=pb.building_code
                     }
                     if ($key2 == 'v_if_temp') {
                         if ($arr[$key]['v_if_temp'] == 't') {
-                            $arr[$key]['v_if_temp_name'] = "小区车";
+                            $arr[$key]['v_if_temp_name'] = "是";
                         }
                         if ($arr[$key]['v_if_temp'] == 'f') {
-                            $arr[$key]['v_if_temp_name'] = "访客车";
+                            $arr[$key]['v_if_temp_name'] = "否";
                         }
                     }
                     if ($key2 == "v_vehicle_type") {
@@ -1647,6 +1602,167 @@ where tmp.code=pb.building_code
         $row = $query->row_array();
         return  $row;
     }
+
+    public function sqlTogetvehiclepayment($pay_status,$pay_method,$pay_specific,$issued_time,$keyword, $page, $rows)
+    {
+        $start = ($page - 1) * $rows;
+
+
+        /////////////////判断为普通查询或搜索查询////////////////////////////
+        if (empty($pay_status) &&empty($pay_method) && empty($pay_specific) && empty($issued_time)  && empty($keyword))
+
+            /////////////////////////普通查询sql语句/////////////////////////
+        {
+
+
+
+            $sql = "
+            select 
+pay.id as pay_id,
+pay.person_code as pay_person_code,
+pay.pay_status as pay_status,
+pay.issued_time as pay_issued_time,
+pay.close_time as  pay_close_time,
+pay.charge_amount as pay_charge_amount,
+pay.pay_method as pay_method ,
+pay.pay_specific as pay_specific
+from village_parking_payment as pay
+left join village_person as p on p.code=pay.person_code
+where p.code=pay.person_code
+";}
+
+
+
+        /////////////////////////搜索查询sql语句/////////////////////////
+        else {
+            $sql = "
+              select 
+pay.id as pay_id,
+pay.person_code as pay_person_code,
+pay.pay_status as pay_status,
+pay.issued_time as pay_issued_time,
+pay.close_time as  pay_close_time,
+pay.charge_amount as pay_charge_amount,
+pay.pay_method as pay_method ,
+pay.pay_specific as pay_specific
+from village_parking_payment as pay
+left join village_person as p on p.code=pay.person_code
+where p.code=pay.person_code
+";
+
+
+            if(!empty($issued_time)){
+                $sql .= " and pay.issued_time<='$issued_time' ";
+            }
+            if(!empty($pay_method)){
+                $sql .= " and pay.pay_method='$pay_method'";
+            }
+            if(!empty($pay_status)){
+                $sql .= " and pay.pay_status='$pay_status'";
+            }
+            if(!empty($pay_specific)){
+                $sql .= " and pay.pay_specific='$pay_specific'  ";
+            }
+
+
+            if (!empty($keyword)) {
+                if (preg_match('/^[\x7f-\xff]*\w*\d*$/', $keyword)) {
+                    $sql .= " and concat (pay.id,p.last_name,p.first_name) like '%$keyword%'";
+                }
+
+            }
+
+        }
+
+        $sqlshow = $sql . " ORDER BY pay.id ASC limit ".$rows." offset ".$start;
+        $arrayres=array($sql,$sqlshow);
+        return $arrayres;
+    }
+
+
+
+
+
+    public function getvehiclepayment($sql)
+    {
+
+        $q = $this->db->query($sql); //自动转义
+        if ($q->num_rows() > 0) {
+            $arr = $q->result_array();
+
+            foreach ($arr as $key => $value) {
+                foreach ($value as $key2 => $value2) {
+
+
+                    if ($key2 == 'pay_issued_time') {
+                        $arr[$key]["pay_issued_time_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
+                        // $item["effective_date"]=$value;
+                    }
+                    if ($key2 == 'pay_close_time') {
+                        $arr[$key]["pay_close_time_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
+                        // $item["effective_date"]=$value;
+                    }
+                    if ($key2 == 'pay_status') {
+                        if ($value2== '101') {
+                            $arr[$key]['pay_status_name'] = "未支付";
+                        }
+                        if ($value2== '102') {
+                            $arr[$key]['pay_status_name'] = "支付失败";
+                        }
+                        if ($value2 == '103') {
+                            $arr[$key]['pay_status_name'] = "支付成功";
+                        }
+                        if ($value2 == '104') {
+                            $arr[$key]['pay_status_name'] = "交易完成";
+                        }
+                    }
+
+                    if ($key2 == 'pay_method') {
+                        if ($value2 == "101") {
+                            $arr[$key]['pay_method_name'] = '现金缴费';
+                        }
+                        if ($value2 == "102") {
+                            $arr[$key]['pay_method_name'] = 'APP缴费_微信';
+                        }
+                        if ($value2 == "103") {
+                            $arr[$key]['pay_method_name'] = 'APP缴费_支付宝';
+                        }
+                        if ($value2 == "104") {
+                            $arr[$key]['pay_method_name'] = 'APP缴费_建行聚合支付';
+                        }
+                        if ($value2 == "105") {
+                            $arr[$key]['pay_method_name'] = '微信小程序缴费';
+                        }
+                        if ($value2 == "999") {
+                            $arr[$key]['pay_method_name'] = '未缴费';
+                        }
+                    }
+                    if ($key2 == 'pay_specific') {
+                        if ($value2 == "101") {
+                            $arr[$key]['pay_specific_name'] = '应收金额';
+                        }
+                        if ($value2 == "102") {
+                            $arr[$key]['pay_specific_name'] = '优惠金额';
+                        }
+                        if ($value2 == "103") {
+                            $arr[$key]['pay_specific_name'] = '免费金额';
+                        }
+
+                    }
+                    if ($key2 == 'pay_person_code') {
+                        $person= $this->getPersonByCode($value2);
+                        $arr[$key]["pay_person_code_name"]=$person['full_name'];
+                    }
+
+                }
+            }
+            $json = json_encode($arr);
+            return $json;
+        }
+        return false;
+
+    }
+
 }
 
 ?>

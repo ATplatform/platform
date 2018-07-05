@@ -73,12 +73,13 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称等" value="<?php echo $keyword ?>">
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称、用..." value="<?php echo $keyword ?>" title="可输入物资编号、物资名称、用途
+供应商、备注">
 
                 <input type="hidden" value='<?php echo $material_type;?>' name="material_type" />
                 <input type="hidden" value='<?php echo $building_code;?>' name="building_code" />
                 <input type="hidden" value='<?php echo $parent_code;?>' name="parent_code" />
-                <a id="clear" href="<?=base_url().'index.php/Material/materialUsage'?>">X</a>
+                <a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -89,6 +90,7 @@
         <div class="table_wrap">
             <div class="oh pt10">
                 <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增物资状态</span>
+                <a class="fr add_btn" id="reset" >重置</a>
             </div>
             <table id="table"
                    data-toolbar="#toolbar">
