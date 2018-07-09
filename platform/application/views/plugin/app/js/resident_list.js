@@ -1,71 +1,28 @@
 //日期控件初始化
 var now = new Date();
 now = formatDate(now);
+var table = $('#table');
+//带search的参数用于异步刷新页面时做分页和查询总条数
+var search_keyword = getUrlParam('keyword');
+var search_effective_date = getUrlParam('effective_date');
+var search_household_type = getUrlParam('household_type');
+var search_person_type = getUrlParam('person_type');
+var search_building_code = getUrlParam('building_code');
 //后端设置的分页参数
 var pagesize = $('input[name="pagesize"]').val();
 $('.date').datetimepicker({
-	format: 'YYYY-MM-DD',
+    language:  'zh-CN',
+    format: 'yyyy-mm-dd',
+    weekStart: 1,
+	autoclose: 1,
+	todayHighlight: 1,
+	startView: 2,
+	minView: 2,
+	forceParse: 1
 });
-
-//先验证证件号码
-$('#verify_idcard .next').click(function(){
-	var that = $(this);
-	var id_card = $(this).closest('.modal-content').find('input[name="id_card"]').val();
-	if(!id_card){
-		openLayer('请输入证件号码');
-		return;
-	}
-	if(!/^[0-9]*$/.test(id_card)){
-		openLayer('请输入数字');
-		return;
-	}
-	$.ajax({
-		url:getRootPath()+'/index.php/People/verifyIdcard',
-		method:'post',
-		data:{
-			id_card:id_card
-		},
-		success:function(data){
-			console.log(data);
-			var data = data;
-			if(data=="证件号码已存在"){
-				layer.open({
-					  type: 1,
-					  title: false,
-					  //打开关闭按钮
-					  closeBtn: 1,
-					  shadeClose: false,
-					  skin: 'tanhcuang',
-					  content: "该人员已经存在，无需重复添加！",
-					  cancel: function(){ 
-					    //右上角关闭回调
-					    $('#verify_idcard').modal('hide');
-					  }
-				});
-			}
-			else {
-				//证件号码不存在时,验证通过,添加人员信息弹窗显示
-				$('#verify_idcard').modal('hide');
-				//获得最新的人员编号,加1赋值给当前住户
-				$.ajax({
-					url:getRootPath()+'/index.php/People/getPeopleCode',
-					success:function(data){
-						var code = parseInt(data) + 1;
-						$('#add_person .code').html(code);
-					}
-				})
-				$('#add_person').modal('show');
-
-			}
-			//清空已经填入的证件号码信息
-			that.closest('.modal-content').find('input[name="id_card"]').val(' ');
-		}
-	})
-})
-
 //新增住户操作
 $('#add_person .save_add,#add_person .save').click(function(){
-	console.log($(this).hasClass("save"));
+	// console.log($(this).hasClass("save"));
 	var that = $(this);
 	//必填项
 	var add_pesron = $(this).closest('#add_person');
@@ -85,6 +42,13 @@ $('#add_person .save_add,#add_person .save').click(function(){
 
 	var oth_mob_no  = add_pesron.find('input[name="oth_mob_no"]').val();
 	var remark  = add_pesron.find('input[name="remark"]').val();
+
+	//去处空格
+	last_name = trim(last_name);
+	first_name = trim(first_name);
+	mobile_number = trim(mobile_number);
+	oth_mob_no = trim(oth_mob_no);
+	remark = trim(remark);
 
 	//判断是否残疾
 	if(add_pesron.find('input[name="if_disabled"]').val()=="否"){
@@ -130,11 +94,7 @@ $('#add_person .save_add,#add_person .save').click(function(){
 		if(!(/(^1\d{10}$)/.test($.trim(mobile_number)))){
 			openLayer('手机号码有误!');
 		}
-		else if(!(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test($.trim(id_number))) &&(id_type=='身份证') ){
-			openLayer('证件号码有误!');
-		}
 		else {
-			// openLayer('全部正确!');
 			//验证通过,进行下一步
 			//数据写入库
 			$.ajax({
@@ -158,6 +118,8 @@ $('#add_person .save_add,#add_person .save').click(function(){
 					remark:remark
 				},
 				success:function(data){
+					//关闭新增住户窗口
+					$('#add_person').modal('hide');
 					var data = JSON.parse(data);
 					//成功之后自动刷新页面
 					layer.open({
@@ -175,8 +137,6 @@ $('#add_person .save_add,#add_person .save').click(function(){
 						    	var person = '<div class="single_person" data-last_name="'+last_name+'" data-first_name="'+first_name+'" data-code="'+code+'"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a><div class="fl"><span class="name">'+last_name+first_name+'</span><span class="id_number">'+id_number+'</span></div><div class="select_pull_down query_wrap col_37A fl"><div><input type="text" class="model_input household_type ka_input3" placeholder="住户类别" name="household_type" data-ajax="" readonly=""></div><div class="ka_drop" style="display: none;"><div class="ka_drop_list"><ul><li><a href="javascript:;" data-ajax="101">户主</a></li><li><a href="javascript:;" data-ajax="102">家庭成员</a></li><li><a href="javascript:;" data-ajax="103">访客</a></li><li><a href="javascript:;" data-ajax="104">租客</a></li></ul></div></div></div></div>';
 						    	$('#add_relation .search_person_results').empty();
 						    	$('#add_relation .search_person_results').append(person);
-						    	//关闭新增住户窗口
-						    	$('#add_person').modal('hide');
 						    	//开启新增住户关系窗口
 						    	$('#add_relation').modal('show');
 						    }
@@ -218,30 +178,27 @@ function idFormatter(value,row,index){
 	];
 }
 
-//新增住户关系时获取所有有效的房间号
-$('.add_relation_btn').click(function(){
-	$.ajax({
-		url : getRootPath()+'/index.php/Building/getBuildingLast',
-		dataType:"text",
-		success:function(message){
-			var data=JSON.parse(message);
-			console.log(data);
-			for(var i=0;i<data.length;i++){
-				var d = data[i];
-				var name = d['name'];
-				var code = d['code'];
-				if($(".select_room #"+code).length==0){
-					$('.select_room ul').append('<li><a href="javascript:;" id='+code+' data-ajax='+code+'>'+code+'-'+name+'</a></li>');
-				}
+//获取所有有效的房间号
+$.ajax({
+	url : getRootPath()+'/index.php/Building/getBuildingLast',
+	dataType:"text",
+	success:function(message){
+		var data=JSON.parse(message);
+		// console.log(data);
+		for(var i=0;i<data.length;i++){
+			var d = data[i];
+			var name = d['name'];
+			var code = d['code'];
+			if($(".select_room #"+code).length==0){
+				$('.select_room ul').append('<li><a href="javascript:;" id='+code+' data-ajax='+code+'>'+code+'-'+name+'</a></li>');
 			}
-		},
-		error:function(jqXHR,textStatus,errorThrown){
-			// console.log(jqXHR);
-			// console.log(textStatus);
-			// console.log(errorThrown);
-		}	
-	})
+		}
+	},
+	error:function(jqXHR,textStatus,errorThrown){
+		// console.log(jqXHR);
+	}	
 })
+
 
 //新增住户关系保存操作
 $('#add_relation .save').click(function(){
@@ -294,7 +251,7 @@ $('#add_relation .save').click(function(){
 		}
 		person_building_datas[i] = person_building_data;
 	}
-	console.log(person_building_datas);
+	// console.log(person_building_datas);
 	//提交数据到后端
 	$.ajax({
 		type:"POST",
@@ -307,6 +264,7 @@ $('#add_relation .save').click(function(){
 			persons:person_building_datas
 		},
 		success:function(data){
+			$('#add_relation').modal('hide');
 			var data = JSON.parse(data);
 			//成功之后自动刷新页面
 			layer.open({
@@ -333,6 +291,10 @@ $('#add_relation .save').click(function(){
 $('.search_person_wrap .search_person_btn').click(function(){
 	var name = $(this).closest('.search_person_wrap').find('.search_person_name').val();
 	var search_person_wrap = $(this).closest('.search_person_wrap');
+	if(!name||/^\s*$/.test(name)){
+	    openLayer('请输入姓名!');
+	    return;
+	}
 	//得到住户类型下拉框
 	var household_type_wrap = '<div class="select_pull_down query_wrap col_37A fl"><div><input type="text" class="model_input household_type ka_input3" placeholder="住户类别" name="household_type" data-ajax="" readonly=""></div><div class="ka_drop" style="display: none;"><div class="ka_drop_list"><ul><li><a href="javascript:;" data-ajax="101">户主</a></li><li><a href="javascript:;" data-ajax="102">家庭成员</a></li><li><a href="javascript:;" data-ajax="103">访客</a></li><li><a href="javascript:;" data-ajax="104">租客</a></li></ul></div></div></div>';
 	$.ajax({
@@ -356,7 +318,6 @@ $('.search_person_wrap .search_person_btn').click(function(){
 								+'<span class="id_number">'+d['id_number']+'</span>'
 								+'</div>'
 								+household_type_wrap;
-					console.log(html);
 					$('.search_person_results').append(html);
 				}
 			}
@@ -371,8 +332,9 @@ $('.search_person_wrap .search_person_btn').click(function(){
 })
 
 //点击搜索到的住户,添加到结果列表
-$(document).on('click','.search_person_results .single_person .add',function(){
+$(document).on('click','#add_relation .search_person_results .single_person .add',function(){
 	var single_person = $(this).closest('.single_person');
+	var content_wrap = $(this).closest('.model_content');
 	var full_name = single_person.find('.name').html();
 	var id_number = single_person.find('.id_number').html();
 	var last_name = single_person.data('last_name');
@@ -387,11 +349,16 @@ $(document).on('click','.search_person_results .single_person .add',function(){
 		openLayer('请选择住户类别!');
 		return;
 	}
-	var html = '<li data-last_name="'+last_name+'" data-first_name="'+first_name+'" data-code="'+code+'" data-household_type="'+household_type+'" id="'+code+'"><span class="full_name">'+full_name+'</span><span class="id_number">'+id_number+'</span></li>';
+	var html = '<li data-last_name="'+last_name+'" data-first_name="'+first_name+'" data-code="'+code+'" data-household_type="'+household_type+'" id="'+code+'"><span class="full_name">'+full_name+'</span><span class="id_number">'+id_number+'</span><i class="fa fa-close"></i></li>';
 		//不重复添加
-		if($(".person_building_data ul #"+code).length==0){
-			$('.person_building_data ul').append(html);
+		if(content_wrap.find(".person_building_data ul #"+code).length==0){
+			content_wrap.find('.person_building_data ul').append(html);
 		}
+})
+
+//点击删除节点
+$(document).on('click','.person_building_data ul li .fa-close',function(){
+	$(this).closest('li').remove();
 })
 
 //编辑住户信息操作
@@ -400,19 +367,7 @@ $('#write_person .save').click(function(){
 	//必填项
 	var add_pesron = $(this).closest('#write_person');
 	var code = add_pesron.find('.code').html();
-	var last_name = add_pesron.find('input[name="last_name"]').val();
-	var first_name = add_pesron.find('input[name="first_name"]').val();
-	var id_type = add_pesron.find('input[name="id_type"]').val();
-	var id_number = add_pesron.find('input[name="id_number"]').val();
-	var nationality = add_pesron.find('input[name="nationality"]').val();
-	var gender  = add_pesron.find('input[name="gender"]').val();
-	var birth_date  = add_pesron.find('input[name="birth_date"]').val();
-	var blood_type   = add_pesron.find('input[name="blood_type"]').val();
 	var if_disabled  = "false";
-	var ethnicity  = add_pesron.find('input[name="ethnicity"]').val();
-	var mobile_number = add_pesron.find('input[name="mobile_number"]').val();
-	var tel_country = add_pesron.find('input[name="tel_country"]').val();
-
 	var oth_mob_no  = add_pesron.find('input[name="oth_mob_no"]').val();
 	var remark  = add_pesron.find('input[name="remark"]').val();
 
@@ -423,92 +378,43 @@ $('#write_person .save').click(function(){
 	else {
 		if_disabled = 'true';
 	}
-
-	//先验证必填项是否有
-	if(!last_name){
-		openLayer('请输入姓!');
-	}
-	else if(!first_name){
-		openLayer('请输入名!');
-	}
-	else if(!id_type){
-		openLayer('请选择证件类型!');
-	}
-	else if(!id_number){
-		openLayer('请输入证件号码!');
-	}
-	else if(!nationality){
-		openLayer('请选择国籍或地区!');
-	}
-	else if(!gender){
-		openLayer('请选择性别!');
-	}
-	else if(!birth_date){
-		openLayer('请选择出生年月!');
-	}
-	else if(!blood_type){
-		openLayer('请选择血型!');
-	}
-	else if(!ethnicity){
-		openLayer('请选择民族!');
-	}
-	else if(!mobile_number){
-		openLayer('请输入手机号!');
-	}
-	else {
-		//验证身份证号码是否有误
-		if(!(/(^1\d{10}$)/.test($.trim(mobile_number)))){
-			openLayer('手机号码有误!');
-		}
-		else if(!(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test($.trim(id_number))) &&(id_type=='身份证') ){
-			openLayer('证件号码有误!');
-		}
-		else {
-			// openLayer('全部正确!');
-			//验证通过,进行下一步
-			//数据写入库
-			$.ajax({
-				url:getRootPath()+'/index.php/People/updatePeople',
-				method:'post',
-				data:{
-					code:code,
-					last_name:last_name,
-					first_name:first_name,
-					id_type:add_pesron.find('input[name="id_type"]').data('ajax'),
-					id_number:id_number,
-					nationality:nationality,
-					gender:add_pesron.find('input[name="gender"]').data('ajax'),
-					birth_date:birth_date,
-					if_disabled:if_disabled,
-					bloodtype:add_pesron.find('input[name="blood_type"]').data('ajax'),
-					ethnicity:add_pesron.find('input[name="ethnicity"]').data('ajax'),
-					tel_country:tel_country,
-					mobile_number:mobile_number,
-					oth_mob_no:oth_mob_no,
-					remark:remark
-				},
-				success:function(data){
-					var data = JSON.parse(data);
-					//成功之后自动刷新页面
-					layer.open({
-						  type: 1,
-						  title: false,
-						  //打开关闭按钮
-						  closeBtn: 1,
-						  shadeClose: false,
-						  skin: 'tanhcuang',
-						  content: data.message,
-						  cancel: function(){ 
-						    	window.location = getRootPath() + "/index.php/People/residentlist";
-						  }
-					});
-				},
-				error:function(){
-					console.log('编辑住户出错');
-				}
-			})
-		}
-	}
+	//数据写入库
+		$.ajax({
+			url:getRootPath()+'/index.php/People/updatePeople',
+			method:'post',
+			data:{
+				code:code,
+				oth_mob_no:oth_mob_no,
+				remark:remark,
+				if_disabled:if_disabled,
+				search_keyword:search_keyword,
+				search_effective_date:search_effective_date,
+				search_household_type:search_household_type,
+				search_person_type:search_person_type,
+				search_building_code:search_building_code
+			},
+			success:function(data){
+				$('#write_person').modal('hide');
+				var data = JSON.parse(data);
+				//成功之后自动刷新页面
+				layer.open({
+					  type: 1,
+					  title: false,
+					  //打开关闭按钮
+					  closeBtn: 1,
+					  shadeClose: false,
+					  skin: 'tanhcuang',
+					  content: data.message,
+					  cancel: function(){ 
+					    	//编辑完后异步刷新页面
+				    		asynRefreshPage(getRootPath()+'/index.php/People/residentlist','People/getResidentList',table,data.residentlist_total,'&keyword='+search_keyword+'&effective_date='+search_effective_date+'&household_type='+search_household_type+'&person_type='+search_person_type);
+					  }
+				});
+			},
+			error:function(){
+				console.log('编辑人员出错');
+			}
+		})
 })
 
 //编辑住户关系
@@ -528,12 +434,18 @@ $('#relation_detail .save').click(function(){
 			url:getRootPath()+'/index.php/People/updatePersonBuilding',
 			method:'post',
 			data:{
-				building_code:building_code,
+				building_code:add_pesron.find('.building_code').data('ajax'),
 				person_code:person_code,
 				begin_date:begin_date,
-				end_date:end_date
+				end_date:end_date,
+				search_keyword:search_keyword,
+				search_effective_date:search_effective_date,
+				search_household_type:search_household_type,
+				search_person_type:search_person_type,
+				search_building_code:search_building_code
 			},
 			success:function(data){
+				$('#relation_detail').modal('hide');
 				var data = JSON.parse(data);
 				//成功之后自动刷新页面
 				layer.open({
@@ -545,12 +457,14 @@ $('#relation_detail .save').click(function(){
 					  skin: 'tanhcuang',
 					  content: data.message,
 					  cancel: function(){ 
-					    	window.location = getRootPath() + "/index.php/People/residentlist";
+	    		    	//编辑完后异步刷新页面
+	    	    		asynRefreshPage(getRootPath()+'/index.php/People/residentlist','People/getResidentList',table,data.residentlist_total,'&keyword='+search_keyword+'&effective_date='+search_effective_date+'&household_type='+search_household_type+'&person_type='+search_person_type);
+	    	    	  	
 					  }
 				});
 			},
 			error:function(){
-				console.log('编辑住户出错');
+				console.log('编辑人员出错');
 			}
 		})
 	}
@@ -579,6 +493,7 @@ window.operateEvents = {
 		var household_type_name = row.household_type_name;
 		var person_code = row.person_code;
 		var building_code = row.building_code;
+		var room = row.room;
 		$('#person_detail').find('.full_name').html(full_name);
 		$('#person_detail').find('.id_number').html(id_number);
 		$('#person_detail').find('.gender_name').html(gender_name);
@@ -592,7 +507,7 @@ window.operateEvents = {
 		$('#person_detail').find('.id_type_name').html(id_type_name);
 		$('#person_detail').find('.begin_date').html(begin_date);
 		$('#person_detail').find('.end_date').html(end_date);
-		$('#person_detail').find('.building_code').html(building_code);
+		$('#person_detail').find('.building_code').html(room);
 		$('#person_detail').find('.household_type_name').html(household_type_name);
 		$('#person_detail').find('.oth_mob_no').html(oth_mob_no);
 
@@ -613,7 +528,7 @@ window.operateEvents = {
 				}
 				else {
 					for(var i=0;i<data.length;i++){
-						var d = data[i] + " ";
+						var d = "<p>"+ data[i] + "</p>";
 						message += d;
 					}
 				}
@@ -635,12 +550,10 @@ window.operateEvents = {
 			success:function(data){
 				if(data){
 					var data = JSON.parse(data);
-					console.log(data);	
 					var message =  "";
 					for(var i=0;i<data.length;i++){
 						var d = data[i]['full_name'] + " ";
-						message += d;
-						console.log(d);
+							message += d;
 					}
 					$('#person_detail').find('.other_person').html(message);
 				}
@@ -660,43 +573,33 @@ window.operateEvents = {
 		$('#write_person').modal('show');
 		var person_code = row.person_code;
 		var full_name = row.full_name;
-		var last_name = row.last_name;
-		var first_name = row.first_name;
-		var id_type = row.id_type;
 		var id_type_name = row.id_type_name;
 		var id_number = row.id_number;
 		var nationality = row.nationality;
 		var gender_name = row.gender_name;
-		var gender = row.gender;
 		var birth_date = row.birth_date;
 		var if_disabled_name = row.if_disabled_name;
 		var if_disabled = row.if_disabled;
 		var blood_type_name = row.blood_type_name;
-		var blood_type = row.blood_type;
 		var ethnicity_name = row.ethnicity_name;
-		var ethnicity = row.ethnicity;
 		var mobile_number = row.mobile_number;
 		var oth_mob_no = row.oth_mob_no;
 		var remark = row.remark;
 
 		//赋值
 		$('#write_person').find('.code').html(person_code);
-		$('#write_person').find('.last_name').val(last_name);
-		$('#write_person').find('.first_name').val(first_name);
-		$('#write_person').find('.id_type').val(id_type_name);
-		$('#write_person').find('.id_type').data('ajax',id_type);
-		$('#write_person').find('.id_number').val(id_number);
-		$('#write_person').find('.nationality').val(nationality);
-		$('#write_person').find('.gender').val(gender_name);
-		$('#write_person').find('.gender').data('ajax',gender);
+		$('#write_person').find('.full_name').html(full_name);
+		$('#write_person').find('.id_number').html(id_number);
+		$('#write_person').find('.gender_name').html(gender_name);
+		$('#write_person').find('.birth_date').html(birth_date);
+		$('#write_person').find('.ethnicity_name').html(ethnicity_name);
+		$('#write_person').find('.blood_type_name').html(blood_type_name);
+		$('#write_person').find('.nationality').html(nationality);
+		$('#write_person').find('.mobile_number').html(mobile_number);
+		$('#write_person').find('.id_type_name').html(id_type_name);
 		$('#write_person').find('.birth_date').val(birth_date);
 		$('#write_person').find('.if_disabled').val(if_disabled_name);
 		$('#write_person').find('.if_disabled').data('ajax',if_disabled);
-		$('#write_person').find('.blood_type').val(blood_type_name);
-		$('#write_person').find('.blood_type').data('ajax',blood_type);
-		$('#write_person').find('.ethnicity').val(ethnicity_name);
-		$('#write_person').find('.ethnicity').data('ajax',ethnicity);
-		$('#write_person').find('.mobile_number').val(mobile_number);
 		$('#write_person').find('.oth_mob_no').val(oth_mob_no);
 		$('#write_person').find('.remark').val(remark);
 	},
@@ -711,13 +614,17 @@ window.operateEvents = {
 		var begin_date = row.begin_date;
 		var end_date = row.end_date;
 		var household_type_name = row.household_type_name;
+		var room = row.room;
+		var pb_remark = row.pb_remark;
 		//赋值
-		$('#relation_detail').find('.building_code').html(building_code);
+		$('#relation_detail').find('.building_code').html(room);
+		$('#relation_detail').find('.building_code').data('ajax',building_code);
 		$('#relation_detail').find('.person_code').html(person_code);
 		$('#relation_detail').find('.full_name').html(full_name);
 		$('#relation_detail').find('.id_number').html(id_number);
 		$('#relation_detail').find('.begin_date').html(begin_date);
 		$('#relation_detail').find('.end_date').val(end_date);
 		$('#relation_detail').find('.household_type_name').html(household_type_name);
+		$('#relation_detail').find('.remark').html(pb_remark);
 	}
 }

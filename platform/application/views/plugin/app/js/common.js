@@ -279,8 +279,75 @@ function formatDate(date){
     var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
     return currentdate;
 }
+//获得当前的年-月-日信息
+function getDate(){
+    var nowDate = new Date();
+    var year = nowDate.getFullYear();
+    var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1)
+    : nowDate.getMonth() + 1;
+    var day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate
+    .getDate();
+    var dateStr = year + "-" + month + "-" + day;
+    return dateStr;
+}
+//获取当日上个月的年-月-日信息
+function getLastMonthYestdy(){
+    var now=new Date();  
+    var year = now.getFullYear();//getYear()+1900=getFullYear()  
+    var month = now.getMonth() +1;//0-11表示1-12月  
+    var day = now.getDate();  
+    if(parseInt(month)<10){  
+        month="0"+month;  
+    }  
+    if(parseInt(day)<10){  
+        day="0"+day;  
+    }  
 
+    now =year + '-'+ month + '-' + day;  
 
+    if (parseInt(month) ==1) {//如果是1月份，则取上一年的12月份  
+        return (parseInt(year) - 1) + '-12-' + day;  
+    }  
+
+    var  preSize= new Date(year, parseInt(month)-1, 0).getDate();//上月总天数  
+    if (preSize < parseInt(day)) {//上月总天数<本月日期，比如3月的30日，在2月中没有30  
+        return year + '-' + month + '-01';  
+    }  
+
+    if(parseInt(month) <=10){  
+        return year + '-0' + (parseInt(month)-1) + '-' + day;  
+    }else{  
+        return year + '-' + (parseInt(month)-1) + '-' + day;  
+    }  
+}
+//获取当天的下个月对应日期
+function getNextMonth(date) {  
+    var arr = date.split('-');  
+    var year = arr[0]; //获取当前日期的年份  
+    var month = arr[1]; //获取当前日期的月份  
+    var day = arr[2]; //获取当前日期的日  
+    var days = new Date(year, month, 0);  
+    days = days.getDate(); //获取当前日期中的月的天数  
+    var year2 = year;  
+    var month2 = parseInt(month) + 1;  
+    if (month2 == 13) {  
+        year2 = parseInt(year2) + 1;  
+        month2 = 1;  
+    }  
+    var day2 = day;  
+    var days2 = new Date(year2, month2, 0);  
+    days2 = days2.getDate();  
+    if (day2 > days2) {  
+        day2 = days2;  
+    }  
+    if (month2 < 10) {  
+        month2 = '0' + month2;  
+    }  
+  
+    var t2 = year2 + '-' + month2 + '-' + day2;  
+    return t2;  
+}
+$(function(){
     $('.building>p').click(function(e){
         e.stopPropagation();
         $(this).closest('.building').find('.ka_drop').hide();
@@ -288,17 +355,131 @@ function formatDate(date){
     //下拉框选项
     $(document).on('click','.select_pull_down',function(){
         $(this).find('.ka_drop').slideToggle();
+        $(this).find('.sub_ka_drop').slideToggle();
     })
     
     //下拉框赋值
-
     $(document).on('click','.ka_drop li',function(){
         var data_ajax = $(this).find('a').data('ajax');
         $(this).parents('.select_pull_down').find('.ka_input3').val($(this).text());
         $(this).parents('.select_pull_down').find('.ka_input3').data('ajax',data_ajax);
-        //sessionStorage.setItem(item,data_ajax);
+    })
+    //鼠标移开下拉框时,下拉框自动隐藏
+    $(document).on('mouseleave','.select_pull_down',function(){
+        $(this).find('.ka_drop').hide();
+        $(this).find('.sub_ka_drop').hide();
+    })
+    //二级下拉框第一级赋值
+    $(document).on('click','.sub_ka_drop .first_nav',function(){
+        var data_ajax = $(this).find('a').data('ajax');
+        $(this).parents('.select_pull_down').find('.ka_input3').val($(this).text());
+        $(this).parents('.select_pull_down').find('.ka_input3').data('ajax',data_ajax);
+    })
+    //点击显示二级菜单
+    $(document).on('click','.sub_ka_drop .subNavWrap',function(e){
+        e.stopPropagation();
+        $(this).find('.subNav').slideToggle();
+    })
+    //第二级下拉框赋值
+    $(document).on('click','.sub_ka_drop .subNav li',function(){
+        var data_ajax = $(this).find('a').data('ajax');
+        $(this).closest('.select_pull_down').find('.ka_input3').val($(this).text());
+        $(this).closest('.select_pull_down').find('.ka_input3').data('ajax',data_ajax);
+        //赋值之后隐藏下拉框
+        $(this).closest('.sub_ka_drop').hide();
+    })
+})
+//去掉字符串首尾空格
+function trim(m){
+ while((m.length>0)&&(m.charAt(0)==' '))
+    m  =  m.substring(1, m.length);
+ while((m.length>0)&&(m.charAt(m.length-1)==' '))
+    m = m.substring(0, m.length-1);
+ return m;
+}
+function viewAll(value, row, index){
+    if(value){
+        if(value.length>20) {
+           return "<div style=\"\" title=''><p onclick=openLayer('"+value+"')>内容较多,请点击查看详情</p></div>";
+        }
+        else{
+           return "<div style=\"\">" +value+ "</div>";
+        }
+    }
+    else{
+       return "<div style=\"\">" +value+ "</div>";
+    }
+}
+function viewMore(value, row, index){
+    if(value){
+        //如果有逗号(多个地址),则隐藏
+        if(value.indexOf("3") != -1){
+           return "<div style=\"\" title=''><p onclick=openLayer('"+value+"')>内容较多,请点击查看详情</p></div>";
+        }
+        else{
+           return "<div style=\"\">" +value+ "</div>";
+        }
+    }
+    else{
+       return "<div style=\"\">" +value+ "</div>";
+    }
+}
+$(function(){
+  //给有楼宇层级筛选的列表赋值楼宇名称
+    if($('.search_wrap #treeNav').length>0){
+        $("#treeNav>span").on('ready.jstree',function(){
+            var building_code = getUrlParam('parent_code')?getUrlParam('parent_code'):getUrlParam('building_code');
+            if(building_code){
+                $.ajax({
+                    method:'post',
+                    url : getRootPath()+'/index.php/Building/getBuilding',
+                    data:{
+                        building_code:building_code
+                    },
+                    success:function(message){
+                        var data=JSON.parse(message);
+                        var building_name = data.name;
+                           $('#treeNav>span .jstree-children a.jstree-anchor').html('<i class="jstree-icon jstree-themeicon" role="presentation"></i>'+building_name);
+                        ;
+                    },
+                    error:function(jqXHR,textStatus,errorThrown){
+                        // console.log(jqXHR);
+                    }   
+                })
+            }
+        })
+    }
+    $('#treeNav>span,#treeNavAdd>span,#treeNavWrite>span').on(" before_open.jstree", function (e, data) {
+        $('.jstree-container-ul').css({
+            "width":"300px"
+        })
+        $(this).css({
+            "height": "340px",
+            "width":"200px",
+            "overflow": "auto"
+        })
+        $(this).closest('a').css({
+            'width':'200px'
+        })
     })
 
-   // $(document).on('mouseleave','.ka_drop_list',function(){
-   //     $(this).parents('.ka_drop').hide();
-   // })
+    $('#treeNav>span,#treeNavAdd>span,#treeNavWrite>span').on(" after_close.jstree", function (e, data) {
+        if(data.node.parents.length==1){
+            $(this).css({
+                "width":"100%",
+                "height": "100%",
+            })
+            $(this).closest('a').css({
+                'width':'120px'
+            })
+            $('.jstree-container-ul').css({
+                "width":"100%"
+            })
+        }
+    })
+
+    //去除下拉框光标
+    $('input[readonly]').on('focus', function() {
+        $(this).trigger('blur');
+    });
+})

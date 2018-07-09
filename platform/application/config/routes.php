@@ -51,5 +51,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 //这个参数定义默认的控制器
 $route['default_controller'] = 'login';
-$route['404_override'] = '';
+//404页面跳转的控制器
+$route['404_override'] = 'Notfond';
 $route['translate_uri_dashes'] = FALSE;

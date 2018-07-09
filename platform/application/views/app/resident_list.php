@@ -3,20 +3,12 @@
 ?>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-table/css/bootstrap-table.css'?>'/>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css'?>'/>
+<link rel="stylesheet" href='<?=base_url().'application/views/plugin/jstree/dist/themes/default/style.min.css'?>'/>
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table-zh-CN.js'?>'></script>
-<script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/moment-with-locales.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'?>'></script>
-<div class="header oh">
-	<div class="fl logo">
-		<i></i>艾特智汇谷云平台
-	</div>
-	<div class="top_login_wrap fr">
-		<span class="user"><i></i>180940320</span>
-		|<a class="login_out" href="<?=base_url().'index.php/Login/logout'?>">退出登录</a>
-	</div>
-</div>	
-
+<script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js'?>'></script>
+<script src='<?=base_url().'application/views/plugin/jstree/dist/jstree.min.js'?>'></script>
 <div class="oh pt10">
 
 <?php
@@ -25,16 +17,16 @@
 
 <!--<?php echo 'x'; ?>-->
 
-	<div class="col-md-10 col-xm-9">
+	<div class="col-sm-12 main_wrap">
 		<div class="searc_bar search_wrap" id="search_wrap">
 			<span class="col_37A fl">筛选条件</span>
-			<input type="text" class="begin_date date col_37A fl" name="begin_date"> 
-			
+			<input type="text" class="effective_date date col_37A fl form-control" name="effective_date"> 
+			<a href="javascript:;" id="treeNav" class="treeWrap"><span></span></a>
 			<div class="household_type_wrap select_pull_down query_wrap col_37A fl">
 				<div>
 					<input type="text" class="model_input household_type ka_input3" placeholder="住户类别" name="household_type" data-ajax="" readonly>
 				</div>
-				<div class="ka_drop" style="display: block;">
+				<div class="ka_drop">
 					<div class="ka_drop_list">
 					<ul>
 						<li><a href="javascript:;" data-ajax="101">户主</a></li>
@@ -46,11 +38,11 @@
 				</div>
 			</div>
 
-			<div class="select_pull_down query_wrap col_37A fl">
+			<div class="person_type_wrap select_pull_down query_wrap col_37A fl" style="margin-left: 10px;">
 				<div>
 					<input type="text" class="model_input person_type ka_input3" placeholder="特殊人群" name="person_type" data-ajax="" readonly>
 				</div>
-				<div class="ka_drop" style="display: block;">
+				<div class="ka_drop">
 					<div class="ka_drop_list">
 					<ul>
 						<li><a href="javascript:;" data-ajax="101">老人</a></li>
@@ -62,13 +54,13 @@
 				</div>
 			</div>
 
-			<form class="search_room" action="" method="get">
+			<div class="search_room">
 				<p>
-					<input type="text" class="searc_room_text" name="keyword" placeholder="可输入楼宇名称、姓名、手机号、身份证件号码" value="">
-					<a id="clear" href="">X</a>
+					<input type="text" class="searc_room_text" name="keyword" placeholder="可输入姓名、手机号、身份证件号码" value="">
+					<a id="clear" href="javascript:;">X</a>
 				</p>
 				<button type="submit"><i class="fa fa-search"></i></button>
-			</form>
+			</div>
 
 		</div>
 		
@@ -76,6 +68,7 @@
 			<div class="oh pt10">
 				<span class="fr add_btn add_relation_btn" data-target="#add_relation" data-toggle="modal">新增住户关系</span>
 				<span class="fr add_btn add_person_btn " data-target="#verify_idcard" data-toggle="modal">新增人员</span>
+				<a class="fr add_btn" href="<?=base_url().'index.php/People/residentlist'?>">清除筛选</a>
 			</div>
 			
 			<table id="table"
@@ -84,24 +77,8 @@
 			<thead>
 				<tr>
 					<th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
-					<th data-title="数据id"  data-field="id" data-visible="false"></th>
-					<th data-title="住户code" data-visible="false" data-field="person_code"></th>
-					<th data-title="住户姓" data-visible="false" data-field="lats_name"></th>
-					<th data-title="住户名" data-visible="false" data-field="first_name"></th>
-					<th data-title="性别" data-visible="false" data-field="gender"></th>
-					<th data-title="出生日期" data-visible="false" data-field="birth_date"></th>
-					<th data-title="住户国籍" data-visible="false" data-field="nationality"></th>
-					<th data-title="住户血型" data-visible="false" data-field="blood_type"></th>
-					<th data-title="住户血型名称" data-visible="false" data-field="blood_type_name"></th>
-					<th data-title="住户备注" data-visible="false" data-field="remark"></th>
-					<th data-title="是否残疾" data-visible="false" data-field="if_disabled"></th>
-					<th data-title="是否残疾名称" data-visible="false" data-field="if_disabled_name"></th>
-					<th data-title="身份证件类型" data-visible="false" data-field="id_type"></th>
-					<th data-title="身份证件类型名称" data-visible="false" data-field="id_type_name" data-hidden=true></th>
-					<th data-title="结束日期" data-visible="false" data-field="end_date"></th>
-					<th data-title="住户类型号码" data-visible="false" data-field="household_type"></th>
-
-					<th data-field="building_code" data-title="房号" data-align="center"></th>
+					<th data-field="building_name" data-title="地址" data-align="left"></th>
+					<!-- <th data-field="name" data-title="房号" data-align="center"></th> -->
 					<th data-field="full_name" data-title="姓名" data-align="center"></th>
 					<th data-field="begin_date" data-title="入住日期" data-align="center"></th>
 					<th data-field="household_type_name" data-title="住户类别" data-align="center"></th>
@@ -121,22 +98,22 @@
 		<!--分页-->
 		<ul class="pager" page='<? $page ?>'>
 		    <?php
-		       $first=base_url().'index.php/People/residentlist?page=1&keyword='.$keyword;	
+		       $first=base_url().'index.php/People/residentlist?page=1&keyword='.$keyword.'&effective_date='.$effective_date.'&household_type='.$household_type.'&person_type='.$person_type.'&building_code='.$building_code;	
 		       echo  " <li><a href='".$first."' id='first'>首 页</a></li>";
 		    if($page>1) {
-					$url=base_url().'index.php/People/residentlist?page='.($page-1).'&keyword='.$keyword; 
+					$url=base_url().'index.php/People/residentlist?page='.($page-1).'&keyword='.$keyword.'&effective_date='.$effective_date.'&household_type='.$household_type.'&person_type='.$person_type.'&building_code='.$building_code; 
 		        echo "<li class=\"active\"><a href='".$url."' id='prev' >上一页</a></li>";
 		    }else{
 		        echo "<li class=\"disabled\" ><a id='prev' href='javascript:void(0);'>上一页</a></li>";
 		    }
 		    echo "<li class=\"disabled\"><a href='javascript:void(0);' id='current'>".$page."/".$total."</a></li>";
 		    if($page<$total) {
-					$url=base_url().'index.php/People/residentlist?page='.($page+1).'&keyword='.$keyword;	
+					$url=base_url().'index.php/People/residentlist?page='.($page+1).'&keyword='.$keyword.'&effective_date='.$effective_date.'&household_type='.$household_type.'&person_type='.$person_type.'&building_code='.$building_code;	
 		        echo "<li class=\"active\"><a href='".$url."' id='next' >下一页</a></li>";
 		    }else{
 		        echo "<li class=\"disabled\"  ><a  id='next' href='javascript:void(0);'>下一页</a></li>";
 		    }
-		    $last=base_url().'index.php/People/residentlist?page='.$total.'&keyword='.$keyword;
+		    $last=base_url().'index.php/People/residentlist?page='.$total.'&keyword='.$keyword.'&effective_date='.$effective_date.'&household_type='.$household_type.'&person_type='.$person_type.'&building_code='.$building_code;
 		    echo  " <li><a href='".$last."' id='last'>尾 页</a></li>";
 		    echo  " <li><input type='text' class='fenye_input' name='fenye_input'  /> </li>";
 		    echo  "<li><a href='#'  class='fenye_btn'>GO</a></li>";
@@ -181,8 +158,8 @@
 	            </div>
 	            <div class="modal-body building">
 					<div class="fl person_wrap">
-						<p>人员编号：
-							<span class="code" style="margin-left:58px;">100011</span>
+						<p style="padding-left: 16px;">人员编号：
+							<span class="code" style="margin-left:49px;"></span>
 						</p>
 						<p><span class="red_star">*</span>姓：
 						<input type="text" class="model_input last_name" placeholder="请输入姓" name="last_name">
@@ -193,37 +170,24 @@
 								<span class="red_star">*</span>证件类型：
 								<input type="text" class="model_input id_type ka_input3" placeholder="请选择证件类型" name="id_type" data-ajax="" readonly="">
 							</div>
-							<div class="ka_drop" style="display: none;">
+							<div class="ka_drop">
 								<div class="ka_drop_list">
 								<ul>
-									<li><a href="javascript:;" data-ajax="101">身份证</a></li>
-				                    <li><a href="javascript:;" data-ajax="102">境外护照</a></li>
-				                    <li><a href="javascript:;" data-ajax="103">回乡证</a></li>
-				                    <li><a href="javascript:;" data-ajax="104">台胞证</a></li>
-				                    <li><a href="javascript:;" data-ajax="105">军官证/士兵证</a></li>
 								</ul>
 								</div>
 							</div>
 						</div>
 						<p><span class="red_star">*</span>证件号码：
-						<input type="text" class="model_input id_number" placeholder="请输入证件号码" name="id_number">
+						<input type="text" class="model_input id_number" placeholder="请输入证件号码" name="id_number" readonly>
 						</p>
 						<div class="select_wrap select_pull_down">
 							<div>
 								<span class="red_star">*</span>国籍或地区：
 								<input type="text" class="model_input nationality ka_input3" placeholder="请选择国籍或地区" name="nationality" data-ajax="" readonly="">
 							</div>
-							<div class="ka_drop" style="display: none;">
+							<div class="ka_drop">
 							<div class="ka_drop_list">
 							 <ul>
-							   <li><a href="javascript:;" data-ajax="101">中国</a></li>
-							   <li><a href="javascript:;" data-ajax="102">香港</a></li>
-							   <li><a href="javascript:;" data-ajax="103">澳门</a></li>
-							   <li><a href="javascript:;" data-ajax="104">台湾</a></li>
-							   <li><a href="javascript:;" data-ajax="105">新加坡</a></li>
-							   <li><a href="javascript:;" data-ajax="106">美国</a></li>
-							   <li><a href="javascript:;" data-ajax="107">日本</a></li>
-							   <li><a href="javascript:;" data-ajax="108">韩国</a></li>
 							 </ul>
 							 </div>
 							</div>
@@ -233,18 +197,17 @@
 								<span class="red_star">*</span>性别：
 								<input type="text" class="model_input gender ka_input3" placeholder="请选择性别" name="gender" data-ajax="" readonly="">
 							</div>
-							<div class="ka_drop" style="display: none;">
+							<div class="ka_drop">
 							<div class="ka_drop_list">
 							 <ul>
-							   <li><a href="javascript:;" data-ajax="101">男</a></li>
-							   <li><a href="javascript:;" data-ajax="102">女</a></li>
+							   
 							 </ul>
 							 </div>
 							</div>
 						</div>
 						<p>
-							<span class="red_star">*</span>出生年月
-							<input type="text" class="ka_input3 birth date" name="birth" />
+							<span class="red_star">*</span>出生年月：
+							<input type="text" class="ka_input3 birth dat form-control ka_input3 birth date form-control" name="birth" placeholder="请选择出生年月" />
 						</p>	
 						<div class="select_wrap select_pull_down">
 							<div>
@@ -393,7 +356,7 @@
 
 				<div class="select_pull_down select_wrap select_room">
 					<div>
-						<span class="red_star">*</span>房号：
+						<span class="red_star">*</span>房&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：
 						<input type="text" class="model_input building_code ka_input3" placeholder="请选择房号" name="building_code" data-ajax="" readonly="">
 					</div>
 					<div class="ka_drop">
@@ -410,7 +373,7 @@
 						<div class="fl">
 							<span class="red_star">*</span>人员编号：
 						</div>
-						<div class="fl search_person_text">
+						<div class="fr search_person_text">
 							<input type="text" class="fl search_person_name" placeholder="请输入姓名查找" >
 							<a class="fr search_person_btn"><i class="fa fa-search"></i></a>
 						</div>
@@ -427,14 +390,14 @@
 
 
 				<p><span class="red_star">*</span>开始日期：
-					<input type="text" class="begin_date date" name="begin_date">
+					<input type="text" class="begin_date date form-control" name="begin_date" placeholder="请选择开始日期">
 				</p>
 
 				<p><span class="red_star">*</span>结束日期：
-					<input type="text" class="end_date date" name="end_date">
+					<input type="text" class="end_date date form-control" name="end_date" placeholder="请选择结束日期">
 				</p>
 
-				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark"></p>
+				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark"></p>
 
 	            </div>
         	</div>
@@ -518,8 +481,7 @@
 							<span class="other_person"></span>
 						</p>
 						<p style="margin-top: 20px;"><i class="icon_circle"></i>该住户在本小区其他房间</p>
-						<p style="padding-left: 20px;">
-							<span class="other_building"></span>
+						<p style="padding-left: 20px;" class="other_building">
 						</p>
 					</div>
 
@@ -536,79 +498,51 @@
 
 <!--编辑人员-->
 <div class="modal fade" id="write_person" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog"  style="width: 890px;">
+    <div class="modal-dialog"  style="width: 630px;">
         <div class="modal-content model_wrap">
         	<div class="model_content">
 	            <div class="building_header">
 	                <h4 class="modal-title tac">编辑人员信息</h4>
 	            </div>
 	            <div class="modal-body building">
-					<div class="fl person_wrap">
+					<div class="fl person_wrap person_detail">
 						<p>人员编号：
-							<span class="code" style="margin-left:58px;">100011</span>
+							<span class="code" style="margin-left:30px;"></span>
 						</p>
-						<p><span class="red_star">*</span>姓：
-						<input type="text" class="model_input last_name" placeholder="请输入姓" name="last_name">
-						<p><span class="red_star">*</span>名：
-						<input type="text" class="model_input first_name" placeholder="请输入名" name="first_name">
-						<div class="select_wrap select_pull_down">
-							<div>
-								<span class="red_star">*</span>证件类型：
-								<input type="text" class="model_input id_type ka_input3" placeholder="请选择证件类型" name="id_type" data-ajax="" readonly="">
-							</div>
-							<div class="ka_drop">
-								<div class="ka_drop_list">
-								<ul>
-									<li><a href="javascript:;" data-ajax="101">身份证</a></li>
-				                    <li><a href="javascript:;" data-ajax="102">境外护照</a></li>
-				                    <li><a href="javascript:;" data-ajax="103">回乡证</a></li>
-				                    <li><a href="javascript:;" data-ajax="104">台胞证</a></li>
-				                    <li><a href="javascript:;" data-ajax="105">军官证/士兵证</a></li>
-								</ul>
-								</div>
-							</div>
-						</div>
-						<p><span class="red_star">*</span>证件号码：
-						<input type="text" class="model_input id_number" placeholder="请输入证件号码" name="id_number">
+						<p><span class="des">姓名：</span>
+							<span class="full_name col_37A"></span>
 						</p>
-						<div class="select_wrap select_pull_down">
-							<div>
-								<span class="red_star">*</span>国籍或地区：
-								<input type="text" class="model_input nationality ka_input3" placeholder="请选择国籍或地区" name="nationality" data-ajax="" readonly="">
-							</div>
-							<div class="ka_drop">
-							<div class="ka_drop_list">
-							 <ul>
-							   <li><a href="javascript:;" data-ajax="101">中国</a></li>
-							   <li><a href="javascript:;" data-ajax="102">香港</a></li>
-							   <li><a href="javascript:;" data-ajax="103">澳门</a></li>
-							   <li><a href="javascript:;" data-ajax="104">台湾</a></li>
-							   <li><a href="javascript:;" data-ajax="105">新加坡</a></li>
-							   <li><a href="javascript:;" data-ajax="106">美国</a></li>
-							   <li><a href="javascript:;" data-ajax="107">日本</a></li>
-							   <li><a href="javascript:;" data-ajax="108">韩国</a></li>
-							 </ul>
-							 </div>
-							</div>
-						</div>
-						<div class="select_wrap select_pull_down">
-							<div>
-								<span class="red_star">*</span>性别：
-								<input type="text" class="model_input gender ka_input3" placeholder="请选择性别" name="gender" data-ajax="" readonly="">
-							</div>
-							<div class="ka_drop" style="display: none;">
-							<div class="ka_drop_list">
-							 <ul>
-							   <li><a href="javascript:;" data-ajax="101">男</a></li>
-							   <li><a href="javascript:;" data-ajax="102">女</a></li>
-							 </ul>
-							 </div>
-							</div>
-						</div>
-						<p>
-							<span class="red_star">*</span>出生年月
-							<input type="text" class="ka_input3 birth_date date" name="birth_date" />
-						</p>	
+						<p><span class="des">证件类型：</span>
+							<span class="id_type_name col_37A"></span>
+						</p>
+						<p><span class="des">证件号码：</span>
+							<span class="des id_number col_37A"></span>
+						</p>
+						<p><span class="des">国籍：</span>
+							<span class="nationality col_37A"></span>
+						</p>
+						<p><span class="des">性别：</span>
+							<span class="gender_name col_37A"></span>
+						</p>
+						<p><span class="des">出生年月：</span>
+							<span class="birth_date col_37A"></span>
+						</p>
+						<p><span class="des">血型：</span>
+							<span class="blood_type_name col_37A"></span>
+						</p>
+						<p><span class="des">民族：</span>
+							<span class="ethnicity_name col_37A"></span>
+						</p>
+
+						<p><span class="des">电话号码国别：</span>
+							<span class="col_37A">中国</span>
+						</p>
+						<p><span class="des">手机号码：</span>
+							<span class="mobile_number col_37A"></span>
+						</p>
+
+					</div>
+					<div class="fr person_wrap person_detail">
 						<div class="select_wrap select_pull_down">
 							<div>
 								<span class="red_star">*</span>是否残疾：
@@ -622,111 +556,13 @@
 								</ul>
 								</div>
 							</div>
-						</div>
-
-					</div>
-					<div class="fr person_wrap">
-						<div class="select_wrap select_pull_down">
-							<div>
-								<span class="red_star">*</span>血型：
-								<input type="text" class="model_input blood_type ka_input3" placeholder="请选择血型" name="blood_type" data-ajax="" readonly="">
-							</div>
-							<div class="ka_drop" style="display: none;">
-								<div class="ka_drop_list">
-								<ul>
-									<li><a href="javascript:;" data-ajax="101">A型</a></li>
-									<li><a href="javascript:;" data-ajax="102">B型</a></li>
-									<li><a href="javascript:;" data-ajax="103">AB型</a></li>
-									<li><a href="javascript:;" data-ajax="104">O型</a></li>
-									<li><a href="javascript:;" data-ajax="105">其他</a></li>
-								</ul>
-								</div>
-							</div>
-						</div>
-						<div class="select_wrap select_pull_down">
-							<div>
-								<span class="red_star">*</span>民族：
-								<input type="text" class="model_input ethnicity ka_input3" placeholder="请选择民族" name="ethnicity" data-ajax="" readonly="">
-							</div>
-							<div class="ka_drop">
-				                 <div class="ka_drop_list ">
-					                  <ul>
-					                  	<li><a href="javascript:;" data-ajax="101">汉族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="102">蒙古族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="103">回族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="104">藏族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="105">维吾尔族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="106">苗族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="107">彝族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="108">壮族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="109">布依族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="110">朝鲜族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="111">满族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="112">侗族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="113">瑶族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="114">白族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="115">土家族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="116">哈尼族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="117">哈萨克族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="118">傣族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="119">黎族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="120">僳僳族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="121">佤族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="122">畲族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="123">高山族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="124">拉祜族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="125">水族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="126">东乡族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="127">纳西族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="128">景颇族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="129">柯尔克孜族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="130">土族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="131">达斡尔族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="132">仫佬族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="133">羌族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="134">布朗族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="135">撒拉族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="136">毛南族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="137">仡佬族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="138">锡伯族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="139">阿昌族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="140">普米族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="141">塔吉克族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="142">怒族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="143">乌孜别克族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="144">俄罗斯族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="145">鄂温克族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="146">德昂族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="147">保安族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="148">裕固族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="149">京族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="150">塔塔尔族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="151">独龙族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="152">鄂伦春族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="153">赫哲族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="154">门巴族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="155">珞巴族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="156">基诺族</a></li>
-					                  	<li><a href="javascript:;" data-ajax="160">其他</a></li>
-					                  </ul>
-				                  </div>
-							</div>
-						</div>
-
+						</div>	
 						<p>
-							<span class="red_star">*</span>电话号码国别：
-							<input type="text" class="ka_input3 tel_country" name="tel_country"  value="中国"  readonly/>
-						</p>
-						<p>
-							<span class="red_star">*</span>手机号码：
-							<input type="text" class="ka_input3 mobile_number" name="mobile_number" placeholder="请输入手机号码" />
-						</p>
-						<p style="padding-left: 22px;">
-							其他电话号码：
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;其他电话号码：
 							<input type="text" class="ka_input3 oth_mob_no" name="oth_mob_no" placeholder="请输入其他电话号码" maxlength="11" />
 						</p>
-						<p style="padding-left: 22px;">
-							备注：
+						<p>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：
 							<input type="text" class="ka_input3 remark" name="remark" placeholder="备注" />
 						</p>
 					</div>
@@ -752,30 +588,30 @@
 	                <h4 class="modal-title tac">编辑住户关系</h4>
 	            </div>
 	            <div class="modal-body building oh">
-		            <p><span class="des">房号：</span>
-		            	<span class="building_code col_37A"></span>
+		            <p><span class="des">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;房&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</span>
+		            	<span class="building_code col_37A" data-ajax="" style="margin-left: 36px;"></span>
 		            </p>
-					<p><span class="des">姓名：</span>
-						<span class="full_name col_37A"></span>
+					<p><span class="des">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</span>
+						<span class="full_name col_37A" style="margin-left: 36px;"></span>
 					</p>
-					<p><span class="des">开始日期：</span>
-						<span class="begin_date col_37A"></span>
+					<p><span class="des">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;开始日期：</span>
+						<span class="begin_date col_37A" style="margin-left: 36px;"></span>
 					</p>
 					<p><span class="red_star">*</span>
 						<span class="des">结束日期：</span>
-						<input type="text" class="end_date date" name="end_date">
+						<input type="text" class="end_date date form-control" name="end_date">
 					</p>
-					<p><span class="des">人员编号：</span>
-						<span class="person_code col_37A"></span>
+					<p><span class="des">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;人员编号：</span>
+						<span class="person_code col_37A" style="margin-left: 36px;"></span>
 					</p>
-					<p><span class="des">身份证号：</span>
-						<span class="id_number col_37A"></span>
+					<p><span class="des">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;身份证号：</span>
+						<span class="id_number col_37A" style="margin-left: 36px;"></span>
 					</p>
-					<p><span class="des">住户类型：</span>
-						<span class="household_type_name col_37A"></span>
+					<p><span class="des">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;住户类型：</span>
+						<span class="household_type_name col_37A" style="margin-left: 36px;"></span>
 					</p>
-					<p><span class="des">备注：</span>
-						<span class="remark col_37A"></span>
+					<p><span class="des">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</span>
+						<span class="remark col_37A" style="margin-left: 36px;"></span>
 					</p>
 	            </div>
         	</div>
@@ -793,33 +629,74 @@
 <input type="hidden" value='<?php echo $page;?>' name="page" />
 <input type="hidden" value='<?php echo $keyword;?>' name="keywords" />
 <input type="hidden" value='<?php echo $pagesize;?>' name="pagesize" />
-
-<script type="text/javascript">
-$(function(){
-	// $('#add_relation').modal('show');
+<script>
+var treeNav_data = <?php echo $treeNav_data?>;
+//楼宇层级树形菜单
+$('#treeNav>span').jstree({
+	'core' : {
+        data: treeNav_data
+    }
 })
-</script>
+</script>	
 <script>
 $(function(){
-	var page = $('input[name="page"]').val();
-	var keyword = $('input[name="keywords"]').val();
+	var now = getDate();
+	var page = getUrlParam('page');
+	page = page?page:'1';
+	var search_keyword = getUrlParam('keyword');
+	var search_effective_date = getUrlParam('effective_date');
+	var search_household_type = getUrlParam('household_type');
+	var search_person_type = getUrlParam('person_type');
+	var search_building_code = getUrlParam('building_code');
+	search_effective_date = search_effective_date?search_effective_date:now;
+	//根据搜索内容给搜索框和筛选条件赋值
+	$('.searc_room_text').val(search_keyword);
+	$('.effective_date').val(search_effective_date);
+	switch(search_household_type){
+		case '101':
+			$('.household_type').val('户主');
+			break;
+		case '102':
+			$('.household_type').val('家庭成员');
+			break;
+		case '103':
+			$('.household_type').val('访客');
+			break;
+		case '104':
+			$('.household_type').val('租客');
+			break;
+		default:
+			$('.household_type').val('住户类别');
+			break;
+	}
+	switch(search_person_type){
+		case '101':
+			$('.person_type').val('老人');
+			break;
+		case '102':
+			$('.person_type').val('儿童');
+			break;
+		case '103':
+			$('.person_type').val('婴儿');
+			break;
+		case '104':
+			$('.person_type').val('残疾人');
+			break;
+		default:
+			$('.person_type').val('特殊人群');
+			break;
+	}	
+
 	$('#table').bootstrapTable({
 		method: "get",
-		undefinedText:'/',
-		url:getRootPath()+'/index.php/People/getPeopleList?page=',
+		undefinedText:' ',
+		url:getRootPath()+'/index.php/People/getResidentList?page='+page+'&keyword='+search_keyword+'&effective_date='+search_effective_date+'&household_type='+search_household_type+'&person_type='+search_person_type+'&building_code='+search_building_code,
 		dataType:'json',
-		// pagination:true,
-		// pageSize: 15, 
-		// pageNumber: 1,
-		// sortName: 'id',
-		// sortOrder: 'desc',
 		responseHandler:function(res){
 			//用于处理后端返回数据
-			console.log(res);
 			return res;
 		},
 		onLoadSuccess: function(data){  //加载成功时执行
-		    console.log(data);
 		},
 		onLoadError: function(){  //加载失败时执行
 		    console.info("加载数据失败");
@@ -852,13 +729,54 @@ $(function(){
 			$('input[name="fenye_input"]').val('');
 			return;
 		}
-		
-		var keyword=getUrlParam('keyword');
-		window.location.href="residentlist?keyword="+keyword+"&page="+page;
+		window.location.href="residentlist?keyword="+search_keyword+"&page="+page+"&effective_date="+search_effective_date+'&household_type='+search_household_type+'&person_type='+search_person_type;
 	})
+	//户主和特殊人群筛选
+	$('.household_type_wrap .ka_drop_list li').click(function(){
+		var household_type = $(this).find('a').data('ajax');
+		window.location.href="residentlist?keyword="+search_keyword+"&page=1"+"&effective_date="+search_effective_date+'&household_type='+household_type+'&person_type='+search_person_type+'&building_code='+search_building_code;
+	})
+	$('.person_type_wrap .ka_drop_list li').click(function(){
+		var person_type = $(this).find('a').data('ajax');
+		window.location.href="residentlist?keyword="+search_keyword+"&page=1"+"&effective_date="+search_effective_date+'&household_type='+search_household_type+'&person_type='+person_type+'&building_code='+search_building_code;
+	})
+	//生效日期筛选
+	$('.search_wrap .effective_date').datetimepicker().on('changeDate', function(ev){
+        var date = $('.effective_date').val();
+        window.location.href="residentlist?keyword="+search_keyword+"&page=1"+"&effective_date="+date+'&household_type='+search_household_type+'&person_type='+search_person_type+'&building_code='+search_building_code;
+    })
+    //树节点点击筛选
+    $('#treeNav>span').on("select_node.jstree", function (e, node) {
+      // console.log(node.node);
+      var building_code = node.node.original.code;
+      window.location.href="residentlist?keyword="+search_keyword+"&page=1"+"&effective_date="+search_effective_date+'&household_type='+search_household_type+'&person_type='+search_person_type+'&building_code='+building_code;
+    })
+    //点击搜索按钮,跳转
+    $('.search_room button[type="submit"]').click(function(){
+    	var keyword = $('.search_room .searc_room_text').val();
+    	keyword = trim(keyword);
+    	if(!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(keyword))){
+    		openLayer('搜索框只能输入数字、汉字、字母!');
+    		return;
+    	}
+    	window.location.href="residentlist?keyword="+keyword+"&page=1"+"&effective_date="+search_effective_date+'&household_type='+search_household_type+'&person_type='+search_person_type+'&building_code='+search_building_code;
+    })
+    //清除搜索条件
+    $('.search_room #clear').click(function(){
+    	window.location.href="residentlist?page=1";
+    })
 })
-
-</script>	
+/*toLocation('residentlist','keyword','effective_date','search_effective_date');
+function toLocation(){
+	var href = "";
+	for(var i=0;i<arguments.length;i++){
+		href += "&"+arguments[i]+"="+arguments[i];
+	}
+	console.log(arguments);
+	console.log(href);
+}*/
+</script>
+<script src='<?=base_url().'application/views/plugin/app/js/verify_idcard.js'?>'></script>	
 <script src='<?=base_url().'application/views/plugin/app/js/resident_list.js'?>'></script>	
 </body>
 </html>
