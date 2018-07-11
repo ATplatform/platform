@@ -71,7 +71,7 @@
         <form class="search_room" action="" method="get">
             <p>
                 <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称、用..." value="<?php echo $keyword ?>" title="可输入物资编号、物资名称、用途
-供应商、备注">
+供应商、备注进行搜索">
 
                 <input type="hidden" value='<?php echo $material_type;?>' name="material_type" />
                 <input type="hidden" value='<?php echo $building_code;?>' name="building_code" />
@@ -98,7 +98,7 @@
                     <th  data-title="物资类型" data-align="center" data-field="material_type_name"></th>
                     <th data-title="物资编号" data-align="center" data-field="m_code"></th>
                     <th data-title="物资名称" data-align="center" data-field="m_name" ></th>
-                    <th  data-title="地点" data-align="center" data-field="building_name"></th>
+                    <th  data-title="地址" data-align="center" data-field="building_name"></th>
                     <th  data-title="数量" data-align="center" data-field="pcs"></th>
                     <th  data-title="状态" data-align="center" data-field="effective_status_name"></th>
                     <th data-title="生效日期" data-align="center" data-field="effective_date_name"></th>
@@ -210,7 +210,7 @@
                             </div>-->
 
                             <p class="select_buliding_wrap">
-                                <span class="red_star">*</span><span>地点：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                <span class="red_star">*</span><span>地址：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                 <a href="javascript:;" id="treeNavWrite" class="treeWrap"><span></span></a>
                                 <span class="select_buliding"></span>
                             </p>
@@ -229,10 +229,10 @@
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark" /></p>
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
-                        <p class="fr pt17">
-                            <span class="col_37A fl confirm">保存</span>
-                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div><!-- /.modal-content -->
@@ -278,7 +278,7 @@
                                 <p><span class="des">物资类型：</span>
                                     <span class="material_type_name col_37A"></span>
                                 </p>
-                                <p><span class="des">地点：</span>
+                                <p><span class="des">地址：</span>
                                     <span class="room_name col_37A"></span>
                                 </p>
 

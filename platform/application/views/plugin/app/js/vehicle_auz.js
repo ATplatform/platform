@@ -231,6 +231,7 @@ var rowkeys={
     v_owner:'',
     v_brand:'',
     v_model:'',
+    v_brand_name:'',
     v_color:'',
     v_remark:'',
     auzfornow_name:'',

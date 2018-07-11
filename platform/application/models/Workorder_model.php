@@ -16,7 +16,7 @@ class Workorder_model extends CI_Model
     public function sqlTogetWorkorderList($create_time,$create_type,$order_type, $keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-
+        $now      =  date("Y-m-d",time());
 
          /////////////////判断为普通查询或搜索查询////////////////////////////
          if (empty($parent_code) && empty($building_code) && empty($create_type) && empty($keyword) && empty($create_time) && empty($order_type))
@@ -57,6 +57,9 @@ left join village_person as p2 on p2.code=o_r.accept_person_code
 left join village_equipment as e on e.code= w_O.equipment_code
 where o_r.work_code=w_o.code
 ";
+             if(empty($create_time)){
+                 $sql .= " and w_o.create_time<='$now'";
+             }
              if(!empty($create_time)){
                  $sql .= " and w_o.create_time<='$create_time' ";
              }
@@ -164,7 +167,7 @@ where o_r.work_code=w_o.code
 
     //////////////////////搜索查询数据数目的数据总条数/////////////
     public function getWorkorderListTotal($create_time,$parent_code, $building_code, $create_type, $keyword, $order_type,$rows)
-    {
+    {  $now      =  date("Y-m-d",time());
         $sql="select count(*) as count from (";
 
         if (empty($parent_code) && empty($building_code) && empty($create_type) && empty($keyword) && empty($create_time) && empty($order_type))
@@ -198,6 +201,9 @@ left join village_person as p1 on p1.code=w_o.person_code
 left join village_person as p2 on p2.code=o_r.accept_person_code
 where o_r.work_code=w_o.code
 ";
+            if(empty($create_time)){
+                $sql .= " and w_o.create_time<='$now' ";
+            }
     if(!empty($create_time)){
         $sql .= " and w_o.create_time<='$create_time' ";
     }

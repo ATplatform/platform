@@ -16,8 +16,7 @@ class Activity_model extends CI_Model
     public function sqlTogetList($begin_date,$type, $keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-
-
+        $now      =  date("Y-m-d",time());
          /////////////////判断为普通查询或搜索查询////////////////////////////
          if (empty($begin_date) && empty($type) && empty($keyword) )
 
@@ -57,8 +56,11 @@ FROM village_activity as a
 left join village_person_position as pp on a.service_code=pp.person_code
 left join village_person as p on a.service_code=p.code 
 where a.service_code=p.code  
-";
-
+";   }
+             if(empty($begin_date)){
+                 $sql .= " and a.begin_date<='$now' ";
+                 $sql .= " and '$now'<=a.end_date ";
+             }
              if(!empty($begin_date)){
                  $sql .= " and a.begin_date<='$begin_date' ";
                  $sql .= " and '$begin_date'<=a.end_date ";
@@ -77,7 +79,7 @@ where a.service_code=p.code
 
                }
 
-         }
+
         $sqlshow = $sql . " ORDER BY a.code ASC limit ".$rows." offset ".$start;
         $arrayres = array($sql,$sqlshow);
         return $arrayres;
@@ -155,7 +157,7 @@ where a.service_code=p.code
     public function sqlTogetRecord($date,$type, $keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-
+        $now      =  date("Y-m-d",time());
 
         /////////////////判断为普通查询或搜索查询////////////////////////////
         if (empty($date) && empty($type) && empty($keyword) )
@@ -176,7 +178,7 @@ a_rcd.service_code as rcd_service_code
 FROM village_activity_rcd as a_rcd
 left join village_activity as a on a.code=a_rcd.activity_code
 left join village_person as p on a_rcd.service_code=p.code 
-
+where a_rcd.service_code=p.code
 
 ";}
 
@@ -201,6 +203,11 @@ left join village_person as p on a_rcd.service_code=p.code
 where a_rcd.service_code=p.code 
 
 ";
+        }
+            if(empty($date)){
+                $sql .= " and a_rcd.date<='$now'";
+
+            }
             if(!empty($date)){
                 $sql .= " and a_rcd.date<='$date' ";
 
@@ -225,7 +232,7 @@ where a_rcd.service_code=p.code
              $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
            }*/
 
-        }
+
 
         $sqlshow = $sql . " ORDER BY a.code ASC limit ".$rows." offset ".$start;
         $arrayres=array($sql,$sqlshow);

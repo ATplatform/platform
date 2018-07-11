@@ -7,6 +7,7 @@ class Vehicle_model extends CI_Model
     {
         parent::__construct();
         $this->load->database();
+        $this->brand_arr=$this->config->item('brand_arr');
     }
 
 
@@ -16,7 +17,7 @@ class Vehicle_model extends CI_Model
     public function sqlTogetList($effective_date,$building_code, $parent_code,$if_resident,$vehicle_type,$vehicle_auz,$keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-
+        $now   =  date("Y-m-d",time());
 
          /////////////////判断为普通查询或搜索查询////////////////////////////
          if (empty($effective_date) && empty($building_code) && empty($parent_code)  && empty($if_resident) && empty($vehicle_type) && empty($vehicle_auz)&& empty($keyword))
@@ -85,6 +86,10 @@ left join village_tmp_building as tmp on tmp.code=pb.building_code
 left join village_vehicle_auz as auz on auz.vehicle_code=v.code
 where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.vehicle_code=auz_s.vehicle_code)
 ";
+         }
+             if(empty($effective_date)){
+                 $sql .= " and v.effective_date <= '$now' ";
+             }
             if(!empty($effective_date)){
                  $sql .= " and v.effective_date<='$effective_date' ";
              }
@@ -119,7 +124,6 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
 
 
 
-         }
         $sqlshow = $sql . " ORDER BY v.code ASC limit ".$rows." offset ".$start;
         $arrayres=array($sql,$sqlshow);
         return $arrayres;
@@ -128,6 +132,7 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
 
     //////////////// 根据输入的sql语句参数，得到数据////////////////
     public function getList( $sql){
+        $brand_arr = $this->brand_arr;
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {
             $arr = $q->result_array();
@@ -148,6 +153,14 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
                             $arr[$key]['auzforall_name'] = "所有授权已失效";
                         }
 
+                    }
+                    if($key2=="v_brand"){
+                        foreach($brand_arr as $k2 => $v2){
+                            if($value2 == $v2['code']){
+                                $arr[$key]["v_brand_name"] = $v2['name'];
+                                break;
+                            }
+                        }
                     }
                     if ($key2 == "v_vehicle_type") {
                         if ($value2 == "101") {$arr[$key]['v_vehicle_type_name'] = '轿车';}
@@ -290,7 +303,7 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
     public function sqlTogetRecord($date,$type, $keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-
+        $now   =  date("Y-m-d",time());
 
         /////////////////判断为普通查询或搜索查询////////////////////////////
         if (empty($date) && empty($type) && empty($keyword) )
@@ -311,8 +324,7 @@ a_rcd.service_code as rcd_service_code
 FROM village_activity_rcd as a_rcd
 left join village_activity as a on a.code=a_rcd.activity_code
 left join village_person as p on a_rcd.service_code=p.code 
-
-
+where a_rcd.service_code=p.code 
 ";}
 
 
@@ -335,7 +347,10 @@ left join village_activity as a on a.code=a_rcd.activity_code
 left join village_person as p on a_rcd.service_code=p.code 
 where a_rcd.service_code=p.code 
 
-";
+";   }
+            if(empty($effective_date)){
+                $sql .= " and a_rcd.date <= '$now' ";
+            }
             if(!empty($date)){
                 $sql .= " and a_rcd.date<='$date' ";
 
@@ -360,7 +375,7 @@ where a_rcd.service_code=p.code
              $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
            }*/
 
-        }
+
 
 
         $sqlshow = $sql . " ORDER BY a.code ASC limit ".$rows." offset ".$start;
@@ -825,7 +840,7 @@ public function updateAuz($village_id,$code,$vehicle_code,$begin_date
 public function sqlTogetAuz($effective_date,$if_resident,$auz_2,$keyword, $page, $rows)
 {
     $start = ($page - 1) * $rows;
-
+    $now   =  date("Y-m-d",time());
 
     /////////////////判断为普通查询或搜索查询////////////////////////////
     if (empty($effective_date) && empty($if_resident) && empty($auz_2) && empty($keyword))
@@ -888,7 +903,12 @@ from village_vehicle as v
 left join village_person as p on v.person_code=p.code
 left join village_vehicle_auz as auz on auz.vehicle_code=v.code
 where auz.vehicle_code=v.code
-";
+"; }
+        if(empty($effective_date)){
+            $sql .= " and auz.begin_date<='$now' ";
+            $sql .= " and auz.end_date>='$now'  ";
+        }
+
         if(!empty($effective_date)){
             $sql .= " and auz.begin_date<='$effective_date' ";
             $sql .= " and auz.end_date>='$effective_date' ";
@@ -917,7 +937,7 @@ where auz.vehicle_code=v.code
             }
 
         }
-    }
+
 
     $sqlshow = $sql . " ORDER BY auz.code ASC limit ".$rows." offset ".$start;
     $arrayres=array($sql,$sqlshow);
@@ -928,6 +948,7 @@ where auz.vehicle_code=v.code
 
 public function getAuzlist($sql)
 {
+    $brand_arr = $this->brand_arr;
     $q = $this->db->query($sql); //自动转义
     if ($q->num_rows() > 0) {
         $arr = $q->result_array();
@@ -948,6 +969,14 @@ public function getAuzlist($sql)
                         $arr[$key]['auzforall_name'] = "所有授权已失效";
                     }
 
+                }
+                if($key2=="v_brand"){
+                    foreach($brand_arr as $k2 => $v2){
+                        if($value2 == $v2['code']){
+                            $arr[$key]["v_brand_name"] = $v2['name'];
+                            break;
+                        }
+                    }
                 }
                 if ($key2 == "v_vehicle_type") {
                     if ($value2 == "101") {$arr[$key]['v_vehicle_type_name'] = '轿车';}
@@ -1081,7 +1110,7 @@ public function verifyauz($licence)
 public function sqlTogetparkinglot($effective_date,$parkcode,$floor,$biz_type,$biz_status,$biz_reason,$keyword, $page, $rows)
 {
     $start = ($page - 1) * $rows;
-
+    $now   =  date("Y-m-d",time());
 
     /////////////////判断为普通查询或搜索查询////////////////////////////
     if (empty($effective_date) && empty($parkcode) && empty($floor)  && empty($biz_type) && empty($biz_status) && empty($biz_reason)&& empty($keyword))
@@ -1141,7 +1170,10 @@ left join village_park as par on par.parkcode=lot.parkcode
 left join village_person as p on lot.owner=p.code 
 where lot.begin_date=lot.begin_date
 ";
-
+    }
+        if(empty($effective_date)){
+            $sql .= " and lot.effective_date<='$now'";
+        }
 
         if(!empty($effective_date)){
             $sql .= " and lot.effective_date<='$effective_date' ";
@@ -1171,7 +1203,7 @@ where lot.begin_date=lot.begin_date
 
         }
 
-    }
+
     $sqlshow = $sql . " ORDER BY lot.code ASC limit ".$rows." offset ".$start;
     $arrayres=array($sql,$sqlshow);
     return $arrayres;
@@ -1405,7 +1437,7 @@ public function updateParkinglot($code,$effective_date,$effective_status,$linked
     public function sqlTogetvehiclepkg($v_if_temp,$v_vehicle_type,$building_code,$parent_code,$pkg_begin_date,$pkg_end_date,$keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-
+        $now   =  date("Y-m-d",time());
 
         /////////////////判断为普通查询或搜索查询////////////////////////////
         if (empty($v_if_temp) && empty($v_vehicle_type) && empty($building_code)  && empty($parent_code) && empty($pkg_begin_date) && empty($pkg_end_date)&& empty($keyword))
@@ -1479,7 +1511,10 @@ left join village_tmp_building as tmp on tmp.code=pb.building_code
 where tmp.code=pb.building_code
 ";
 
-
+        }
+            if(empty($pkg_begin_date)){
+                $sql .= " and pkg.begin_date>='$now' ";
+            }
          if(!empty($pkg_begin_date)){
                 $sql .= " and pkg.begin_date>='$pkg_begin_date' ";
             }
@@ -1504,7 +1539,7 @@ where tmp.code=pb.building_code
 
             }
 
-        }
+
         $sqlshow = $sql." ORDER BY pkg.vehicle_code ASC limit ".$rows." offset ".$start;
         $arrayres=array($sql,$sqlshow);
         return $arrayres;
@@ -1608,7 +1643,7 @@ where tmp.code=pb.building_code
     public function sqlTogetvehiclepayment($pay_status,$pay_method,$pay_specific,$issued_time,$keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-
+        $now   =  date("Y-m-d",time());
 
         /////////////////判断为普通查询或搜索查询////////////////////////////
         if (empty($pay_status) &&empty($pay_method) && empty($pay_specific) && empty($issued_time)  && empty($keyword))
@@ -1650,9 +1685,11 @@ pay.pay_specific as pay_specific
 from village_parking_payment as pay
 left join village_person as p on p.code=pay.person_code
 where p.code=pay.person_code
-";
+";        }
 
-
+            if(empty($issued_time)){
+                $sql .= " and pay.issued_time<='$now' ";
+            }
             if(!empty($issued_time)){
                 $sql .= " and pay.issued_time<='$issued_time' ";
             }
@@ -1674,7 +1711,7 @@ where p.code=pay.person_code
 
             }
 
-        }
+
 
         $sqlshow = $sql . " ORDER BY pay.id ASC limit ".$rows." offset ".$start;
         $arrayres=array($sql,$sqlshow);

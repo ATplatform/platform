@@ -64,7 +64,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="请输入活动名称、物业负责人..." value="" title="请输入活动名称、物业负责人、备注进行查找"> <a id="clear" onclick="return false">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入活动名称、物业负责人..." value="" title="请输入活动名称、物业负责人、备注进行搜索"> <a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -173,10 +173,10 @@
                             </p>
                     </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
-                        <p class="fr pt17">
-                            <span class="col_37A fl confirm">保存</span>
-                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div><!-- /.modal-content -->

@@ -283,8 +283,10 @@ function update(source) {
       .style("position", "relative")
       .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
       .on('mouseover', function(d) {
+          if(d.depth<6){
           $(this).children('.option1_svg').show()
           $(this).children('.option2_svg').show()
+          }
       })
       .on('mouseout', function (d) {$(this).children('.option1_svg').hide(); $(this).children('.option2_svg').hide()})
 
@@ -356,8 +358,10 @@ function update(source) {
         .attr("height", 20)
         .attr("r", 8.5)
         .on('click', function(d) {
-            console.log(d);
-            addbuilding(d);
+            if(d.depth<6) {
+                console.log(d);
+                addbuilding(d);
+            }
         })
         .style("position", "absolute")
         .style("z-index", -99)
@@ -377,7 +381,10 @@ function update(source) {
         .style("fill", function(d) { return  "transparent"; })
         .style("border", function(d) { return  "#500000"; })
         .on('click', function(d) {
-            updatebuilding(d);
+            if(d.depth<6) {
+                updatebuilding(d);
+            }
+
         })
 
 

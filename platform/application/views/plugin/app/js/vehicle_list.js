@@ -86,7 +86,6 @@ function platform() {
                 v_color:null,
                 v_model:null,
                 v_remark:null,
-                v_brand:null,
                 auz_code:null,
                 auz_begin_date:null,
                 auz_end_date:null,
@@ -95,7 +94,8 @@ function platform() {
             select:{
                 v_vehicle_type:null,
                 v_person_code:null,
-                auz_person_code:null
+                auz_person_code:null,
+                v_brand:null,
             },
             radio:{
                 v_effective_status:null,
@@ -237,6 +237,7 @@ var rowkeys={
     v_if_temp_name:'',
     v_owner:'',
     v_brand:'',
+    v_brand_name:'',
     v_model:'',
     v_color:'',
     v_remark:'',
@@ -588,7 +589,8 @@ function information(router,rowkeys) {
          }
         for (var n in update.select){
              $('#vehicle_rewrite').find('input[name='+n+']').data('ajax',rowkeys[n]);
-            $('#vehicle_rewrite').find('.'+n).val(rowkeys[n+'_name']);
+            $('#vehicle_rewrite').find('input[name='+n+']').val(rowkeys[n+'_name']);
+
          }
          for (var n in update.radio){
              if(rowkeys[n]==='t') {
@@ -639,6 +641,7 @@ function information(router,rowkeys) {
             $('#auz_rewrite').find('.auz_begin_date').val(rowkeys['auz_begin_date']);
             $('#auz_rewrite').find('.auz_end_date').val(rowkeys['auz_end_date']);
             $('#auz_rewrite').find('.auz_remark').val(rowkeys['auz_remark']);
+
 
         }
 
@@ -694,7 +697,7 @@ $('#vehicle_rewrite .confirm').click(function(){
         },
         success:function(data){
             var data=JSON.parse(data);
-            console.log(data)
+          /*  console.log(data)*/
             if(updateinsert.v_effective_status==='false'){
             var input_date=$('#vehicle_rewrite').find('input[name=v_effective_date]').val();
             for(var index in data){
@@ -702,7 +705,7 @@ $('#vehicle_rewrite .confirm').click(function(){
 
                     var max= maxdate(input_date,data[index])
                     if(max===0){openLayer('该车辆的新一条变动记录的时间大于授权结束时间，请再次给该车辆授权'); return;}
-                    if(max===1){openLayer('该车辆失效时间小于系统记录授权信息中的结束日期，系统将会把授权信息中的结束日期设置为该车辆失效的时间点！');return;}
+                    if(max===1){openLayer('该车辆失效时间小于系统记录授权信息中的结束日期，系统将会把授权信息中的结束日期设置为该车辆失效的时间点！')}
 
                 }
 
@@ -728,7 +731,7 @@ $('#vehicle_rewrite .confirm').click(function(){
                         skin: 'tanhcuang',
                         content: '更新车辆信息成功',
                         cancel: function(){
-                            window.location.href=href(List);
+                           // window.location.href=href(List);
                         }
                     });
                 },
@@ -772,7 +775,7 @@ $('#auz_rewrite .confirm').click(function(){
                 success:function(data){
                     //var data = JSON.parse(data);
                     //成功之后自动刷新页面
-                    $('#vehicle_rewrite').modal('hide');
+                    $('#auz_rewrite').modal('hide');
                     layer.open({
                         type: 1,
                         title: false,

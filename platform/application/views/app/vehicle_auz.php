@@ -178,7 +178,7 @@
                                     <span class="v_owner col_37A"></span>
                                 </p>
                                 <p><span class="des">品牌:</span>
-                                    <span class="v_brand col_37A"></span>
+                                    <span class="v_brand_name col_37A"></span>
                                 </p>
                                 <p><span class="des">型号:</span>
                                     <span class="v_model col_37A"></span>
@@ -383,10 +383,10 @@
                             </div>-->
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
-                        <p class="fr pt17">
-                            <span class="col_37A fl confirm">保存</span>
-                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div>
@@ -436,10 +436,10 @@
                                                         </div>
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
-                        <p class="fr pt17">
-                            <span class="col_37A fl confirm">保存</span>
-                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div>
