@@ -16,34 +16,21 @@ class Contract_model extends CI_Model
     public function sqlTogetContractList($begin_date,$type,$level, $keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
-
-
-         /////////////////判断为普通查询或搜索查询////////////////////////////
-         if (empty($type) && empty($keyword) && empty($begin_date) && empty($level))
-
-         /////////////////////////普通查询sql语句/////////////////////////
-         {
+        $now      =  date("Y-m-d",time());
              $sql = "select 
 *,
 c.code as c_code,
 p.name as p_name
  FROM village_contracts as c
 left join village_position as p on c.position_code=p.code
-";}
+where c.code=c.code";
 
 
+             if(empty($begin_date)){
+                 $sql .= " and c.begin_date<='$now' ";
+                 $sql .= " and '$now'<=c.end_date ";
+             }
 
-         /////////////////////////搜索查询sql语句/////////////////////////
-         else {
-             $sql = "select 
-*,
-c.code as c_code,
-p.name as p_name 
-FROM
-village_contracts as c
-left join village_position as p on c.position_code=p.code
-where c.code=c.code
-";
              if(!empty($begin_date)){
                  $sql .= " and c.begin_date<='$begin_date' ";
                  $sql .= " and '$begin_date'<=c.end_date ";
@@ -64,7 +51,7 @@ where c.code=c.code
                 /*   if (preg_match("/^\d*$/", $keyword)) {
                        $sql .= " and c.code = $keyword ";
                    }*/
-               }
+
 
              /* if(!empty($building_code)){
               $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
@@ -139,23 +126,19 @@ where c.code=c.code
 
     //////////////////////搜索查询数据数目的数据总条数/////////////
     public function getContractListTotal($begin_date,$type, $keyword, $level,$rows)
-    {
+    {   $now      =  date("Y-m-d",time());
         $sql="select count(*) as count from (";
 
-        if (  empty($type) && empty($keyword) && empty($begin_date) && empty($level))
-        {
             $sql.="
 select * FROM
 village_contracts as c
-left join village_position as p on c.position_code=p.code		
-"; } else{
-
-    $sql .= "select * FROM
-village_contracts as c
 left join village_position as p on c.position_code=p.code
-where c.code=c.code
+where c.code=c.code		
+" ;      if(empty($begin_date)){
+                $sql .= " and c.begin_date<='$now'";
+                $sql .= " and '$now'<=c.end_date ";
+            }
 
-";
             if(!empty($begin_date)){
                 $sql .= " and c.begin_date<='$begin_date' ";
                 $sql .= " and '$begin_date'<=c.end_date ";
@@ -181,7 +164,7 @@ where c.code=c.code
     /* if(!empty($building_code)){
      $sql .= " and (M.building_code=$building_code or b.parent_code=$parent_code) ";
    }*/
-    }
+
         $sql.=" ) as sss";
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {

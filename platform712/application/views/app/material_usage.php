@@ -73,8 +73,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称、用..." value="<?php echo $keyword ?>" title="可输入物资编号、物资名称、用途
-供应商、备注">
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称..." value="<?php echo $keyword ?>" title="可输入物资编号、物资名称、物资使用人、备注进行搜索">
 
                 <input type="hidden" value='<?php echo $material_type;?>' name="material_type" />
                 <input type="hidden" value='<?php echo $building_code;?>' name="building_code" />
@@ -100,7 +99,7 @@
                     <th  data-title="物资类型" data-align="center" data-field="material_type_name"></th>
                     <th data-title="物资编号" data-align="center" data-field="material_code"></th>
                     <th data-title="物资名称" data-align="center" data-field="m_name" ></th>
-                    <th  data-title="地点" data-align="center" data-field="building_name"></th>
+                    <th  data-title="地址" data-align="center" data-field="building_name"></th>
                     <th  data-title="数量" data-align="center" data-field="pcs"></th>
                     <th  data-title="生效日期" data-align="center" data-field="effective_date_name"></th>
                     <th  data-title="物资使用人" data-align="center" data-field="person_name"></th>
@@ -222,10 +221,10 @@
                             <p style="">&nbsp;&nbsp;&nbsp;&nbsp;备注：<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark" /></p>
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
-                        <p class="fr pt17">
-                            <span class="col_37A fl confirm">保存</span>
-                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div><!-- /.modal-content -->
@@ -262,7 +261,7 @@
                                 <p><span class="des">物资类型：</span>
                                     <span class="material_type_name col_37A"></span>
                                 </p>
-                                <p><span class="des">地点：</span>
+                                <p><span class="des">地址：</span>
                                     <span class="room_name col_37A"></span>
                                 </p>
                                 <p><span class="des">物资使用人</span>
@@ -462,7 +461,7 @@
             var material_type_name = row.material_type_name;
             var material_code = row.material_code;
             var name = row.name;
-            var room_name = row.room_name;
+            var building_name = row.building_name;
             var pcs = row.pcs;
             var effective_date_name = row.effective_date_name;
             var person_name = row.person_name;
@@ -473,9 +472,8 @@
 
             $('#person_detail').find('.material_type_name').html(material_type_name);
             $('#person_detail').find('.material_code').html(material_code);
-            $('#person_detail').find('.material_code').html(material_code);
             $('#person_detail').find('.name').html(name);
-            $('#person_detail').find('.room_name').html(room_name);
+            $('#person_detail').find('.room_name').html(building_name);
             $('#person_detail').find('.pcs').html(pcs);
             $('#person_detail').find('.effective_date_name').html(effective_date_name);
             $('#person_detail').find('.person_name').html(person_name);

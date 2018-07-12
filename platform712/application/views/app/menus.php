@@ -184,7 +184,7 @@
 		</a>
 		<ul id="FinanceSetting" 
 			<?php 
-				if($nav=="vehiclelist"){
+				if($nav=="Parkrent"){
 					echo 'class="collapse secondmenu in"';
 				} 
 				else{
@@ -193,9 +193,11 @@
 			?>   
 		aria-expanded="true" >
 			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>社区经营分析</a></li>
-			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>车辆缴费管理</a></li>
-			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>物业费缴费管理</a></li>
-			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>其他费用缴费管理</a></li>
+			<li <?php if($nav=="Parkrent") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/ParkRent/Parkrent'?>"><i class="glyphicon"></i>车位租赁管理</a></li>
+			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>车位租金缴纳</a></li>
+			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>临时停车缴费</a></li>
+            <li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>物业费管理</a></li>
+            <li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>其他费用缴纳</a></li>
 		</ul>
 	</li>
 

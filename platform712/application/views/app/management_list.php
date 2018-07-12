@@ -736,7 +736,7 @@ $('#treeNavAdd>span').on("select_node.jstree", function (e, node) {
   var name = node.node.text;
   //当前节点的房号code
   var room_code = node.node.original.code;
-  // console.log(node.node);
+  console.log(node.node);
   //当前对象为包裹层元素(这里是span)
   var that = $(this);
   
@@ -752,7 +752,7 @@ $('#treeNavAdd>span').on("select_node.jstree", function (e, node) {
   else if(parents_arr.length==2){
 
   }
-
+  alert(name);
   imm_name = imm_name?imm_name:'';
   var html_tmp = "<em id="+id+" data-room_code="+room_code+">"+imm_name+name+"<i class='fa fa-close'></i></em>";
   if(that.closest('.model_content').find('.select_buliding #'+id).length==0){

@@ -116,7 +116,7 @@
                     <th data-title="车辆类型" data-align="center" data-field="v_vehicle_type_name"></th>
                     <th  data-title="车牌号" data-align="center" data-field="v_licence"></th>
                     <th  data-title="车主" data-align="center" data-field="v_owner"></th>
-                    <th  data-title="品牌" data-align="center" data-field="v_brand"></th>
+                    <th  data-title="品牌" data-align="center" data-field="v_brand_name"></th>
                     <th  data-title="型号" data-align="center" data-field="v_model"></th>
                     <th  data-title="颜色" data-align="center" data-field="v_color"></th>
                     <th  data-title="备注" data-align="center" data-field="v_remark"></th>
@@ -166,29 +166,29 @@
 
         <!-- 增加物资 -->
         <div class="modal fade" id="add_Item" tabindex="-1" role="dialog" aria-hidden="true" >
-            <div class="modal-dialog"  style="width:1200px;">
-                <div class="modal-content model_wrap" style="width:1200px;">
-                    <div class="model_content" style="width:1200px;">
+            <div class="modal-dialog"  style="width:700px;">
+                <div class="modal-content model_wrap" style="width:700px;">
+                    <div class="model_content" style="width:700px;">
                         <div class="building_header">
                             <h4 class="modal-title tac">新增车辆及授权</h4>
                         </div>
                         <div class=" modal-body building  oh">
                             <div class="fl add_Item  ">
                             <p><i class="icon_circle"></i>车辆信息</p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;车辆编号：<span class="code" style="margin-left:45px;"></span></p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;车辆编号：<span class="code" style=""></span></p>
                             <p><span class="red_star">*</span>生效日期：
-                                <input type="text" class="effective_date date form-control" name="effective_date" value=""/>
+                                <input type="text" class="effective_date date form-control" name="effective_date" value="" style="width:200px;"/>
                             </p>
 
                             <p class="effective_status"><span class="red_star">*</span>状态：
-                                <span style="margin-left:95px;">
-							<input type="radio" id="radio-1-1" name="radio-1-set" class="regular-radio" checked="">
+                                <span style="margin-left:60px;">
+							<input type="radio" id="radio-1-1" name="radio-1-set" class="regular-radio" checked="" style="width:200px;">
 							<label for="radio-1-1"></label>
 							有效
 						</span>
 
-                                <span style="margin-left:82px;">
-							<input type="radio" id="radio-1-2" name="radio-1-set" class="regular-radio">
+                                <span style="margin-left:25px;">
+							<input type="radio" id="radio-1-2" name="radio-1-set" class="regular-radio" style="width:200px;">
 							<label for="radio-1-2"></label>
 							无效
 						</span>
@@ -196,7 +196,7 @@
                             <div class="select_pull_down select_wrap select_room">
                                 <div>
                                     <span class="red_star">*</span>车辆登记人：
-                                    <input type="text" class="model_input person_code ka_input3" placeholder="请输入车辆登记人" name="person_code" data-ajax="" readonly="">
+                                    <input type="text" class="model_input person_code ka_input3" placeholder="请输入车辆登记人" name="person_code" data-ajax="" readonly="" style="width:200px;">
                                 </div>
                                 <div class="ka_drop "   style="width:200px;">
                                     <div class="ka_drop_list"  >
@@ -209,11 +209,11 @@
                             <div class="select_wrap select_pull_down">
                                 <div>
                                     <span class="red_star">*</span>车辆类型：
-                                    <input type="text" class="model_input vehicle_type ka_input3" placeholder="请输入车辆类型"  name="vehicle_type" data-ajax="" readonly />
+                                    <input type="text" class="model_input vehicle_type ka_input3" placeholder="请输入车辆类型"  name="vehicle_type" data-ajax="" readonly style="width:200px;"/>
                                 </div>
 
-                                <div class="ka_drop" style="margin-left:20px;width: 300px;">
-                                    <div class="ka_drop_list" style="width: 300px;">
+                                <div class="ka_drop" style="width: 200px;">
+                                    <div class="ka_drop_list" style="width: 200px;">
                                         <ul>
                                             <li><a href="javascript:;" data-ajax="101">轿车</a></li>
                                             <li><a href="javascript:;" data-ajax="102">客车</a></li>
@@ -230,26 +230,26 @@
 
 
                             <p class="if_resident"> <span class="red_star">*</span>小区车/访客车：
-                                <span style="margin-left:44px;">
-							<input type="radio" id="radio-2-1" name="radio-2-set" class="regular-radio" checked="">
+                                <span style="margin-left:10px;">
+							<input type="radio" id="radio-2-1" name="radio-2-set" class="regular-radio" checked="" style="width:200px;">
 							<label for="radio-2-1"></label>
 							小区车
 						</span>
 
-                                <span style="margin-left:70px;">
+                                <span style="margin-left:12px;">
 							<input type="radio" id="radio-2-2" name="radio-2-set" class="regular-radio">
 							<label for="radio-2-2"></label>
 							访客车
 						</span>
                             </p>
                             <p class="if_electro">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是否是电动车：
-                                <span style="margin-left:45px;">
+                                <span style="margin-left:12px;">
 							<input type="radio" id="radio-3-1" name="radio-3-set" class="regular-radio" checked="">
 							<label for="radio-3-1"></label>
 							是
 						</span>
 
-                                <span style="margin-left:95px;">
+                                <span style="margin-left:35px;">
 							<input type="radio" id="radio-3-2" name="radio-3-set" class="regular-radio">
 							<label for="radio-3-2"></label>
 							否
@@ -257,35 +257,206 @@
                             </p>
 
                             <p class="if_temp">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是否临时车牌：
-                                <span style="margin-left:45px;">
+                                <span style="margin-left:12px;">
 							<input type="radio" id="radio-4-1" name="radio-4-set" class="regular-radio" checked="">
 							<label for="radio-4-1"></label>
 							是
 						</span>
 
-                                <span style="margin-left:95px;">
+                                <span style="margin-left:35px;">
 							<input type="radio" id="radio-4-2" name="radio-4-set" class="regular-radio">
 							<label for="radio-4-2"></label>
 							否
 						</span>
                             </p>
                             <p><span class="red_star">*</span>车牌号：
-                                <input type="text" class="model_input licence" placeholder="请输入车牌号"  name="licence" />
+                                <input type="text" class="model_input licence" placeholder="请输入车牌号"  name="licence" style="width:200px;"/>
                             </p>
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;车主：
-                                <input type="text" class="model_input owner" placeholder="请输入车主"  name="owner" />
+                                <input type="text" class="model_input owner" placeholder="请输入车主"  name="owner" style="width:200px;"/>
                             </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;品牌：
-                                <input type="text" class="model_input brand" placeholder="请输入品牌"  name="brand" />
-                            </p>
+                                <div class="select_wrap select_pull_down">
+                                <div>&nbsp;&nbsp;&nbsp;&nbsp;品牌：
+                                        <input type="text" class="model_input brand ka_input3" placeholder="请输入品牌" name="brand" data-ajax="" readonly style="width:200px;">
+                                </div>
+                                    <div class="sub_ka_drop">
+                                        <div class="ka_drop_list">
+                                            <ul>
+
+
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="101">德系品牌</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="102">奥迪</a></li>
+                                                        <li><a href="javascript:;" data-ajax="103">ALPINA</a></li>
+                                                        <li><a href="javascript:;" data-ajax="104">宝马</a></li>
+                                                        <li><a href="javascript:;" data-ajax="105">奔驰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="106">保时捷</a></li>
+                                                        <li><a href="javascript:;" data-ajax="107">宝沃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="108">大众</a></li>
+                                                        <li><a href="javascript:;" data-ajax="109">smart</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="110">日韩品牌</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="111">本田</a></li>
+                                                        <li><a href="javascript:;" data-ajax="112">丰田</a></li>
+                                                        <li><a href="javascript:;" data-ajax="113">雷克萨斯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="114">铃木</a></li>
+                                                        <li><a href="javascript:;" data-ajax="115">马自达</a></li>
+                                                        <li><a href="javascript:;" data-ajax="116">讴歌</a></li>
+                                                        <li><a href="javascript:;" data-ajax="117">日产</a></li>
+                                                        <li><a href="javascript:;" data-ajax="118">斯巴鲁</a></li>
+                                                        <li><a href="javascript:;" data-ajax="119">三菱</a></li>
+                                                        <li><a href="javascript:;" data-ajax="120">五十铃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="121">英菲尼迪</a></li>
+                                                        <li><a href="javascript:;" data-ajax="122">起亚</a></li>
+                                                        <li><a href="javascript:;" data-ajax="123">双龙</a></li>
+                                                        <li><a href="javascript:;" data-ajax="124">现代</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="125">美系品牌</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="126">别克</a></li>
+                                                        <li><a href="javascript:;" data-ajax="127">道奇</a></li>
+                                                        <li><a href="javascript:;" data-ajax="128">福特</a></li>
+                                                        <li><a href="javascript:;" data-ajax="129">Faraday Future</a></li>
+                                                        <li><a href="javascript:;" data-ajax="130">GMC</a></li>
+                                                        <li><a href="javascript:;" data-ajax="131">Jeep</a></li>
+                                                        <li><a href="javascript:;" data-ajax="132">凯迪拉克</a></li>
+                                                        <li><a href="javascript:;" data-ajax="133">克莱斯勒</a></li>
+                                                        <li><a href="javascript:;" data-ajax="134">林肯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="135">山姆</a></li>
+                                                        <li><a href="javascript:;" data-ajax="136">特斯拉</a></li>
+                                                        <li><a href="javascript:;" data-ajax="137">雪佛兰</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="138">欧系其他</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="139">标致</a></li>
+                                                        <li><a href="javascript:;" data-ajax="140">DS</a></li>
+                                                        <li><a href="javascript:;" data-ajax="141">雷诺</a></li>
+                                                        <li><a href="javascript:;" data-ajax="142">雪铁龙</a></li>
+                                                        <li><a href="javascript:;" data-ajax="143">阿斯顿•马丁</a></li>
+                                                        <li><a href="javascript:;" data-ajax="144">宾利</a></li>
+                                                        <li><a href="javascript:;" data-ajax="145">捷豹</a></li>
+                                                        <li><a href="javascript:;" data-ajax="146">路虎</a></li>
+                                                        <li><a href="javascript:;" data-ajax="147">劳斯莱斯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="148">MINI</a></li>
+                                                        <li><a href="javascript:;" data-ajax="149">迈凯伦</a></li>
+                                                        <li><a href="javascript:;" data-ajax="150">阿尔法•罗密欧</a></li>
+                                                        <li><a href="javascript:;" data-ajax="151">菲亚特</a></li>
+                                                        <li><a href="javascript:;" data-ajax="152">法拉利</a></li>
+                                                        <li><a href="javascript:;" data-ajax="153">兰博基尼</a></li>
+                                                        <li><a href="javascript:;" data-ajax="154">玛莎拉蒂</a></li>
+                                                        <li><a href="javascript:;" data-ajax="155">依维柯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="156">Polestar</a></li>
+                                                        <li><a href="javascript:;" data-ajax="157">沃尔沃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="158">斯柯达</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="159">国产品牌</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="160">ARCFOX</a></li>
+                                                        <li><a href="javascript:;" data-ajax="161">宝骏</a></li>
+                                                        <li><a href="javascript:;" data-ajax="162">比亚迪</a></li>
+                                                        <li><a href="javascript:;" data-ajax="163">奔腾</a></li>
+                                                        <li><a href="javascript:;" data-ajax="164">比速</a></li>
+                                                        <li><a href="javascript:;" data-ajax="165">北汽绅宝</a></li>
+                                                        <li><a href="javascript:;" data-ajax="166">北汽幻速</a></li>
+                                                        <li><a href="javascript:;" data-ajax="167">北汽威旺</a></li>
+                                                        <li><a href="javascript:;" data-ajax="168">北汽昌河</a></li>
+                                                        <li><a href="javascript:;" data-ajax="169">北汽制造</a></li>
+                                                        <li><a href="javascript:;" data-ajax="170">北汽道达</a></li>
+                                                        <li><a href="javascript:;" data-ajax="171">北汽新能源</a></li>
+                                                        <li><a href="javascript:;" data-ajax="172">北京</a></li>
+                                                        <li><a href="javascript:;" data-ajax="173">长安</a></li>
+                                                        <li><a href="javascript:;" data-ajax="174">长安欧尚</a></li>
+                                                        <li><a href="javascript:;" data-ajax="175">长安轻型车</a></li>
+                                                        <li><a href="javascript:;" data-ajax="176">长安跨越</a></li>
+                                                        <li><a href="javascript:;" data-ajax="177">长城</a></li>
+                                                        <li><a href="javascript:;" data-ajax="178">东风风度</a></li>
+                                                        <li><a href="javascript:;" data-ajax="179">东风风光</a></li>
+                                                        <li><a href="javascript:;" data-ajax="180">东风风神</a></li>
+                                                        <li><a href="javascript:;" data-ajax="181">东风风行</a></li>
+                                                        <li><a href="javascript:;" data-ajax="182">东风小康</a></li>
+                                                        <li><a href="javascript:;" data-ajax="183">东风</a></li>
+                                                        <li><a href="javascript:;" data-ajax="184">东南</a></li>
+                                                        <li><a href="javascript:;" data-ajax="185">电咖</a></li>
+                                                        <li><a href="javascript:;" data-ajax="186">福迪</a></li>
+                                                        <li><a href="javascript:;" data-ajax="187">福汽启腾</a></li>
+                                                        <li><a href="javascript:;" data-ajax="188">福田</a></li>
+                                                        <li><a href="javascript:;" data-ajax="189">广汽传祺</a></li>
+                                                        <li><a href="javascript:;" data-ajax="190">广汽新能源</a></li>
+                                                        <li><a href="javascript:;" data-ajax="191">观致</a></li>
+                                                        <li><a href="javascript:;" data-ajax="192">国金</a></li>
+                                                        <li><a href="javascript:;" data-ajax="193">哈弗</a></li>
+                                                        <li><a href="javascript:;" data-ajax="194">海马</a></li>
+                                                        <li><a href="javascript:;" data-ajax="195">汉腾</a></li>
+                                                        <li><a href="javascript:;" data-ajax="196">红旗</a></li>
+                                                        <li><a href="javascript:;" data-ajax="197">华泰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="198">黄海</a></li>
+                                                        <li><a href="javascript:;" data-ajax="199">华骐</a></li>
+                                                        <li><a href="javascript:;" data-ajax="200">华颂</a></li>
+                                                        <li><a href="javascript:;" data-ajax="201">吉利</a></li>
+                                                        <li><a href="javascript:;" data-ajax="202">江淮</a></li>
+                                                        <li><a href="javascript:;" data-ajax="203">捷途</a></li>
+                                                        <li><a href="javascript:;" data-ajax="204">江铃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="205">金杯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="206">金龙</a></li>
+                                                        <li><a href="javascript:;" data-ajax="207">九龙</a></li>
+                                                        <li><a href="javascript:;" data-ajax="208">君马</a></li>
+                                                        <li><a href="javascript:;" data-ajax="209">凯翼</a></li>
+                                                        <li><a href="javascript:;" data-ajax="210">开瑞</a></li>
+                                                        <li><a href="javascript:;" data-ajax="211">卡升</a></li>
+                                                        <li><a href="javascript:;" data-ajax="212">卡威</a></li>
+                                                        <li><a href="javascript:;" data-ajax="213">领克</a></li>
+                                                        <li><a href="javascript:;" data-ajax="214">陆风</a></li>
+                                                        <li><a href="javascript:;" data-ajax="215">猎豹</a></li>
+                                                        <li><a href="javascript:;" data-ajax="216">名爵</a></li>
+                                                        <li><a href="javascript:;" data-ajax="217">围墙机</a></li>
+                                                        <li><a href="javascript:;" data-ajax="218">纳智捷</a></li>
+                                                        <li><a href="javascript:;" data-ajax="219">奇瑞</a></li>
+                                                        <li><a href="javascript:;" data-ajax="220">启辰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="221">前途</a></li>
+                                                        <li><a href="javascript:;" data-ajax="222">奇点汽车</a></li>
+                                                        <li><a href="javascript:;" data-ajax="223">庆铃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="224">荣威</a></li>
+                                                        <li><a href="javascript:;" data-ajax="225">SWM斯威</a></li>
+                                                        <li><a href="javascript:;" data-ajax="226">上汽大通</a></li>
+                                                        <li><a href="javascript:;" data-ajax="227">腾势</a></li>
+                                                        <li><a href="javascript:;" data-ajax="228">五菱</a></li>
+                                                        <li><a href="javascript:;" data-ajax="229">WEY</a></li>
+                                                        <li><a href="javascript:;" data-ajax="230">蔚来</a></li>
+                                                        <li><a href="javascript:;" data-ajax="231">潍柴英致</a></li>
+                                                        <li><a href="javascript:;" data-ajax="232">威马汽车</a></li>
+                                                        <li><a href="javascript:;" data-ajax="233">小鹏汽车</a></li>
+                                                        <li><a href="javascript:;" data-ajax="234">星驰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="235">驭胜</a></li>
+                                                        <li><a href="javascript:;" data-ajax="236">野马</a></li>
+                                                        <li><a href="javascript:;" data-ajax="237">一汽</a></li>
+                                                        <li><a href="javascript:;" data-ajax="238">裕路</a></li>
+                                                        <li><a href="javascript:;" data-ajax="239">云度</a></li>
+                                                        <li><a href="javascript:;" data-ajax="240">众泰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="241">中华</a></li>
+                                                        <li><a href="javascript:;" data-ajax="242">知豆</a></li>
+                                                        <li><a href="javascript:;" data-ajax="243">之诺</a></li>
+                                                        <li><a href="javascript:;" data-ajax="244">中兴</a></li>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                               <!-- <input type="text" class="model_input brand" placeholder="请输入品牌"  name="brand" style="width:200px;"/>-->
+
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;型号：
-                                <input type="text" class="model_input model" placeholder="请输入型号"  name="model" />
+                                <input type="text" class="model_input model" placeholder="请输入型号"  name="model" style="width:200px;"/>
                             </p>
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;颜色：
-                                <input type="text" class="model_input color" placeholder="请输入颜色"  name="color" />
+                                <input type="text" class="model_input color" placeholder="请输入颜色"  name="color" style="width:200px;"/>
                             </p>
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;备注：
-                                <input type="text" class="model_input remark" placeholder="请输入备注"  name="remark" />
+                                <input type="text" class="model_input remark" placeholder="请输入备注"  name="remark" style="width:200px;"/>
                             </p>
                         </div>
 
@@ -295,7 +466,7 @@
                                 <div class="select_pull_down select_wrap select_room">
                                     <div>
                                         <span class="red_star">*</span>授权发起人：
-                                        <input type="text" class="model_input auz_person_code ka_input3" placeholder="请输入授权发起人" name="auz_person_code" data-ajax="" readonly="">
+                                        <input type="text" class="model_input auz_person_code ka_input3" placeholder="请输入授权发起人" name="auz_person_code" data-ajax="" readonly="" style="width:200px;">
                                     </div>
                                     <div class="ka_drop "   style="width:200px;">
                                         <div class="ka_drop_list"  >
@@ -306,22 +477,22 @@
                                     </div>
                                 </div>
                                 <p><span class="red_star">*</span>开始日期：
-                                    <input type="text" class="begin_date date form-control" name="begin_date" value=""/>
+                                    <input type="text" class="begin_date date form-control" name="begin_date" value="" style="width:200px;"/>
                                 </p>
                                 <p><span class="red_star">*</span>结束日期：
-                                    <input type="text" class="end_date date form-control" name="end_date" value=""/>
+                                    <input type="text" class="end_date date form-control" name="end_date" value="" style="width:200px;"/>
                                 </p>
                                 <p>&nbsp;&nbsp;&nbsp;&nbsp;备注：
-                                    <input type="text" class="model_input auz_remark" placeholder="请输入备注"  name="auz_remark" />
+                                    <input type="text" class="model_input auz_remark" placeholder="请输入备注"  name="auz_remark" style="width:200px;"/>
                                 </p>
 
                             </div>
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
-                        <p class="fr pt17">
-                            <span class="col_37A fl confirm">保存</span>
-                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div>
@@ -376,7 +547,7 @@
                                     <span class="v_owner col_37A"></span>
                                 </p>
                                 <p><span class="des">品牌:</span>
-                                    <span class="v_brand col_37A"></span>
+                                    <span class="v_brand_name col_37A"></span>
                                 </p>
                                 <p><span class="des">型号:</span>
                                     <span class="v_model col_37A"></span>
@@ -472,7 +643,7 @@
                                 <div class="select_wrap select_pull_down">
                                     <div>
                                         <span class="red_star">*</span>车辆类型：
-                                        <input type="text" class="model_input v_vehicle_type ka_input3" placeholder="请输入车辆类型"  name="vehicle_type" data-ajax="" readonly />
+                                        <input type="text" class="model_input v_vehicle_type ka_input3" placeholder="请输入车辆类型"  name="v_vehicle_type" data-ajax="" readonly />
                                     </div>
 
                                     <div class="ka_drop" style="margin-left:20px;width: 300px;">
@@ -492,17 +663,17 @@
                                 </div>
 
 
-                                <p class="v_if_resident"> <span class="red_star">*</span>是否常驻：
+                                <p class="v_if_resident"> <span class="red_star">*</span>小区车/访客车：
                                     <span style="margin-left:70px;">
 							<input type="radio" id="radio-6-1" name="radio-6-set" class="regular-radio" >
 							<label for="radio-6-1"></label>
-							是
+							小区车
 						</span>
 
                                     <span style="margin-left:95px;">
 							<input type="radio" id="radio-6-2" name="radio-6-set" class="regular-radio">
 							<label for="radio-6-2"></label>
-							否
+							访客车
 						</span>
                                 </p>
                                 <p class="v_if_electro">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是否是电动车：
@@ -533,14 +704,182 @@
 						</span>
                                 </p>
                                 <p><span class="red_star">*</span>车牌号：
-                                    <input type="text" class="model_input licence" placeholder="请输入车牌号"  name="licence" />
+                                    <input type="text" class="model_input licence" placeholder="请输入车牌号"  name="v_licence" />
                                 </p>
                                 <p>&nbsp;&nbsp;&nbsp;&nbsp;车主：
                                     <input type="text" class="model_input owner" placeholder="请输入车主"  name="v_owner" />
                                 </p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;品牌：
-                                    <input type="text" class="model_input brand" placeholder="请输入品牌"  name="v_brand" />
-                                </p>
+                                <div class="select_wrap select_pull_down">
+                                    <div>&nbsp;&nbsp;&nbsp;&nbsp;品牌：
+                                        <input type="text" class="model_input v_brand ka_input3" placeholder="请输入品牌" name="v_brand" data-ajax="" readonly >
+                                    </div>
+                                    <div class="sub_ka_drop">
+                                        <div class="ka_drop_list">
+                                            <ul>
+
+
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="101">德系品牌</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="102">奥迪</a></li>
+                                                        <li><a href="javascript:;" data-ajax="103">ALPINA</a></li>
+                                                        <li><a href="javascript:;" data-ajax="104">宝马</a></li>
+                                                        <li><a href="javascript:;" data-ajax="105">奔驰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="106">保时捷</a></li>
+                                                        <li><a href="javascript:;" data-ajax="107">宝沃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="108">大众</a></li>
+                                                        <li><a href="javascript:;" data-ajax="109">smart</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="110">日韩品牌</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="111">本田</a></li>
+                                                        <li><a href="javascript:;" data-ajax="112">丰田</a></li>
+                                                        <li><a href="javascript:;" data-ajax="113">雷克萨斯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="114">铃木</a></li>
+                                                        <li><a href="javascript:;" data-ajax="115">马自达</a></li>
+                                                        <li><a href="javascript:;" data-ajax="116">讴歌</a></li>
+                                                        <li><a href="javascript:;" data-ajax="117">日产</a></li>
+                                                        <li><a href="javascript:;" data-ajax="118">斯巴鲁</a></li>
+                                                        <li><a href="javascript:;" data-ajax="119">三菱</a></li>
+                                                        <li><a href="javascript:;" data-ajax="120">五十铃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="121">英菲尼迪</a></li>
+                                                        <li><a href="javascript:;" data-ajax="122">起亚</a></li>
+                                                        <li><a href="javascript:;" data-ajax="123">双龙</a></li>
+                                                        <li><a href="javascript:;" data-ajax="124">现代</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="125">美系品牌</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="126">别克</a></li>
+                                                        <li><a href="javascript:;" data-ajax="127">道奇</a></li>
+                                                        <li><a href="javascript:;" data-ajax="128">福特</a></li>
+                                                        <li><a href="javascript:;" data-ajax="129">Faraday Future</a></li>
+                                                        <li><a href="javascript:;" data-ajax="130">GMC</a></li>
+                                                        <li><a href="javascript:;" data-ajax="131">Jeep</a></li>
+                                                        <li><a href="javascript:;" data-ajax="132">凯迪拉克</a></li>
+                                                        <li><a href="javascript:;" data-ajax="133">克莱斯勒</a></li>
+                                                        <li><a href="javascript:;" data-ajax="134">林肯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="135">山姆</a></li>
+                                                        <li><a href="javascript:;" data-ajax="136">特斯拉</a></li>
+                                                        <li><a href="javascript:;" data-ajax="137">雪佛兰</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="138">欧系其他</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="139">标致</a></li>
+                                                        <li><a href="javascript:;" data-ajax="140">DS</a></li>
+                                                        <li><a href="javascript:;" data-ajax="141">雷诺</a></li>
+                                                        <li><a href="javascript:;" data-ajax="142">雪铁龙</a></li>
+                                                        <li><a href="javascript:;" data-ajax="143">阿斯顿•马丁</a></li>
+                                                        <li><a href="javascript:;" data-ajax="144">宾利</a></li>
+                                                        <li><a href="javascript:;" data-ajax="145">捷豹</a></li>
+                                                        <li><a href="javascript:;" data-ajax="146">路虎</a></li>
+                                                        <li><a href="javascript:;" data-ajax="147">劳斯莱斯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="148">MINI</a></li>
+                                                        <li><a href="javascript:;" data-ajax="149">迈凯伦</a></li>
+                                                        <li><a href="javascript:;" data-ajax="150">阿尔法•罗密欧</a></li>
+                                                        <li><a href="javascript:;" data-ajax="151">菲亚特</a></li>
+                                                        <li><a href="javascript:;" data-ajax="152">法拉利</a></li>
+                                                        <li><a href="javascript:;" data-ajax="153">兰博基尼</a></li>
+                                                        <li><a href="javascript:;" data-ajax="154">玛莎拉蒂</a></li>
+                                                        <li><a href="javascript:;" data-ajax="155">依维柯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="156">Polestar</a></li>
+                                                        <li><a href="javascript:;" data-ajax="157">沃尔沃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="158">斯柯达</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="subNavWrap"><a href="javascript:;" data-ajax="159">国产品牌</a>
+                                                    <ul class="subNav">
+                                                        <li><a href="javascript:;" data-ajax="160">ARCFOX</a></li>
+                                                        <li><a href="javascript:;" data-ajax="161">宝骏</a></li>
+                                                        <li><a href="javascript:;" data-ajax="162">比亚迪</a></li>
+                                                        <li><a href="javascript:;" data-ajax="163">奔腾</a></li>
+                                                        <li><a href="javascript:;" data-ajax="164">比速</a></li>
+                                                        <li><a href="javascript:;" data-ajax="165">北汽绅宝</a></li>
+                                                        <li><a href="javascript:;" data-ajax="166">北汽幻速</a></li>
+                                                        <li><a href="javascript:;" data-ajax="167">北汽威旺</a></li>
+                                                        <li><a href="javascript:;" data-ajax="168">北汽昌河</a></li>
+                                                        <li><a href="javascript:;" data-ajax="169">北汽制造</a></li>
+                                                        <li><a href="javascript:;" data-ajax="170">北汽道达</a></li>
+                                                        <li><a href="javascript:;" data-ajax="171">北汽新能源</a></li>
+                                                        <li><a href="javascript:;" data-ajax="172">北京</a></li>
+                                                        <li><a href="javascript:;" data-ajax="173">长安</a></li>
+                                                        <li><a href="javascript:;" data-ajax="174">长安欧尚</a></li>
+                                                        <li><a href="javascript:;" data-ajax="175">长安轻型车</a></li>
+                                                        <li><a href="javascript:;" data-ajax="176">长安跨越</a></li>
+                                                        <li><a href="javascript:;" data-ajax="177">长城</a></li>
+                                                        <li><a href="javascript:;" data-ajax="178">东风风度</a></li>
+                                                        <li><a href="javascript:;" data-ajax="179">东风风光</a></li>
+                                                        <li><a href="javascript:;" data-ajax="180">东风风神</a></li>
+                                                        <li><a href="javascript:;" data-ajax="181">东风风行</a></li>
+                                                        <li><a href="javascript:;" data-ajax="182">东风小康</a></li>
+                                                        <li><a href="javascript:;" data-ajax="183">东风</a></li>
+                                                        <li><a href="javascript:;" data-ajax="184">东南</a></li>
+                                                        <li><a href="javascript:;" data-ajax="185">电咖</a></li>
+                                                        <li><a href="javascript:;" data-ajax="186">福迪</a></li>
+                                                        <li><a href="javascript:;" data-ajax="187">福汽启腾</a></li>
+                                                        <li><a href="javascript:;" data-ajax="188">福田</a></li>
+                                                        <li><a href="javascript:;" data-ajax="189">广汽传祺</a></li>
+                                                        <li><a href="javascript:;" data-ajax="190">广汽新能源</a></li>
+                                                        <li><a href="javascript:;" data-ajax="191">观致</a></li>
+                                                        <li><a href="javascript:;" data-ajax="192">国金</a></li>
+                                                        <li><a href="javascript:;" data-ajax="193">哈弗</a></li>
+                                                        <li><a href="javascript:;" data-ajax="194">海马</a></li>
+                                                        <li><a href="javascript:;" data-ajax="195">汉腾</a></li>
+                                                        <li><a href="javascript:;" data-ajax="196">红旗</a></li>
+                                                        <li><a href="javascript:;" data-ajax="197">华泰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="198">黄海</a></li>
+                                                        <li><a href="javascript:;" data-ajax="199">华骐</a></li>
+                                                        <li><a href="javascript:;" data-ajax="200">华颂</a></li>
+                                                        <li><a href="javascript:;" data-ajax="201">吉利</a></li>
+                                                        <li><a href="javascript:;" data-ajax="202">江淮</a></li>
+                                                        <li><a href="javascript:;" data-ajax="203">捷途</a></li>
+                                                        <li><a href="javascript:;" data-ajax="204">江铃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="205">金杯</a></li>
+                                                        <li><a href="javascript:;" data-ajax="206">金龙</a></li>
+                                                        <li><a href="javascript:;" data-ajax="207">九龙</a></li>
+                                                        <li><a href="javascript:;" data-ajax="208">君马</a></li>
+                                                        <li><a href="javascript:;" data-ajax="209">凯翼</a></li>
+                                                        <li><a href="javascript:;" data-ajax="210">开瑞</a></li>
+                                                        <li><a href="javascript:;" data-ajax="211">卡升</a></li>
+                                                        <li><a href="javascript:;" data-ajax="212">卡威</a></li>
+                                                        <li><a href="javascript:;" data-ajax="213">领克</a></li>
+                                                        <li><a href="javascript:;" data-ajax="214">陆风</a></li>
+                                                        <li><a href="javascript:;" data-ajax="215">猎豹</a></li>
+                                                        <li><a href="javascript:;" data-ajax="216">名爵</a></li>
+                                                        <li><a href="javascript:;" data-ajax="217">围墙机</a></li>
+                                                        <li><a href="javascript:;" data-ajax="218">纳智捷</a></li>
+                                                        <li><a href="javascript:;" data-ajax="219">奇瑞</a></li>
+                                                        <li><a href="javascript:;" data-ajax="220">启辰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="221">前途</a></li>
+                                                        <li><a href="javascript:;" data-ajax="222">奇点汽车</a></li>
+                                                        <li><a href="javascript:;" data-ajax="223">庆铃</a></li>
+                                                        <li><a href="javascript:;" data-ajax="224">荣威</a></li>
+                                                        <li><a href="javascript:;" data-ajax="225">SWM斯威</a></li>
+                                                        <li><a href="javascript:;" data-ajax="226">上汽大通</a></li>
+                                                        <li><a href="javascript:;" data-ajax="227">腾势</a></li>
+                                                        <li><a href="javascript:;" data-ajax="228">五菱</a></li>
+                                                        <li><a href="javascript:;" data-ajax="229">WEY</a></li>
+                                                        <li><a href="javascript:;" data-ajax="230">蔚来</a></li>
+                                                        <li><a href="javascript:;" data-ajax="231">潍柴英致</a></li>
+                                                        <li><a href="javascript:;" data-ajax="232">威马汽车</a></li>
+                                                        <li><a href="javascript:;" data-ajax="233">小鹏汽车</a></li>
+                                                        <li><a href="javascript:;" data-ajax="234">星驰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="235">驭胜</a></li>
+                                                        <li><a href="javascript:;" data-ajax="236">野马</a></li>
+                                                        <li><a href="javascript:;" data-ajax="237">一汽</a></li>
+                                                        <li><a href="javascript:;" data-ajax="238">裕路</a></li>
+                                                        <li><a href="javascript:;" data-ajax="239">云度</a></li>
+                                                        <li><a href="javascript:;" data-ajax="240">众泰</a></li>
+                                                        <li><a href="javascript:;" data-ajax="241">中华</a></li>
+                                                        <li><a href="javascript:;" data-ajax="242">知豆</a></li>
+                                                        <li><a href="javascript:;" data-ajax="243">之诺</a></li>
+                                                        <li><a href="javascript:;" data-ajax="244">中兴</a></li>
+                                                        </li>
+                                                    </ul>
+                                        </div>
+                                    </div>
+                                </div>
                                 <p>&nbsp;&nbsp;&nbsp;&nbsp;型号：
                                     <input type="text" class="model_input model" placeholder="请输入型号"  name="v_model" />
                                 </p>
@@ -581,10 +920,10 @@
                             </div>-->
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
-                        <p class="fr pt17">
-                            <span class="col_37A fl confirm">保存</span>
-                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div>
@@ -634,10 +973,10 @@
                                                         </div>
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
-                        <p class="fr pt17">
-                            <span class="col_37A fl confirm">保存</span>
-                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div>

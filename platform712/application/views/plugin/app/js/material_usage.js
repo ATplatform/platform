@@ -407,6 +407,10 @@ console.log("新增物资出错")
 $('.search_person_wrap .search_person_btn').click(function(){
     var name = $(this).closest('.search_person_wrap').find('.search_person_name').val();
     var search_person_wrap = $(this).closest('.search_person_wrap');
+    if(!name||/^\s*$/.test(name)){
+        openLayer('请输入姓名!');
+        return;
+    }
     $.ajax({
         method:'post',
         data:{

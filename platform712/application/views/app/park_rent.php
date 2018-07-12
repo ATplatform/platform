@@ -16,6 +16,7 @@
 <script src='<?=base_url().'application/views/plugin/bootstrap-fileinput/js/zh.js'?>'></script>
 
 
+
 <div class="oh pt10">
 
 <?php
@@ -32,19 +33,19 @@
 
     <!-- 物资数据-->
         <div class="table_wrap">
-           <div class="oh pt10">
-                <a class="fr add_btn" href="<?=base_url().'index.php/Vehicle/parkinglot'?>">清除筛选</a>
+         <div class="oh pt10">
+            <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增租赁</span>
+             <a class="fr add_btn" id="reset" >清除筛选</a>
             </div>
-
             <table id="table"
                    data-toolbar="#toolbar">
                 <thead>
                 <tr>
 
-                    <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+                   <!-- <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
                     <th data-title="车位编号" data-align="center" data-field="lot_code_name"></th>
                     <th data-title="生效日期" data-align="center" data-field="lot_effective_date_name"></th>
-                    <th data-title="停车场" data-align="center" data-field="lot_parkcode_name"></th>
+                    <th data-title="停车场" data-align="center" data-field="par_parkname"></th>
                     <th  data-title="楼层" data-align="center" data-field="lot_floor_name"></th>
                     <th data-title="车位区域" data-align="center" data-field="lot_biz_type_name"></th>
                     <th  data-title="车位状态" data-align="center" data-field="lot_biz_status_name"></th>
@@ -53,6 +54,8 @@
                     <th  data-title="占用开始日期" data-align="center" data-field="lot_begin_date_name"></th>
                     <th  data-title="占用结束日期" data-align="center" data-field="lot_end_date_name"></th>
                     <th  data-title="车位租金" data-align="center" data-field="lot_monthly_rent_name"></th>
+                    <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>-->
+
                     <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
                 </tr>
                 </thead>
@@ -96,7 +99,7 @@
         <div class="modal fade" id="rewrite" tabindex="-1" role="dialog" aria-hidden="true" >
             <div class="modal-dialog"  style="width:650px;">
                 <div class="modal-content model_wrap" style="width:650px;">
-                    <div class="model_content" style="width:650px;">
+                    <div class="model_content" style="width:650px;position:relative;">
                         <div class="building_header">
                             <h4 class="modal-title tac">更新车位信息</h4>
                         </div>
@@ -118,29 +121,30 @@
         <!-- /.modal -->
 
 
-        <!-- 验证身份证 -->
-        <div class="modal fade" id="verify_auz" tabindex="-1" role="dialog" aria-hidden="true">
+        <!-- 增加物资 -->
+        <div class="modal fade" id="add_Item" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog"  style="width: 630px;">
                 <div class="modal-content model_wrap">
                     <div class="model_content">
                         <div class="building_header">
-                            <h4 class="modal-title tac">新增人员信息</h4>
+                            <h4 class="modal-title tac">新增物资信息</h4>
                         </div>
-                        <div class="modal-body building">
-                            <p class="col_7DA">为保证录入车辆信息唯一性，请输入车牌号进行验证(若是无牌电瓶车请输入机身可识别唯一编号)</p>
-                            <div class="id_card_wrap">
-                                <input type="text" class="col_37A" name="licence" placeholder="请输入车牌号" />
+                        <div class=" modal-body building  oh">
+                            <div class="add_item">
                             </div>
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
+                    <div class="modal_footer bg_eee">
                         <p class="tac pb17">
-                            <span class="col_37A next">下一步</span>
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
         </div>
+
+
 
 </div>
     </div>
@@ -241,6 +245,6 @@
 
 
 </script>
-<script src='<?=base_url().'application/views/plugin/app/js/parkinglot_list.js'?>'></script>
+<script src='<?=base_url().'application/views/plugin/app/js/park_rent.js'?>'></script>
 </body>
 </html>

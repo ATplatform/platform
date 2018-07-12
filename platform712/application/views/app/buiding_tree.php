@@ -2,8 +2,13 @@
 	require 'top.php'
 ?>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-table/css/bootstrap-table.css'?>'/>
+<link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css'?>'/>
+<link rel="stylesheet" href='<?=base_url().'application/views/plugin/iconfont/iconfont.css'?>'/>
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-table/js/bootstrap-table-zh-CN.js'?>'></script>
+<script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/moment-with-locales.min.js'?>'></script>
+<script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'?>'></script>
+<script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/d3/d3.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/iconfont/iconfont.js'?>'></script>
 
@@ -278,8 +283,10 @@ function update(source) {
       .style("position", "relative")
       .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
       .on('mouseover', function(d) {
+          if(d.depth<6){
           $(this).children('.option1_svg').show()
           $(this).children('.option2_svg').show()
+          }
       })
       .on('mouseout', function (d) {$(this).children('.option1_svg').hide(); $(this).children('.option2_svg').hide()})
 
@@ -351,8 +358,10 @@ function update(source) {
         .attr("height", 20)
         .attr("r", 8.5)
         .on('click', function(d) {
-            console.log(d);
-            addbuilding(d);
+            if(d.depth<6) {
+                console.log(d);
+                addbuilding(d);
+            }
         })
         .style("position", "absolute")
         .style("z-index", -99)
@@ -372,7 +381,10 @@ function update(source) {
         .style("fill", function(d) { return  "transparent"; })
         .style("border", function(d) { return  "#500000"; })
         .on('click', function(d) {
-            updatebuilding(d);
+            if(d.depth<6) {
+                updatebuilding(d);
+            }
+
         })
 
 
@@ -567,8 +579,8 @@ function addbuilding(d){
             data.level=parseInt(data.level)+1;
             data.level=data.level.toString();
             if( data.level=='100'){name=''}
-            if( data.level=='101'){name='区'}
-            if( data.level=='102'){name='期'}
+            if( data.level=='101'){name='期'}
+            if( data.level=='102'){name='区'}
             if( data.level=='103'){name='栋'}
             if( data.level=='104'){name='单元'}
             if( data.level=='105'){name='层'}
@@ -585,95 +597,96 @@ function addbuilding(d){
 
     $('#add_building').modal('show');
 
-    $('#add_building .confirm').click(function(){
-        var code = $('.add_building .code').html();
-        var effective_date = $('.add_building').find('input[name="effective_date"]').val();
-        var name = $('.add_building').find('input[name="name"]').val();
-        var rank = $('.add_building').find('input[name="rank"]').val();
-        var parent_code = $('.add_building').find('input[name="parent_code"]').data('ajax');
-        var remark = $('.add_building').find('input[name="remark"]').val();
-        var level_data = $('.add_building').find('input[name="level"]').data('ajax');
-        var parent_code_data = $('.add_building').find('input[name="parent_code"]').data('ajax');
-        remark = remark?remark:'';
-        rank = trim(rank);
-        if(!effective_date){
-            openLayer('请输入生效日期');
-            return;
-        }
-        if(!name){
-            openLayer('请输入楼宇名称');
-            return;
-        }
-        if(!level_data){
-            openLayer('请选择楼宇层级');
-            return;
-        }
-        if(!parent_code){
-            openLayer('请选择上级楼宇');
-            return;
-        }
-        if(!rank){
-            openLayer('请输入顺序号');
-            return;
-        }
 
-        //如果填了顺序号,则要验证是否是数字
-        if(rank){
-            if(!/^[0-9]*$/.test(rank)){
-                openLayer('顺序号请输入数字');
-                return;
-            }
-        }
-        //判断有效无效
-        if($('.add_building .effective_status input[type="radio"]').eq(0).is(':checked')){
-            effective_status = 'true';
-        }
-        else {
-            effective_status = 'false';
-        }
-        $.ajax({
-            url:getRootPath()+'/index.php/Building/insertBuilding',
-            method:'post',
-            data:{
-                code:code,
-                effective_date:effective_date,
-                effective_status:effective_status,
-                name:name,
-                level:level_data,
-                rank:rank,
-                parent_code:parent_code_data,
-                remark:remark
-            },
-            success:function(data){
-                $('#add_building').modal('hide');
-
-                var data = JSON.parse(data);
-
-                //成功之后自动刷新页面
-                layer.open({
-                    type: 1,
-                    title: false,
-                    //打开关闭按钮
-                    closeBtn: 1,
-                    shadeClose: false,
-                    skin: 'tanhcuang',
-                    content: '新增楼宇成功',
-                    cancel: function(){
-                        //右上角关闭回调
-                        window.location = getRootPath() + "/index.php/Building/buildingtree";
-                    }
-                });
-            },
-            error:function(){
-                console.log('新增楼宇出错');
-            }
-        })
-
-    })
 }
 
 
+$('#add_building .confirm').click(function(){
+    var code = $('.add_building .code').html();
+    var effective_date = $('.add_building').find('input[name="effective_date"]').val();
+    var name = $('.add_building').find('input[name="name"]').val();
+    var rank = $('.add_building').find('input[name="rank"]').val();
+    var parent_code = $('.add_building').find('input[name="parent_code"]').data('ajax');
+    var remark = $('.add_building').find('input[name="remark"]').val();
+    var level_data = $('.add_building').find('input[name="level"]').data('ajax');
+    var parent_code_data = $('.add_building').find('input[name="parent_code"]').data('ajax');
+    console.log(parent_code_data)
+    remark = remark?remark:'';
+    rank = trim(rank);
+    if(!effective_date){
+        openLayer('请输入生效日期');
+        return;
+    }
+    if(!name){
+        openLayer('请输入楼宇名称');
+        return;
+    }
+    if(!level_data){
+        openLayer('请选择楼宇层级');
+        return;
+    }
+    if(!parent_code){
+        openLayer('请选择上级楼宇');
+        return;
+    }
+    if(!rank){
+        openLayer('请输入顺序号');
+        return;
+    }
 
+    //如果填了顺序号,则要验证是否是数字
+    if(rank){
+        if(!/^[0-9]*$/.test(rank)){
+            openLayer('顺序号请输入数字');
+            return;
+        }
+    }
+    //判断有效无效
+    if($('.add_building .effective_status input[type="radio"]').eq(0).is(':checked')){
+        effective_status = 'true';
+    }
+    else {
+        effective_status = 'false';
+    }
+    $.ajax({
+        url:getRootPath()+'/index.php/Building/insertBuilding',
+        method:'post',
+        data:{
+            code:code,
+            effective_date:effective_date,
+            effective_status:effective_status,
+            name:name,
+            level:level_data,
+            rank:rank,
+            parent_code:parent_code_data,
+            remark:remark
+        },
+        success:function(data){
+            $('#add_building').modal('hide');
+
+            var data = JSON.parse(data);
+
+            //成功之后自动刷新页面
+            layer.open({
+                type: 1,
+                title: false,
+                //打开关闭按钮
+                closeBtn: 1,
+                shadeClose: false,
+                skin: 'tanhcuang',
+                content: '新增楼宇成功',
+                cancel: function(){
+                    //右上角关闭回调
+                    window.location = getRootPath() + "/index.php/Building/buildingtree";
+                }
+            });
+        },
+        error:function(){
+            console.log('新增楼宇出错');
+        }
+    })
+
+})
 function updatebuilding(d){
     $.ajax({
         url:getRootPath()+'/index.php/Building/getBuildingbyTree',
@@ -727,22 +740,12 @@ function updatebuilding(d){
         var data_id = $('.write_building').find('input[name="data_id"]').val();
         remark = remark?remark:'';
         rank = trim(rank);
-        if(!effective_date){
-            openLayer('请输入生效日期');
-            return;
-        }
+
         if(!name){
             openLayer('请输入楼宇名称');
             return;
         }
-        if(!level_data){
-            openLayer('请选择楼宇层级');
-            return;
-        }
-        if(!parent_code){
-            openLayer('请选择上级楼宇');
-            return;
-        }
+        
         if(!rank){
             openLayer('请输入顺序号');
             return;

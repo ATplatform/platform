@@ -76,7 +76,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="请输入工单编号、创建人..." value="" title="请输入工单编号、创建人、接单人进行搜索"><a id="clear" onclick="return false">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入工单编号、创建人..." value="" title="可输入工单编号、创建人、接单人进行搜索"><a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>

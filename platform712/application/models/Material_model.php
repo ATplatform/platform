@@ -37,6 +37,7 @@ where M.code=A.code
 	GROUP BY
 		M.code
 ) 
+and m.effective_date<=now()
 ";
         $sql .=  " ORDER BY M.code ASC limit ".$rows." offset ".$start;
         // echo $sql;exit;
@@ -45,7 +46,7 @@ where M.code=A.code
 
     ////////搜索查询数据内容的sql语句//////////
     public function getMaterialListbySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $page, $rows)
-    {
+    {   $now      =  date("Y-m-d",time());
         $start = ($page - 1) * $rows;
         $sql = "SELECT
 m.*,
@@ -72,6 +73,10 @@ where M.code=A.code
 
 
 ";
+        if(empty($effective_date)){
+            $sql .= " and M.effective_date<='$now' ";
+        }
+
         if(!empty($effective_date)){
             $sql .= " and M.effective_date<='$effective_date' ";
         }
@@ -111,37 +116,8 @@ where M.code=A.code
                         if ($value2 == "104") {$arr[$key]['material_type_name'] = '保洁物资';}
                         if ($value2 == "105") {$arr[$key]['material_type_name'] = '办公物资';}
                     }
-                    if ($key2 == 'bs_building_code') {
-                      $result="";
-                        if(!empty($arr[$key]['stage_name']))
-                        {
-                            $result=$result.'期：'.$value['stage_name']."；";
-                        }
-                        if(!empty($arr[$key]['area_name']))
-                        {
-                            $result=$result.'区：'.$value['area_name']."；";
-                        }
-                        if(!empty($arr[$key]['immeuble_name']))
-                        {
-                            $result=$result.'栋：'.$value['immeuble_name']."；";
-                        }
-                        if(!empty($arr[$key]['unit_name']))
-                        {
-                            $result=$result.'单元：'.$value['unit_name']."；";
-                        }
-                        if(!empty($arr[$key]['floor_name']))
-                        {
-                            $result=$result.'层：'.$value['floor_name']."；";
-                        }
-                        if(!empty($arr[$key]['room_name']))
-                        {
-                            $result=$result.'室：'.$value['room_name'];
-                        }
-                        else{
-                            $result=$value['name'];
-                        }
-                        $arr[$key]["building_name"]=$result;
-                    }
+
+
                     if ($key2 == 'm_code') {
                         $arr[$key][$key2] = intval($value2, 10);
                     }
@@ -180,7 +156,7 @@ where M.code=A.code
                     if ($key2 == 'remark') {
                         $arr[$key][$key2] = $value2 ;
                     }
-                  //  $arr[$key]["building_name"] = $this->getHouseholdInfo($row);
+                    $arr[$key]["building_name"] = $this->getHouseholdInfo($value);
 
                 }
             }
@@ -193,7 +169,7 @@ where M.code=A.code
 
     ////////////////////普通查询数据数目的数据总条数///////////////
     public function getMaterialListTotalbyNormal( $rows)
-    {
+    {   $now   =  date("Y-m-d",time());
         $sql="select count(*) as count from (";
         $sql.="
 SELECT
@@ -215,7 +191,7 @@ where M.code=A.code
 	GROUP BY
 		M.code
 		
-)";
+) and m.effective_date<='$now'";
         $sql.=" ) as sss";
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {
@@ -235,7 +211,7 @@ where M.code=A.code
     public function getMaterialListTotalbySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $rows)
     {
         $sql="select count(*) as count from (";
-
+        $now   =  date("Y-m-d",time());
         $sql .= "SELECT
 m.*,
 m.name as m_name,
@@ -258,6 +234,9 @@ where M.code=A.code
 		code
 ) 	
 ";
+        if(empty($effective_date)){
+            $sql .= " and M.effective_date<='$now' ";
+        }
 
         if(!empty($effective_date)){
             $sql .= " and M.effective_date<='$effective_date' ";
@@ -450,32 +429,40 @@ where M.code=A.code
 
     }
 //////////////////////////////////////////////////////////////////////////////////
-    public function getHouseholdInfo($row)
-    {
+    public function getHouseholdInfo($row){
         $result="";
         if(!empty($row['stage_name']))
         {
-            $result=$result.'期：'.$row['stage_name']."；";
+            $result=$result.$row['stage_name']."(期)";
         }
         if(!empty($row['area_name']))
         {
-            $result=$result.'区：'.$row['area_name']."；";
+            $result=$result.$row['area_name']."(区)";
         }
         if(!empty($row['immeuble_name']))
         {
-            $result=$result.'栋：'.$row['immeuble_name']."；";
+            $result=$result.$row['immeuble_name']."(栋)";
         }
         if(!empty($row['unit_name']))
         {
-            $result=$result.'单元：'.$row['unit_name']."；";
+            $result=$result.$row['unit_name']."(单元)";
         }
         if(!empty($row['floor_name']))
         {
-            $result=$result.'层：'.$row['floor_name']."；";
+            $result=$result.$row['floor_name']."(层)";
         }
         if(!empty($row['room_name']))
         {
-            $result=$result.'室：'.$row['room_name'];
+            $result=$result.$row['room_name']."(室)";
+        }
+        if(!empty($row['public_name']))
+        {
+            $result=$result.$row['public_name']."(公共设施)";
+        }
+        if(!empty($row['level'])){
+            if($row['level']==100){
+                $result=$result.$row['name'];
+            }
         }
         return $result;
     }
@@ -486,7 +473,7 @@ where M.code=A.code
 
 
     public function getMaterialUsagebyNormal($page, $rows)
-    {
+    {  $now   =  date("Y-m-d",time());
         $start = ($page - 1) * $rows;
         $sql = "SELECT
 mtr.*,
@@ -526,7 +513,7 @@ and mtr.effective_date = (
 where mtr.material_code=A.material_code
 	GROUP BY
 		material_code)
-
+and mtr.effective_date<='$now'
 ";
        /* $sql .= " LEFT JOIN village_tmp_building AS bs ON M.building_code = bs.code";
         $sql .= " where M.effective_status=true";*/
@@ -539,7 +526,7 @@ where mtr.material_code=A.material_code
 
 
     public function getMaterialUsageTotalbyNormal( $rows)
-    {
+    { $now   =  date("Y-m-d",time());
         $sql="select count(*) as count from (
 
 SELECT
@@ -580,6 +567,7 @@ and mtr.effective_date = (
 where mtr.material_code=A.material_code
 	GROUP BY
 		material_code)
+and mtr.effective_date<='$now'
 ) as ss";
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {
@@ -610,37 +598,7 @@ where mtr.material_code=A.material_code
                         if ($value2 == "104") {$arr[$key]['material_type_name'] = '保洁物资';}
                         if ($value2 == "105") {$arr[$key]['material_type_name'] = '办公物资';}
                     }
-                    if ($key2 == 'bs_building_code') {
-                        $result="";
-                        if(!empty($arr[$key]['stage_name']))
-                        {
-                            $result=$result.'期：'.$value['stage_name']."；";
-                        }
-                        if(!empty($arr[$key]['area_name']))
-                        {
-                            $result=$result.'区：'.$value['area_name']."；";
-                        }
-                        if(!empty($arr[$key]['immeuble_name']))
-                        {
-                            $result=$result.'栋：'.$value['immeuble_name']."；";
-                        }
-                        if(!empty($arr[$key]['unit_name']))
-                        {
-                            $result=$result.'单元：'.$value['unit_name']."；";
-                        }
-                        if(!empty($arr[$key]['floor_name']))
-                        {
-                            $result=$result.'层：'.$value['floor_name']."；";
-                        }
-                        if(!empty($arr[$key]['room_name']))
-                        {
-                            $result=$result.'室：'.$value['room_name'];
-                        }
-                        else{
-                            $result=$value['name'];
-                        }
-                        $arr[$key]["building_name"]=$result;
-                    }
+
                     if ($key2 == 'm_code') {
                         $arr[$key][$key2] = intval($value2, 10);
                     }
@@ -676,7 +634,7 @@ where mtr.material_code=A.material_code
                         $arr[$key]['person_name'] = $value['last_name'].$value['first_name'];
                     }
 
-
+                    $arr[$key]["building_name"] = $this->getHouseholdInfo($value);
 
                 }
             }
@@ -726,7 +684,10 @@ and
 			village_material
 		GROUP BY
 			code=$material_code
-	)";
+	)
+
+	
+	";
 
         $q = $this->db->query($sql);
         $row = $q->row_array();
@@ -773,7 +734,7 @@ mtr.effective_date=$effective_date
 
 
     public function getMaterialUsagebySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $page, $rows)
-    {
+    {$now   =  date("Y-m-d",time());
         $start = ($page - 1) * $rows;
         $sql = "		SELECT
 mtr.*,
@@ -815,6 +776,9 @@ where mtr.material_code=A.material_code
 		material_code)
 
 ";
+        if(empty($effective_date)){
+            $sql .= " and mtr.effective_date<='$now' ";
+        }
         if(!empty($effective_date)){
             $sql .= " and mtr.effective_date<='$effective_date' ";
         }
@@ -832,7 +796,7 @@ where mtr.material_code=A.material_code
                     $sql .= " and M.code=$keyword or M.material_type=$keyword  ";
                     // or M.material_type like '%$keyword%'
                 }*/
-                 if (preg_match('/^[\x7f-\xff]+\w*\d*$/', $keyword)) {
+                 if (preg_match('/^[\x7f-\xff]*\w*\d*$/', $keyword)) {
                      $sql .= " and concat(M.code,M.material_type,mtr.remark,M.name,p.last_name,p.first_name) like '%$keyword%'";
                  }
         }
@@ -844,7 +808,7 @@ where mtr.material_code=A.material_code
 
 
     public function getMaterialUsageTotalbySearch($effective_date,$parent_code,$building_code, $material_type, $keyword, $rows)
-    {
+    {$now   =  date("Y-m-d",time());
         $sql="select count(*) as count from (";
 
         $sql .= "
@@ -888,7 +852,9 @@ where mtr.material_code=A.material_code
 		material_code)
 
 ";
-
+        if(empty($effective_date)){
+            $sql .= " and mtr.effective_date<='$now' ";
+        }
         if(!empty($effective_date)){
             $sql .= " and mtr.effective_date<='$effective_date' ";
         }
@@ -906,7 +872,7 @@ where mtr.material_code=A.material_code
                     $sql .= " and M.code=$keyword or M.material_type=$keyword  ";
                     // or M.material_type like '%$keyword%'
                 }*/
-            if (preg_match('/^[\x7f-\xff]+\w*\d*$/', $keyword)) {
+            if (preg_match('/^[\x7f-\xff]*\w*\d*$/', $keyword)) {
                 $sql .= " and concat(M.code,M.material_type,mtr.remark,M.name,p.last_name,p.first_name) like '%$keyword%'";
             }
         }

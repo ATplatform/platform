@@ -1,7 +1,7 @@
 
 
 <?php
-class Vehicle_model extends CI_Model
+class Parkrent_model extends CI_Model
 {
     public function __construct()
     {
@@ -14,109 +14,81 @@ class Vehicle_model extends CI_Model
     ///////////////////////////////////获取数据////////////////////////////////////
     /////////////数据内容////////对sql进行分类：普通查询sql和搜索查询sql//////////////////////
     /////////////数据数目////////对sql进行分类：普通查询sql和搜索查询sql//////////////////////
-    public function sqlTogetList($effective_date,$building_code, $parent_code,$if_resident,$vehicle_type,$vehicle_auz,$keyword, $page, $rows)
+    public function sqlTogetList($rent_end_date,$parklot_parkcode,$keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
         $now   =  date("Y-m-d",time());
 
          /////////////////判断为普通查询或搜索查询////////////////////////////
-         if (empty($effective_date) && empty($building_code) && empty($parent_code)  && empty($if_resident) && empty($vehicle_type) && empty($vehicle_auz)&& empty($keyword))
+         if (empty($rent_end_date) && empty($parklot_parkcode) &&  empty($keyword))
 
          /////////////////////////普通查询sql语句/////////////////////////
          {
-             $sql = "select 
-v.code as v_code,
-v.effective_date as v_effective_date,
-v.effective_status as v_effective_status,
-v.person_code as v_person_code,
-v.vehicle_type as v_vehicle_type,
-v.if_electro as v_if_electro,
-v.if_resident as v_if_resident,
-v.licence as v_licence,
-v.if_temp as v_if_temp,
-v.owner as v_owner,
-v.brand as v_brand,
-v.model as v_model,
-v.color as v_color,
-v.owner as v_owner,
-v.remark as v_remark,
-auz.code as auz_code,
-auz.person_code as auz_person_code,
-auz.begin_date as auz_begin_date,
-auz.end_date as auz_end_date,
-auz.remark as auz_remark
-from village_vehicle as v
-left join village_person as p on v.person_code=p.code
-left join village_person_building as pb on v.person_code=pb.person_code
-left join village_tmp_building as tmp on tmp.code=pb.building_code
-left join village_vehicle_auz as auz on auz.vehicle_code=v.code
-where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.vehicle_code=auz_s.vehicle_code)
-
+             $sql = "  select 
+  rent.id as rent_iD,
+  parklot.parkcode as parklot_parkcode,
+  park.parkname as parklot_parkcode_name,
+  parklot.floor as parklot_floor,
+  rent.parking_lot_code as rent_parking_lot_code,
+  rent.renter as rent_renter,
+  rent.rent as rent_rent,
+  rent.pay_type as rent_pay_type,
+  rent.begin_date as rent_begin_date,
+  rent.end_date as rent_end_date,
+  p.first_name,
+  p.last_name
+ from village_park_rent as rent
+ left join village_parking_lot as parklot on rent.parking_lot_code=parklot.code
+ left join village_park as park on parklot.parkcode=park.parkcode
+ left join village_person as p on rent.renter=p.code
+  where rent.renter=p.code
 ";}
 
 
 
          /////////////////////////搜索查询sql语句/////////////////////////
          else {
-             $sql = "select 
-v.code as v_code,
-v.effective_date as v_effective_date,
-v.effective_status as v_effective_status,
-v.person_code as v_person_code,
-v.vehicle_type as v_vehicle_type,
-v.if_electro as v_if_electro,
-v.if_resident as v_if_resident,
-v.licence as v_licence,
-v.if_temp as v_if_temp,
-v.owner as v_owner,
-v.brand as v_brand,
-v.model as v_model,
-v.color as v_color,
-v.owner as v_owner,
-v.remark as v_remark,
-auz.code as auz_code,
-auz.person_code as auz_person_code,
-auz.begin_date as auz_begin_date,
-auz.end_date as auz_end_date,
-auz.remark as auz_remark
-from village_vehicle as v
-left join village_person as p on v.person_code=p.code
-left join village_person_building as pb on v.person_code=pb.person_code
-left join village_tmp_building as tmp on tmp.code=pb.building_code
-left join village_vehicle_auz as auz on auz.vehicle_code=v.code
-where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.vehicle_code=auz_s.vehicle_code)
+             $sql = "
+             select 
+  rent.id as rent_iD,
+  parklot.parkcode as parklot_parkcode,
+  park.parkname as parklot_parkcode_name,
+  parklot.floor as parklot_floor,
+  rent.parking_lot_code as rent_parking_lot_code,
+  rent.renter as rent_renter,
+  rent.rent as rent_rent,
+  rent.pay_type as rent_pay_type,
+  rent.begin_date as rent_begin_date,
+  rent.end_date as rent_end_date,
+  p.first_name,
+  p.last_name
+ from village_park_rent as rent
+ left join village_parking_lot as parklot on rent.parking_lot_code=parklot.code
+ left join village_park as park on parklot.parkcode=park.parkcode
+ left join village_person as p on rent.renter=p.code
+ where rent.renter=p.code
 ";
          }
-             if(empty($effective_date)){
-                 $sql .= " and v.effective_date <= '$now' ";
+             if(empty($rent_end_date)){
+                 $sql .= " and rent.end_date >= '$now' ";
              }
-            if(!empty($effective_date)){
-                 $sql .= " and v.effective_date<='$effective_date' ";
+            if(!empty($rent_end_date)){
+                 $sql .= " and rent.end_date>='$rent_end_date' ";
              }
 
-             if(!empty($building_code)){
+          /*   if(!empty($building_code)){
                  $sql .= " and (pb.building_code=$building_code or tmp.parent_code=$parent_code) ";
+             }*/
+
+             if(!empty($parklot_parkcode)){
+                 $sql .= " and parklot.parkcode='$parklot_parkcode' ";
              }
 
-             if(!empty($if_resident)){
-                 $sql .= " and v.if_resident='$if_resident' ";
-             }
-             if(!empty($vehicle_type)){
-                 $sql .= " and v.vehicle_type=$vehicle_type ";
-             }
-
-             if(!empty($vehicle_auz)){
-                 $sql.=$this->vehicle_auzForselect($vehicle_auz);
-
-
-                 /*
-                  $sql .= " and v.effective_status='$vehicle_auz' ";*/
-             }
 
 
                if (!empty($keyword)) {
                    if (preg_match('/^[\x7f-\xff]*\w*\d*$/', $keyword)) {
-                       $sql .= " and concat (v.code,v.licence, owner,model,p.last_name,p.first_name) like '%$keyword%'";
+                       $sql .= " and concat (p.last_name,p.first_name) like '%$keyword%'";
                    }
 
                }
@@ -124,7 +96,7 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
 
 
 
-        $sqlshow = $sql . " ORDER BY v.code ASC limit ".$rows." offset ".$start;
+        $sqlshow = $sql . " ORDER BY rent.id ASC limit ".$rows." offset ".$start;
         $arrayres=array($sql,$sqlshow);
         return $arrayres;
     }
@@ -139,136 +111,41 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
 
             foreach ($arr as $key => $value) {
                 foreach ($value as $key2 => $value2) {
-                    if ($key2 == "v_code") {
-                        $arr[$key][$key2] = intval($value2, 10);
-                        $auzforall=$this->vehicle_auzForall($arr[$key][$key2]);
-                        $arr[$key]['auzforall']=$auzforall;
-                        if($auzforall==101){
-                            $arr[$key]['auzforall_name'] = "无任何记录";
-                        }
-                        if($auzforall==102){
-                            $arr[$key]['auzforall_name'] = "当前或未来有生效记录";
-                        }
-                        if($auzforall==103){
-                            $arr[$key]['auzforall_name'] = "所有授权已失效";
-                        }
-
+                    if ($key2 == "rent_pay_type") {
+                        if ($value2 == "101") {$arr[$key]['rent_pay_type_name'] = '年缴';}
+                        if ($value2 == "102") {$arr[$key]['rent_pay_type_name'] = '半年缴';}
+                        if ($value2 == "103") {$arr[$key]['rent_pay_type_name'] = '月缴';}
                     }
-                    if($key2=="v_brand"){
-                        foreach($brand_arr as $k2 => $v2){
-                            if($value2 == $v2['code']){
-                                $arr[$key]["v_brand_name"] = $v2['name'];
-                                break;
-                            }
+                    if ($key2 == 'parklot_floor') {
+                        if ($value2 == "101") {
+                            $arr[$key]['parklot_floor_name'] = '地面';
+                        }
+                        if ($value2 == "102") {
+                            $arr[$key]['parklot_floor_name'] = '地下一层';
                         }
                     }
-                    if ($key2 == "v_vehicle_type") {
-                        if ($value2 == "101") {$arr[$key]['v_vehicle_type_name'] = '轿车';}
-                        if ($value2 == "102") {$arr[$key]['v_vehicle_type_name'] = '客车';}
-                        if ($value2 == "103") {$arr[$key]['v_vehicle_type_name'] = '货车';}
-                        if ($value2 == "104") {$arr[$key]['v_vehicle_type_name'] = '专用汽车';}
-                        if ($value2 == "105") {$arr[$key]['v_vehicle_type_name'] = '摩托车';}
-                        if ($value2 == "106") {$arr[$key]['v_vehicle_type_name'] = '电瓶车';}
-                        if ($value2 == "107") {$arr[$key]['v_vehicle_type_name'] = '自行车';}
-                        if ($value2 == "999") {$arr[$key]['v_vehicle_type_name'] = '其他车辆';}
-                    }
-
-                    if ($key2 == 'v_effective_date') {
-                        $arr[$key]["v_effective_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
-                        // $item["effective_date"]=$value;
-                    }
-                   /* if ($key2 == 'a_end_date') {
-                        $arr[$key]["end_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
-                        // $item["effective_date"]=$value;
+                /*    if ($key2 == "parklot_parkcode") {
+                        $arr[$key]['parklot_parkcode_name'] = '地下一层';
                     }*/
-                    /*if ($key2 == 'service_code'){
-                          $person= $this->getPersonByCode($value2);
-                        $arr[$key]["service_name"]=$person['full_name'];
-                    }*/
-                    if($key2 == 'v_person_code'){
-                        if(!empty($value['v_person_code']) ) {
+                    if ($key2 == 'rent_begin_date') {
+                        $arr[$key]["rent_begin_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
+                    }
+                    if ($key2 == 'rent_end_date') {
+                        $arr[$key]["rent_end_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
+                    }
 
-                            $arr[$key]['v_person_name'] = "";
+                    if($key2 == 'rent_renter'){
+                        if(!empty($value['rent_renter']) ) {
 
-                            $person = $this->getPersonByCode($value['v_person_code']);
+                            $arr[$key]['rent_renter_name'] = "";
+
+                            $person = $this->getPersonByCode($value2);
                             $name = $person['full_name'];
-                            $arr[$key]['v_person_name'] = $name;
-                        }
-                        else{
-                            $arr[$key]['v_person_name']='无';
-                        }
-                    }
-                    if ($key2 == 'v_effective_status') {
-                        if ($arr[$key]['v_effective_status'] == 't') {
-                            $arr[$key]['v_effective_status_name'] = "有效";
-                        }
-                        if ($arr[$key]['v_effective_status'] == 'f') {
-                            $arr[$key]['v_effective_status_name'] = "无效";
-                        }
-                    }
-                    if ($key2 == 'v_if_resident') {
-                        if ($arr[$key]['v_if_resident'] == 't') {
-                            $arr[$key]['v_if_resident_name'] = "小区车";
-                        }
-                        if ($arr[$key]['v_if_resident'] == 'f') {
-                            $arr[$key]['v_if_resident_name'] = "访客车";
-                        }
-                    }
-                    if ($key2 == 'v_if_temp') {
-                        if ($arr[$key]['v_if_temp'] == 't') {
-                            $arr[$key]['v_if_temp_name'] = "是";
-                        }
-                        if ($arr[$key]['v_if_temp'] == 'f') {
-                            $arr[$key]['v_if_temp_name'] = "否";
-                        }
-                    }
-                    if ($key2 == 'v_if_electro') {
-                        if ($arr[$key]['v_if_electro'] == 't') {
-                            $arr[$key]['v_if_electro_name'] = "是";
-                        }
-                        if ($arr[$key]['v_if_electro'] == 'f') {
-                            $arr[$key]['v_if_electro_name'] = "否";
-                        }
-                    }
-
-                    $auzfornow=$this->vehicle_auzForNow( $arr[$key]['v_code']);
-                    $arr[$key]['auzfornow']=$auzfornow;
-                    if($auzfornow==true){
-                        $arr[$key]['auzfornow_name'] = "有效";
-                    }
-                    if($auzfornow==false){
-                        $arr[$key]['auzfornow_name'] = "无效";
-                    }
-
-                    if ($key2 == "auz_code") {
-                        $arr[$key][$key2]=$value2 ;
-                    }
-                    if ($key2 == "auz_person_code") {
-                        $arr[$key][$key2]=$value2 ;
-                        if(!empty($value['auz_person_code']) ) {
-
-                            $arr[$key]['auz_person_name'] = "";
-
-                            $person = $this->getPersonByCode($value['auz_person_code']);
-                            $name = $person['full_name'];
-                            $arr[$key]['auz_person_name'] = $name;
+                            $arr[$key]['rent_renter_name'] = $name;
                         }
 
                     }
-                    if ($key2 == "auz_begin_date") {
-                        $arr[$key][$key2]=$arr[$key]["auz_begin_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
-                    }
-                    if ($key2 == "auz_end_date") {
-                        $arr[$key][$key2]=$arr[$key]["auz_end_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
-                    }
-                    if ($key2 == "auz_remark") {
-                        $arr[$key][$key2]=$value2 ;
-                    }
-                    /* if ($key2 == 'process_pic'){
-                         $value2=json_decode($value2,true);
-                         var_dump($value2);
-                       //  $arr[$key]['process_pic_http']=$value2[0];
-                     }*/
+
                 }
             }
             $json = json_encode($arr);
@@ -490,10 +367,10 @@ public function getOrderRecordPerson($team_person_code,$property_person_code)
 
     public function getLatestCode()
     {
-        $sql = "select code from village_vehicle order by code desc limit 1";
+        $sql = "select id from village_park_rent order by id desc limit 1";
         $query = $this->db->query($sql);
         $row = $query->row_array();
-        return $row['code'];
+        return $row['id'];
     }
 
     public function getLatestCodeforauz()
@@ -1411,6 +1288,23 @@ FROM
     $res=$res->result_array();
     return $res;
 }
+
+
+    public function getfloor()
+    {
+        $sql="SELECT
+
+	par.parkcode as lot_parkcode,
+	par.parkname as lot_parkcode_name
+FROM
+	village_park AS par
+";
+        $res = $this->db->query($sql); //自动转义
+        $res=$res->result_array();
+        return $res;
+    }
+
+
 
 
 public function updateParkinglot($code,$effective_date,$effective_status,$linked_lot_code,$begin_date,$end_date,$area,$monthly_rent,$parkcode,$floor,$biz_type,$biz_status,$biz_reason,$owner,$remark){

@@ -120,7 +120,7 @@ $('add_btn').click(function(){
 })
 */
 
-$('.add_btn').click(function(e){
+$('.update').click(function(e){
     e.stopPropagation();
     inputlisten()
     brief.removeAttribute('readonly');

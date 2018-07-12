@@ -35,7 +35,7 @@
         <div class="table_wrap">
           <div class="oh pt10">
             <!-- <span class="fr add_btn" data-target="#verify_auz" data-toggle="modal">新增车辆及授权</span>-->
-              <a class="fr add_btn" id="reset" >清楚筛选</a>
+              <a class="fr add_btn" id="reset" >清除筛选</a>
             </div>
 
             <table id="table"
@@ -109,10 +109,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee oh">
-                        <p class="fr pt17">
-                            <span class="col_37A fl confirm">保存</span>
-                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">保存</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div>
