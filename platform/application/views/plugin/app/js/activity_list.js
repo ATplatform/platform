@@ -86,6 +86,10 @@ function platform() {
             if(!this.insert.must.name) {openLayer('请输入活动名称');return;}
             if(!this.insert.must.type) {openLayer('请输入活动类型');return;}
             if(!this.insert.must.begin_date) {openLayer('请输入开始日期');return;}
+            if(this.insert.input.begin_date>this.insert.input.end_date){
+                openLayer('开始日期不能晚于结束日期!');
+                return;
+            }
             if(!this.insert.must.service_code) {openLayer('请输入物业负责人');return;}
 
             return this.insert

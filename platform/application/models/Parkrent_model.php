@@ -14,17 +14,17 @@ class Parkrent_model extends CI_Model
     ///////////////////////////////////获取数据////////////////////////////////////
     /////////////数据内容////////对sql进行分类：普通查询sql和搜索查询sql//////////////////////
     /////////////数据数目////////对sql进行分类：普通查询sql和搜索查询sql//////////////////////
-    public function sqlTogetList($rent_end_date,$park_park,$keyword, $page, $rows)
+    public function sqlTogetList($rent_end_date,$parklot_parkcode,$keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
         $now   =  date("Y-m-d",time());
 
          /////////////////判断为普通查询或搜索查询////////////////////////////
-         if (empty($rent_end_date) && empty($park_park) &&  empty($keyword))
+         if (empty($rent_end_date) && empty($parklot_parkcode) &&  empty($keyword))
 
          /////////////////////////普通查询sql语句/////////////////////////
          {
-             $sql = "select 
+             $sql = "  select 
   rent.id as rent_iD,
   parklot.parkcode as parklot_parkcode,
   park.parkname as parklot_parkcode_name,
@@ -34,10 +34,14 @@ class Parkrent_model extends CI_Model
   rent.rent as rent_rent,
   rent.pay_type as rent_pay_type,
   rent.begin_date as rent_begin_date,
-  rent.end_date as rent_end_date
+  rent.end_date as rent_end_date,
+  p.first_name,
+  p.last_name
  from village_park_rent as rent
  left join village_parking_lot as parklot on rent.parking_lot_code=parklot.code
  left join village_park as park on parklot.parkcode=park.parkcode
+ left join village_person as p on rent.renter=p.code
+  where rent.renter=p.code
 ";}
 
 
@@ -55,41 +59,39 @@ class Parkrent_model extends CI_Model
   rent.rent as rent_rent,
   rent.pay_type as rent_pay_type,
   rent.begin_date as rent_begin_date,
-  rent.end_date as rent_end_date
+  rent.end_date as rent_end_date,
+  p.first_name,
+  p.last_name
  from village_park_rent as rent
  left join village_parking_lot as parklot on rent.parking_lot_code=parklot.code
  left join village_park as park on parklot.parkcode=park.parkcode
+ left join village_person as p on rent.renter=p.code
+ where rent.renter=p.code
 ";
          }
-          /*   if(empty($effective_date)){
-                 $sql .= " and v.effective_date <= '$now' ";
+             if(empty($rent_end_date)){
+                 $sql .= " and rent.end_date >= '$now' ";
              }
-            if(!empty($effective_date)){
-                 $sql .= " and v.effective_date<='$effective_date' ";
+            if(!empty($rent_end_date)){
+                 $sql .= " and rent.end_date>='$rent_end_date' ";
              }
 
-             if(!empty($building_code)){
+          /*   if(!empty($building_code)){
                  $sql .= " and (pb.building_code=$building_code or tmp.parent_code=$parent_code) ";
+             }*/
+
+             if(!empty($parklot_parkcode)){
+                 $sql .= " and parklot.parkcode='$parklot_parkcode' ";
              }
 
-             if(!empty($if_resident)){
-                 $sql .= " and v.if_resident='$if_resident' ";
-             }
-             if(!empty($vehicle_type)){
-                 $sql .= " and v.vehicle_type=$vehicle_type ";
-             }
-
-             if(!empty($vehicle_auz)){
-                 $sql.=$this->vehicle_auzForselect($vehicle_auz);
-             }
 
 
                if (!empty($keyword)) {
                    if (preg_match('/^[\x7f-\xff]*\w*\d*$/', $keyword)) {
-                       $sql .= " and concat (v.code,v.licence, owner,model,p.last_name,p.first_name) like '%$keyword%'";
+                       $sql .= " and concat (p.last_name,p.first_name) like '%$keyword%'";
                    }
 
-               }*/
+               }
 
 
 
@@ -122,6 +124,10 @@ class Parkrent_model extends CI_Model
                             $arr[$key]['parklot_floor_name'] = '地下一层';
                         }
                     }
+                    if ($key2 == 'rent_parking_lot_code') {
+                        $arr[$key]['rent_parking_lot_code_name'] =$value2;
+                    }
+
                 /*    if ($key2 == "parklot_parkcode") {
                         $arr[$key]['parklot_parkcode_name'] = '地下一层';
                     }*/
@@ -325,6 +331,15 @@ where a_rcd.service_code=p.code
 
 
     //////////////////////////////////一些辅助功能///////////////////////////////////
+public function getparking_lot_code($floor,$parkcode){
+    $sql = "select code,floor from village_parking_lot where parkcode=$parkcode and floor=$floor ";
+    $query = $this->db->query($sql);
+    $row = $query->result_array();
+    return $row;
+}
+
+
+
     //动态获取所有楼宇信息
     public function getMaterialBuildingCode()
     {
@@ -365,10 +380,10 @@ public function getOrderRecordPerson($team_person_code,$property_person_code)
 
     public function getLatestCode()
     {
-        $sql = "select code from village_vehicle order by code desc limit 1";
+        $sql = "select id from village_park_rent order by id desc limit 1";
         $query = $this->db->query($sql);
         $row = $query->row_array();
-        return $row['code'];
+        return $row['id'];
     }
 
     public function getLatestCodeforauz()
@@ -380,38 +395,20 @@ public function getOrderRecordPerson($team_person_code,$property_person_code)
     }
 
 
-public function insert($village_id,$code,$effective_date,$licence,$owner,$color, $model,$remark,$brand,$vehicle_type,$person_code,$effective_status,$if_resident,$if_electro,$if_temp,$auz_code,$auz_person_code,$begin_date,$end_date,$auz_remark,$create_time)
+public function insert($village_id,$rent_id,$rent_begin_date,$rent_end_date,$rent_pay_type,$rent_rent, $rent_renter,$rent_parking_lot_code,$create_time)
 {
 
-    $sql = " INSERT INTO village_vehicle (village_id,code,effective_date,licence,owner,color, model,remark,brand,vehicle_type,person_code,effective_status,if_resident,if_electro,if_temp,create_time) values (".
-        $this->db->escape($village_id).", ".
-        $this->db->escape($code).", ".
-        $this->db->escape($effective_date).", ".
-        $this->db->escape($licence).", ".
-        $this->db->escape($owner).", ".
-        $this->db->escape($color).", ".
-        $this->db->escape($model).", ".
-        $this->db->escape($remark).", ".
-        $this->db->escape($brand).", ".
-        $this->db->escape($vehicle_type).", ".
-        $this->db->escape($person_code).", ".
-        $this->db->escape($effective_status).", ".
-        $this->db->escape($if_resident).", ".
-        $this->db->escape($if_electro).", ".
-        $this->db->escape($if_temp).", ".
-        $this->db->escape($create_time).")";
+    $sql = " INSERT INTO village_park_rent (id,begin_date,end_date,pay_type,rent, renter,parking_lot_code) values (".
+        $this->db->escape($rent_id).", ".
+        $this->db->escape($rent_begin_date).", ".
+        $this->db->escape($rent_end_date).", ".
+        $this->db->escape($rent_pay_type).", ".
+        $this->db->escape($rent_rent).", ".
+        $this->db->escape($rent_renter).", ".
+        $this->db->escape($rent_parking_lot_code).")";
+
     $this->db->query($sql);
 
-    $sql = " INSERT INTO village_vehicle_auz (code,vehicle_code,person_code,begin_date,end_date,remark,create_time) values (".
-
-        $this->db->escape($auz_code).", ".
-        $this->db->escape($code).", ".
-        $this->db->escape($auz_person_code).", ".
-        $this->db->escape($begin_date).", ".
-        $this->db->escape($end_date).", ".
-        $this->db->escape($auz_remark).", ".
-        $this->db->escape($create_time).")";
-    $this->db->query($sql);
 
 }
 
@@ -422,7 +419,6 @@ public function insert($village_id,$code,$effective_date,$licence,$owner,$color,
     {
 
         $sql = " INSERT INTO village_activity_rcd (activity_code,person_code,service_code, date,create_time) values (".
-
             $this->db->escape($code).", ".
             $this->db->escape($person_code).", ".
             $this->db->escape($service_code).", ".
@@ -438,6 +434,13 @@ public function insert($village_id,$code,$effective_date,$licence,$owner,$color,
 
         $query = $this->db->query($sql);
         $row = $query->row_array();
+        return $row;
+    }
+    public function getperson_code(){
+        $sql = "select code,concat(last_name,first_name) as full_name from village_person";
+
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
         return $row;
     }
 
@@ -669,26 +672,13 @@ limit 1
         }
     }
 
-public function updateVehicle($village_id,$code,$effective_date,$effective_status
-,$person_code,$licence,$owner,$color,$model,$remark,$vehicle_type,$if_resident,$if_electro,$if_temp,$create_time){
+public function update($village_id,$rent_id,$rent_begin_date,$rent_end_date,$rent_pay_type,$rent_rent, $rent_renter,$rent_parking_lot_code,$create_time){
 
-    $sql = " update village_vehicle
+    $sql = " update village_park_rent
+        set 
+        end_date=".$this->db->escape($rent_end_date)." ".
 
-       set effective_date=".$this->db->escape($effective_date).",".
-        "village_id=".$this->db->escape($village_id).",".
-        "licence=".$this->db->escape($licence).",".
-        "owner=".$this->db->escape($owner).",".
-        "color=".$this->db->escape($color).",".
-        "model=".$this->db->escape($model).",".
-        "remark=".$this->db->escape($remark).",".
-        "vehicle_type=".$this->db->escape($vehicle_type).",".
-        "person_code=".$this->db->escape($person_code).",".
-        "effective_status=".$this->db->escape($effective_status).",".
-        "if_resident=".$this->db->escape($if_resident).",".
-        "if_electro=".$this->db->escape($if_electro).",".
-        "if_temp=".$this->db->escape($if_temp).",".
-        "create_time=".$this->db->escape($create_time)." ".
-        "where code=$code";
+        "where id=$rent_id";
 
     $this->db->query($sql);
 
@@ -1286,6 +1276,23 @@ FROM
     $res=$res->result_array();
     return $res;
 }
+
+
+    public function getfloor()
+    {
+        $sql="SELECT
+
+	par.parkcode as lot_parkcode,
+	par.parkname as lot_parkcode_name
+FROM
+	village_park AS par
+";
+        $res = $this->db->query($sql); //自动转义
+        $res=$res->result_array();
+        return $res;
+    }
+
+
 
 
 public function updateParkinglot($code,$effective_date,$effective_status,$linked_lot_code,$begin_date,$end_date,$area,$monthly_rent,$parkcode,$floor,$biz_type,$biz_status,$biz_reason,$owner,$remark){

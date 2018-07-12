@@ -98,6 +98,7 @@
     <!-- 物资数据-->
         <div class="table_wrap">
            <div class="oh pt10">
+               <span class="fr add_btn" data-target="#vehicle_auz" data-toggle="modal">新增授权</span>
                 <a class="fr add_btn" href="<?=base_url().'index.php/Vehicle/vehicleAuz'?>">清除筛选</a>
             </div>
             <table id="table"
@@ -231,131 +232,17 @@
 
 
         <!--修改 -->
-        <div class="modal fade" id="vehicle_rewrite" tabindex="-1" role="dialog" aria-hidden="true" >
-            <div class="modal-dialog"  style="width:650px;">
-                <div class="modal-content model_wrap" style="width:650px;">
-                    <div class="model_content" style="width:650px;">
+        <div class="modal fade" id="vehicle_auz" tabindex="-1" role="dialog" aria-hidden="true" >
+            <div class="modal-dialog"  style="width:630px;">
+                <div class="modal-content model_wrap" style="width:630px;">
+                    <div class="model_content" style="width:630px;">
                         <div class="building_header">
-                            <h4 class="modal-title tac">更新车辆信息</h4>
+                            <h4 class="modal-title tac">新增授权信息</h4>
                         </div>
                         <div class=" modal-body building  oh">
-                            <div class="rewrite">
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;车辆编号：<span class="v_code" style="margin-left:45px;"></span></p>
-                                <p><span class="red_star">*</span>生效日期：
-                                    <input type="text" class="v_effective_date date form-control" name="v_effective_date" value=""/>
-                                </p>
-
-                                <p class="v_effective_status"><span class="red_star">*</span>状态：
-                                    <span style="margin-left:95px;">
-							<input type="radio" id="radio-5-1" name="radio-5-set" class="regular-radio" >
-							<label for="radio-5-1"></label>
-							有效
-						</span>
-
-                                    <span style="margin-left:82px;">
-							<input type="radio" id="radio-5-2" name="radio-5-set" class="regular-radio">
-							<label for="radio-5-2"></label>
-							无效
-						</span>
-                                </p>
-                                <div class="select_pull_down select_wrap select_room">
-                                    <div>
-                                        <span class="red_star">*</span>车辆登记人：
-                                        <input type="text" class="model_input v_person_code ka_input3" placeholder="请输入车辆登记人" name="v_person_code" data-ajax="" readonly="">
-                                    </div>
-                                    <div class="ka_drop "   style="width:200px;">
-                                        <div class="ka_drop_list"  >
-                                            <ul  >
-
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="select_wrap select_pull_down">
-                                    <div>
-                                        <span class="red_star">*</span>车辆类型：
-                                        <input type="text" class="model_input vehicle_type ka_input3" placeholder="请输入车辆类型"  name="vehicle_type" data-ajax="" readonly />
-                                    </div>
-
-                                    <div class="ka_drop" style="margin-left:20px;width: 300px;">
-                                        <div class="ka_drop_list" style="width: 300px;">
-                                            <ul>
-                                                <li><a href="javascript:;" data-ajax="101">轿车</a></li>
-                                                <li><a href="javascript:;" data-ajax="102">客车</a></li>
-                                                <li><a href="javascript:;" data-ajax="103">货车</a></li>
-                                                <li><a href="javascript:;" data-ajax="104">专用汽车</a></li>
-                                                <li><a href="javascript:;" data-ajax="105">摩托车</a></li>
-                                                <li><a href="javascript:;" data-ajax="106">电瓶车</a></li>
-                                                <li><a href="javascript:;" data-ajax="107">自行车</a></li>
-                                                <li><a href="javascript:;" data-ajax="999">其他车辆</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
 
 
-                                <p class="if_resident"> <span class="red_star">*</span>小区车/访客车：
-                                    <span style="margin-left:70px;">
-							<input type="radio" id="radio-6-1" name="radio-6-set" class="regular-radio" >
-							<label for="radio-6-1"></label>
-							是
-						</span>
-
-                                    <span style="margin-left:95px;">
-							<input type="radio" id="radio-6-2" name="radio-6-set" class="regular-radio">
-							<label for="radio-6-2"></label>
-							否
-						</span>
-                                </p>
-                                <p class="if_electro">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是否是电动车：
-                                    <span style="margin-left:45px;">
-							<input type="radio" id="radio-7-1" name="radio-7-set" class="regular-radio" >
-							<label for="radio-7-1"></label>
-							是
-						</span>
-
-                                    <span style="margin-left:95px;">
-							<input type="radio" id="radio-7-2" name="radio-7-set" class="regular-radio">
-							<label for="radio-7-2"></label>
-							否
-						</span>
-                                </p>
-
-                                <p class="if_temp">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是否临时车牌：
-                                    <span style="margin-left:45px;">
-							<input type="radio" id="radio-8-1" name="radio-8-set" class="regular-radio" >
-							<label for="radio-8-1"></label>
-							是
-						</span>
-
-                                    <span style="margin-left:95px;">
-							<input type="radio" id="radio-8-2" name="radio-8-set" class="regular-radio">
-							<label for="radio-8-2"></label>
-							否
-						</span>
-                                </p>
-                                <p><span class="red_star">*</span>车牌号：
-                                    <input type="text" class="model_input licence" placeholder="请输入车牌号"  name="licence" />
-                                </p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;车主：
-                                    <input type="text" class="model_input owner" placeholder="请输入车主"  name="owner" />
-                                </p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;品牌：
-                                    <input type="text" class="model_input brand" placeholder="请输入品牌"  name="brand" />
-                                </p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;型号：
-                                    <input type="text" class="model_input model" placeholder="请输入型号"  name="model" />
-                                </p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;颜色：
-                                    <input type="text" class="model_input color" placeholder="请输入颜色"  name="color" />
-                                </p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;备注：
-                                    <input type="text" class="model_input remark" placeholder="请输入备注"  name="remark" />
-                                </p>
-                            </div>
-<!--
-                            <div class="fr rewrite  ">
-                                <p><i class="icon_circle"></i>授权信息</p>
+                            <div class=" add_item  ">
                                 <p>&nbsp;&nbsp;&nbsp;&nbsp;授权编号：<span class="auz_code" style="margin-left:45px;"></span></p>
                                 <div class="select_pull_down select_wrap select_room">
                                     <div>
@@ -371,16 +258,16 @@
                                     </div>
                                 </div>
                                 <p><span class="red_star">*</span>开始日期：
-                                    <input type="text" class="begin_date date form-control" name="begin_date" value=""/>
+                                    <input type="text" class="auz_begin_date date form-control" name="auz_begin_date" value=""/>
                                 </p>
                                 <p><span class="red_star">*</span>结束日期：
-                                    <input type="text" class="end_date date form-control" name="end_date" value=""/>
+                                    <input type="text" class="auz_end_date date form-control" name="auz_end_date" value=""/>
                                 </p>
                                 <p>&nbsp;&nbsp;&nbsp;&nbsp;备注：
-                                    <input type="text" class="model_input auz_remark" placeholder="请输入车主"  name="auz_remark" />
+                                    <input type="text" class="model_input auz_remark" placeholder="请输入备注"  name="auz_remark" />
                                 </p>
 
-                            </div>-->
+                            </div>
                         </div>
                     </div>
                     <div class="modal_footer bg_eee">
@@ -408,7 +295,6 @@
 
 
                                                         <div class=" rewrite  ">
-
                                                             <p>&nbsp;&nbsp;&nbsp;&nbsp;授权编号：<span class="auz_code" style="margin-left:45px;"></span></p>
                                                             <div class="select_pull_down select_wrap select_room">
                                                                 <div>

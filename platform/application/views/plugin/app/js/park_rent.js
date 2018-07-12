@@ -13,7 +13,7 @@ method:填入的内容-> show:不可修改，time:时间，building：地点.per
 input:字段的中文含义
 ajax: (当method为select时独有，表示下拉框的data-ajax值和对应中文)
 option:(当method为radio时独有，表示单选的内容和对应中文)
-
+disabledonly 只可见不可写 ->update/insert/all
 
 除了数据库参数之外，还包含了
 username:保存用户名
@@ -33,7 +33,7 @@ var platform_index={
         must:'yes',
         input:'租赁编号',
         method:'show',
-        showonly:'all',
+        disabledonly:'all',
     },
     parklot_parkcode:{
         search:'yes',
@@ -57,7 +57,7 @@ var platform_index={
         must:'no',
         input:'车库楼层',
         method:'select',
-        ajax:{},
+        ajax:{101:"地面",102:"地下一层"},
         disabledonly:'update'
     },
     rent_parking_lot_code:{
@@ -67,7 +67,7 @@ var platform_index={
         update:'yes',
         insert:'yes',
         input:'车位编号',
-        method:'input',
+        method:'select',
         ajax:{},
         disabledonly:'update'
     },
@@ -107,7 +107,7 @@ var platform_index={
         disabledonly:'update'
     },
     rent_begin_date:{
-        search:'yes',
+        search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
@@ -118,7 +118,7 @@ var platform_index={
         disabledonly:'update'
     },
     rent_end_date:{
-        search:'no',
+        search:'yes',
         show:'yes',
         detail:'yes',
         update:'yes',
@@ -135,26 +135,28 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'no',
-        input:'可输入交易流水号、缴费人进行搜索',
+        input:'可输入租赁人进行搜索',
         method:'keyword'
     },
     update_info:{
-        title:'车辆缴费详情',
-        small_title:'车辆缴费'
+        title:'车位租赁详情',
+        small_title:'车位租赁'
     },
     info_manage:{
         detail:{title:'详情',css:' fa-file-text-o',content:getdetail},
-        rewrite:{title:'更新缴费信息',css:'fa-pencil-square-o',content:getrewrite}
+        rewrite:{title:'更新车位租赁信息',css:'fa-pencil-square-o',content:getrewrite}
     },
     pagechange:{urlparam:{route:'',page:''}, pagesize:'', total:'',page:''},
     router:{
         root:getRootPath()+'/index.php/ParkRent/Parkrent',
         get:'getList',
         insert:'insert',
-        updateParkinglot:'updateParkinglot',
+        getfloor:'getfloor',
+        update:'update',
+        getparking_lot_code:'getparking_lot_code',
         getparkingcode:'getparkingcode',
-        getservice_code:'getservice_code',
-        getLatestCode:getRootPath()+'/index.php/Vehicle/getLatestCode',
+        getperson_code:'getperson_code',
+        getLatestCode:getRootPath()+'/index.php/ParkRent/getLatestCode',
 
     }
 
@@ -172,14 +174,14 @@ $('#person_detail .model_content').append(render.detail_html)
 $('#rewrite .rewrite').append(render.update_html)
 $('#add_Item .add_item').append(render.insert_html)
 
-
+render.initial_all(platform_index)
 showdata(platform_index)
 pageChange(platform_index)
 information(platform_index)
 update_data('.rewrite',platform_index)
 insert_data('.add_item',platform_index)
 
-render.initial_all(platform_index)
+
 
 
 
@@ -346,7 +348,7 @@ $('.add_btn').click(function(){
             }else{
                 var code = 1000001;
             }
-            $('.add_Item .code').html(code);
+            $('.add_item .rent_id').html(code);
         }
     })
 })
@@ -362,13 +364,43 @@ $.ajax({
         console.log(message)
         for (var i = 0; i < data.length; i++) {
             var d = data[i];
-            var lot_parkcode_name = d['lot_parkcode_name'];
-            var lot_parkcode = d['lot_parkcode']
-            if ($("#rewrite .lot_parkcode  #" + lot_parkcode).length == 0) {
-                $('#rewrite .lot_parkcode  ul').append('<li><a href="javascript:;" id=' + lot_parkcode + ' data-ajax=' + lot_parkcode + '>' + lot_parkcode_name +lot_parkcode+ '</a></li>');
+            var parklot_parkcode = d['lot_parkcode'];
+            var parklot_parkcode_name = d['lot_parkcode_name']
+            if ($("#rewrite .parklot_parkcode  #" + parklot_parkcode).length == 0) {
+                $('#rewrite .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name +parklot_parkcode+ '</a></li>');
             }
-            if ($("#search_wrap .lot_parkcode  #" + lot_parkcode).length == 0) {
-                $('#search_wrap .lot_parkcode  ul').append('<li><a href="javascript:;" id=' + lot_parkcode + ' data-ajax=' + lot_parkcode + '>' + lot_parkcode_name + lot_parkcode+'</a></li>');
+            if ($("#search_wrap .parklot_parkcode  #" + parklot_parkcode).length == 0) {
+                $('#search_wrap .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name +'</a></li>');
+            }
+            if ($("#add_Item .parklot_parkcode  #" + parklot_parkcode).length == 0) {
+                $('#add_Item .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name + '</a></li>');
+            }
+        }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+    }
+})
+
+////////////////////////////////车库楼层///////////////////////////
+$.ajax({
+    type: "POST",
+    url: platform_index.router.getfloor,
+    dataType: "text",
+    success: function (message) {
+        var data = JSON.parse(message);
+        console.log(message)
+        for (var i = 0; i < data.length; i++) {
+            var d = data[i];
+            var parklot_parkcode = d['lot_parkcode'];
+            var parklot_parkcode_name = d['lot_parkcode_name']
+            if ($("#rewrite .parklot_parkcode  #" + parklot_parkcode).length == 0) {
+                $('#rewrite .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name +parklot_parkcode+ '</a></li>');
+            }
+            if ($("#search_wrap .parklot_parkcode  #" + parklot_parkcode).length == 0) {
+                $('#search_wrap .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name + parklot_parkcode+'</a></li>');
+            }
+            if ($("#add_Item .parklot_parkcode  #" + parklot_parkcode).length == 0) {
+                $('#add_Item .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name + parklot_parkcode+'</a></li>');
             }
         }
     },
@@ -377,20 +409,19 @@ $.ajax({
 })
 
 
-
 ////////////////////////////////占用人///////////////////////////
 $.ajax({
     type:"POST",
-    url:platform_index.router.getservice_code,
+    url:platform_index.router.getperson_code,
     dataType:"text",
     success:function(message){
         var data=JSON.parse(message);
         for(var i=0;i<data.length;i++){
             var d = data[i];
-            var pp_name =d['pp_name'];
-            var pp_code=d['pp_code']
-            if($("#rewrite .lot_owner #"+pp_code).length==0){
-                $('#rewrite .lot_owner ul').append('<li><a href="javascript:;" id='+pp_code+' data-ajax='+pp_code+'>'+pp_name+'</a></li>');
+            var rent_renter_name =d['full_name'];
+            var rent_renter=d['code']
+            if($("#add_Item .rent_renter  #"+rent_renter).length==0){
+                $('#add_Item .rent_renter  ul').append('<li><a href="javascript:;" id='+rent_renter +' data-ajax='+rent_renter +'>'+rent_renter_name+'</a></li>');
             }
         }
     },
@@ -399,14 +430,45 @@ $.ajax({
 })
 
 
+$('#add_Item .rent_parking_lot_code').click(function() {
+    var parkcode_insert = $('#add_Item').find('input[name=parklot_parkcode]').data('ajax')
+    var floor_insert = $('#add_Item').find('input[name=parklot_floor]').data('ajax')
+
+        $.ajax({
+            type: "POST",
+            url: platform_index.router.getparking_lot_code,
+            data: {
+                parkcode: parkcode_insert,
+                floor: floor_insert
+            },
+            dataType: "text",
+            success: function (message) {
+                $('#add_Item .rent_parking_lot_code  ul').html('')
+                var data = JSON.parse(message);
+                console.log(data)
+
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    var rent_parking_lot_code = d['code'];
+
+                    if ($("#add_Item .rent_parking_lot_code #" + rent_parking_lot_code).length == 0) {
+                        $('#add_Item .rent_parking_lot_code  ul').append('<li><a href="javascript:;" id=' + rent_parking_lot_code + ' data-ajax=' + rent_parking_lot_code + '>' + rent_parking_lot_code + '</a></li>');
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        })
+
+})
 //////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////点击保存的事件//////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 function insert_data(element,render){
-    var index=getdata(element,render)
     //点击保存新增
     $('#add_Item .confirm').click(function(){
-
+        var index=getdata(element,render)
+        console.log(index)
         $.ajax({
             url:render.router.insert,
             method:'post',
@@ -422,7 +484,7 @@ function insert_data(element,render){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: '新增车辆及授权成功',
+                    content: '新增租赁',
                     cancel: function(){
                         window.location.href=render.router.root;
                     }
@@ -442,10 +504,12 @@ function insert_data(element,render){
 
 
 function update_data(element,render){
-    var index=getdata(element,render)
+
     $('#rewrite .confirm').click(function (){
+        var index=getdata(element,render)
+        console.log(index)
         $.ajax({
-            url: render.updateParkinglot,
+            url: render.router.update,
             method: 'post',
             data: index,
             success: function (data) {
@@ -459,7 +523,7 @@ function update_data(element,render){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: '更新车位信息成功',
+                    content: '更新租赁信息成功',
                     cancel: function () {
                         window.location.href = render.router.root;
                     }
@@ -521,9 +585,9 @@ function html_render(index){
             html +='\n'+
                 '<div class="Search_Item_wrap search_wrap_'+name+' select_pull_down query_wrap col_37A fl"  style="margin-right:10px;">' +
                 '<div >' +
-                '<input type="text"  class="model_input search_'+name+' ka_input3" placeholder="'+index['input']+'" name="'+name+'" data-ajax="" value="" readonly style="width:100px;" >' +
+                '<input type="text"  class="model_input search_'+name+' ka_input3" placeholder="'+index['input']+'" name="'+name+'" data-ajax="" value="" readonly style="width:120px;" >' +
                 '</div>' +
-                '<div class="ka_drop"  style="display: none;width:100px;">' +
+                '<div class="ka_drop"  style="display: none;width:120px;">' +
                 '<div class="ka_drop_list '+name+'" >' +
                 '<ul >' +
                 choice_html	+
@@ -757,28 +821,28 @@ function html_render(index){
         return final_html
     }
     this.initial_all=function(index) {
-
+        ////日期控件初始化//////////////
+        $('.date').datetimepicker({
+            language:  'zh-CN',
+            format: 'yyyy-mm-dd',
+            weekStart: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 1
+        });
+        ////地点控件初始化//////////////
+        $('#treeNav>span').jstree({
+            'core' : {
+                data: treeNav_data
+            }
+        })
         for(var n in index){
 
             if(index[n]['search']=='yes' || index[n]['method']=='time' ||index[n]['method']=='building'){
 
-                ////日期控件初始化//////////////
-                $('.date').datetimepicker({
-                    language:  'zh-CN',
-                    format: 'yyyy-mm-dd',
-                    weekStart: 1,
-                    autoclose: 1,
-                    todayHighlight: 1,
-                    startView: 2,
-                    minView: 2,
-                    forceParse: 1
-                });
-                ////地点控件初始化//////////////
-                $('#treeNav>span').jstree({
-                    'core' : {
-                        data: treeNav_data
-                    }
-                })
+
 
 
                 var param = getUrlParam(n); //从url获取的参数
@@ -1059,8 +1123,15 @@ function pageChange(index){
 ////////////////////////////////////////////////////////////////////////////////////
 function getdata(element,index){
     var value={}
+
     for(var n in index){
+
         if(index[n]['update']=='yes'||index[n]['insert']=='yes'){
+            if (index[n].method == "show" ) {
+                value[n] = $(element+' .'+n).html();
+                value[n] ?  value[n] : null;
+
+            }
             if (index[n].method == "input" || index[n].method == "time") {
                 value[n] = $(element).find('input[name=' + n + ']').val();
                 value[n] ?  value[n] : null;
@@ -1081,6 +1152,7 @@ function getdata(element,index){
 
             }
         }
+
     }
     return value
 }

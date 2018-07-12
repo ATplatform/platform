@@ -34,7 +34,7 @@
     <!-- 物资数据-->
         <div class="table_wrap">
          <div class="oh pt10">
-            <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增车辆及授权</span>
+            <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增租赁</span>
              <a class="fr add_btn" id="reset" >清除筛选</a>
             </div>
             <table id="table"
@@ -127,7 +127,7 @@
                 <div class="modal-content model_wrap">
                     <div class="model_content">
                         <div class="building_header">
-                            <h4 class="modal-title tac">新增物资信息</h4>
+                            <h4 class="modal-title tac">新增车位租赁信息</h4>
                         </div>
                         <div class=" modal-body building  oh">
                             <div class="add_item">

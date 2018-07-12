@@ -125,49 +125,36 @@ function platform() {
             return this.urlParam
         },
         findinsert:function(){
-            for (var n in this.insert.input) {
-                this.insert.input[n] = $('.add_Item').find('input[name='+n+']').val();
-                this.insert.input[n]?this.insert.input[n]:null;
-                if(n=='end_date' &&  !this.insert.input[n]) {this.insert.input[n]='2099-12-31'}
-
-
+            for (var n in this.update.input) {
+                this.update.input[n] = $('.add_item').find('input[name='+n+']').val();
+                this.update.input[n]?this.update.input[n]:null;
+                if(n=='auz_end_date' &&  !this.update.input[n]) {this.update.input[n]='2099-12-31'}
             }
-            for (var n in this.insert.select) {
-                this.insert.select[n] = $('.add_Item').find('input[name='+n+']').data('ajax');
-                this.insert.select[n]? this.insert.select[n]:null;
+            for (var n in this.update.select) {
+                this.update.select[n] = $('.add_item').find('input[name='+n+']').data('ajax');
+                this.update.select[n]? this.update.select[n]:null;
             }
-            for (var n in this.insert.radio) {
+            for (var n in this.update.radio) {
 
-                if($('.add_Item .'+n+' input[type="radio"]').eq(0).is(':checked')){
-                    this.insert.radio[n] = 'true';
+                if($('.add_item .'+n+' input[type="radio"]').eq(0).is(':checked')){
+                    this.update.radio[n] = 'true';
                 }
                 else {
-                    this.insert.radio[n] = 'false';
+                    this.update.radio[n] = 'false';
                 }
 
             }
 
-            for (var n in this.insert.must) {
+            for (var n in this.update.must) {
                 var must=null;
-                if(this.insert.input[n]){    must= this.insert.input[n]}
-                if(this.insert.select[n]){   must= this.insert.select[n]}
-                if(this.insert.radio[n]){    must= this.insert.radio[n]}
-                this.insert.must[n] = must
+                if(this.update.input[n]){    must= this.update.input[n]}
+                if(this.update.select[n]){   must= this.update.select[n]}
+                if(this.update.radio[n]){    must= this.update.radio[n]}
+                this.update.must[n] = must
 
             }
-            console.log(this)
-       
-            if(!this.insert.must.effective_date) {openLayer('请输入生效日期');return;}
-            if(!this.insert.must.effective_status) {openLayer('请输入状态');return;}
-            if(!this.insert.must.person_code) {openLayer('请输入车辆登记人');return;}
-            if(!this.insert.must.vehicle_type) {openLayer('请输入车辆类型');return;}
-            if(!this.insert.must.if_resident) {openLayer('请输入是否常驻');return;}
-            if(!this.insert.must.licence) {openLayer('请输入车牌号');return;}
-            if(!this.insert.must.auz_person_code) {openLayer('请输入授权发起人');return;}
-            if(!this.insert.must.begin_date) {openLayer('请输入授权开始日期');return;}
+            return this.update
 
-
-            return this.insert
         },
         showupdate:function(){
             for (var n in this.update.input) {
@@ -250,7 +237,7 @@ var rowkeys={
 var router={
     List:'vehicleAuz',
     getList:'getAuzlist',
-    insert:'insert',
+    insert:'insert_auz',
     updateVehicle:'updateVehicle',
     updateAuz:'updateAuz',
     getauz:'getauz',
@@ -477,17 +464,19 @@ if(page<total){
 
 
 ////////////////////////////////////////////信息管理////////////////////////////////
-function operateFormatter(value,row,index){
-    return [
-        '<a class="detail" href="javascript:void(0)" style="margin-left: 10px;" title="详情">',
-        '<i class=" fa fa-trash-o fa-lg fa-file-text-o"></i>',
-        '</a>',
-        '<a class="auz" href="javascript:void(0)" style="margin-left: 10px;"   title="更新授权信息">',
-        '<i class="fa fa-credit-card fa-lg "></i>',
-        '</a>',
-    ].join('');
+function operateFormatter(value,row,index) {
+    console.log(row)
+    if (row.v_if_resident == 't') {
+        return [
+            '<a class="detail" href="javascript:void(0)" style="margin-left: 10px;" title="详情">',
+            '<i class=" fa fa-trash-o fa-lg fa-file-text-o"></i>',
+            '</a>',
+            '<a class="auz" href="javascript:void(0)" style="margin-left: 10px;"   title="更新授权信息">',
+            '<i class="fa fa-credit-card fa-lg "></i>',
+            '</a>',
+        ].join('');
+    }
 }
-
 
 function information(router,rowkeys) {
 
@@ -582,9 +571,6 @@ function information(router,rowkeys) {
 
 
 
-
-
-
 function maxdate(date,date1) {
     var  index1 = date.split("-");
     var  index2 = date1.split("-");
@@ -599,81 +585,6 @@ function maxdate(date,date1) {
 }
 
 
-
-$('#vehicle_rewrite .confirm').click(function(){
-
-    var update=new platform();
-    update=update.showupdate()
-
-    var updateinsert={}
-    for (var n in update.input){
-        updateinsert[n]=update.input[n]
-        if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
-    }
-    for (var n in update.select){
-        updateinsert[n]=update.select[n]
-        if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
-    }
-    for (var n in update.radio){
-        updateinsert[n]=update.radio[n]
-        if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
-    }
-    console.log(updateinsert)
-
-    updateinsert.v_code=$('#vehicle_rewrite .v_code').html();
-    $.ajax({
-        url:router.getauzbyMax_begin_date,
-        method:'post',
-        data:{
-            code:rowkeys['v_code']
-        },
-        success:function(data){
-            var data=JSON.parse(data);
-            console.log(data)
-            if(updateinsert.v_effective_status==='false'){
-            var input_date=$('#vehicle_rewrite').find('input[name=v_effective_date]').val();
-            for(var index in data){
-                if(index='end_date'){
-
-                    var max= maxdate(input_date,data[index])
-                    if(max===0){openLayer('该车辆的新一条变动记录的时间大于授权结束时间，请再次给该车辆授权'); return;}
-                    if(max===1){openLayer('该车辆失效时间小于系统记录授权信息中的结束日期，系统将会把授权信息中的结束日期设置为该车辆失效的时间点！');return;}
-
-                }
-
-            }
-            }
-
-
-            //传数据
-            $.ajax({
-                url:router.updateVehicle,
-                method:'post',
-                data:updateinsert,
-                success:function(data){
-                    //var data = JSON.parse(data);
-                    //成功之后自动刷新页面
-                    $('#vehicle_rewrite').modal('hide');
-                    layer.open({
-                        type: 1,
-                        title: false,
-                        //打开关闭按钮
-                        closeBtn: 1,
-                        shadeClose: false,
-                        skin: 'tanhcuang',
-                        content: '更新车辆信息成功',
-                        cancel: function(){
-                            window.location.href=href(List);
-                        }
-                    });
-                },
-                error:function(){
-                    console.log('更新车辆信息出错');
-                }
-            })
-        }
-    })
-})
 
 
 $('#auz_rewrite .confirm').click(function(){
@@ -804,6 +715,75 @@ function search(){
 
 
 //////////////////////////////////////////新增功能////////////////////////////////////////
+
+$.ajax({
+    url:router.getLatestCodeforauz,
+    success:function(data){
+        if(parseInt(data)){
+            var code = parseInt(data) + 1;
+        }else{
+            var code = 1000001;
+        }
+        $('#vehicle_auz .auz_code').html(code);
+    }
+})
+
+
+
+$('#vehicle_auz .confirm').click(function(){
+
+    var update=new platform();
+    update=update.showupdate()
+
+    var updateinsert={}
+    for (var n in update.input){
+        updateinsert[n]=update.input[n]
+        if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
+    }
+    for (var n in update.select){
+        updateinsert[n]=update.select[n]
+        if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
+    }
+    for (var n in update.radio){
+        updateinsert[n]=update.radio[n]
+        if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
+    }
+    updateinsert.auz_code=$('#vehicle_auz .auz_code').html();
+    console.log('updateinsert')
+    console.log(updateinsert)
+    //传数据
+    $.ajax({
+        url:router.insert,
+        method:'post',
+        data:updateinsert,
+        success:function(data){
+            //var data = JSON.parse(data);
+            //成功之后自动刷新页面
+            $('#vehicle_auz').modal('hide');
+            layer.open({
+                type: 1,
+                title: false,
+                //打开关闭按钮
+                closeBtn: 1,
+                shadeClose: false,
+                skin: 'tanhcuang',
+                content: '新增授权信息成功',
+                cancel: function(){
+                    window.location.href=href(List);
+                }
+            });
+        },
+        error:function(){
+            console.log('新增授权信息出错');
+        }
+    })
+})
+
+
+
+
+
+
 //点击新增按钮,从后端取得楼宇编号信息
 function insert(){
    var getLatestCodeUrl=arguments[0];
@@ -865,54 +845,6 @@ $('.add_btn').click(function(){
 
 
 
-//点击保存新增
-$('#add_Item .confirm').click(function(){
-
-var insert=new platform();
-    insert=insert.findinsert()
-    console.log(insert)
-var findinsert={}
-    for (var n in insert.input){
-        findinsert[n]=insert.input[n]
-        if(findinsert[n]=='' ){findinsert[n]=undefined;}
-    }
-    for (var n in insert.select){
-        findinsert[n]=insert.select[n]
-        if(findinsert[n]=='' ){findinsert[n]=undefined;}
-    }
-    for (var n in insert.radio){
-        findinsert[n]=insert.radio[n]
-        if(findinsert[n]=='' ){findinsert[n]=undefined;}
-    }
-
-    //传数据
-	$.ajax({
-		url:insertUrl,
-		method:'post',
-		data:findinsert,
-		success:function(data){
-			//var data = JSON.parse(data);
-			//成功之后自动刷新页面
-            $('#add_Item').modal('hide');
-			layer.open({
-				  type: 1,
-				  title: false,
-				  //打开关闭按钮
-				  closeBtn: 1,
-				  shadeClose: false,
-				  skin: 'tanhcuang',
-				  content: '新增车辆及授权成功',
-				  cancel: function(){
-                      window.location.href=href(ListUrl);
-				  }
-			});
-		},
-		error:function(){
-			console.log('新增活动出错');
-		}
-	})
-
-})
 
 
 }

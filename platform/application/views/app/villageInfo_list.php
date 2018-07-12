@@ -40,13 +40,13 @@
 
     .imgwrap{
 
-        width: 520px;
-        height:350px;
+        width: 600px;
+        height:100%;
     }
 
 .villageimg{
-    width: 520px;
-    height:350px;
+    width: 100%;
+    height:100%;
 }
 
 
@@ -70,6 +70,10 @@
         width:10%;
         float:right;
         font-size: 14px;
+    }
+    .update{
+        position:absolute;
+        right:20px;
     }
 /*
 
@@ -108,7 +112,7 @@
 
             <div class="title">
                 <p class="col_37A " ><i class="icon_circle" ></i>社区基本信息</p>
-               <button class=" add_btn update"  >编辑</button>
+              <!-- <button class=" add_btn update"  >编辑</button>-->
             <div class=" fl" style="width:30%;  ">
                 <div class="content">
                      <p> 当前所在社区:</p>
@@ -122,9 +126,10 @@
                      <p>社区户数:</p>
                      <p>总车位数:</p>
                      <p>社区简介:</p>
+
                 </div>
             </div>
-            <div class=" fl content" style="width:70%;">
+            <div class=" fl content" style="width:70%; position:relative;">
     <p  class="name "></p>
     <p  class="id"></p>
     <p  class="full_name "></p>
@@ -138,6 +143,7 @@
                 <textarea class="brief" id="brief" title="可修改社区简介" readonly>
 </textarea>
    <!-- <p class=" brief " style=" white-space:normal; word-break:break-all;"></p>-->
+    <i class="fa  fa-pencil-square-o fa-lg update"></i>
             </div>
 
         </div>
@@ -153,11 +159,11 @@
                 <img   class="villageimg" src="" alt="#" >
             </div>
             </div>
-            <div class="title">
+            <!--<div class="title">
                 <p class="col_37A" ><i class="icon_circle" ></i>社区地图位置</p>
                 <div id="container"  >
                 </div>
-            </div>
+            </div>-->
 
         </div>
     </div>

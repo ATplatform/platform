@@ -127,6 +127,7 @@ class Equipment extends CI_Controller{
 	//生成二维码图片方法
 	public function setEquipmentQRcodeImg($code,$building_code,$equipment_type,$sign,$name){
 		$village_id = $_SESSION['village_id'];
+		$village_name = $_SESSION['village_name'];
 		//得到楼宇信息
 		$this->load->model('Building_model');
 		$building = $this->Building_model->getBuilding($building_code,$village_id);
@@ -135,8 +136,6 @@ class Equipment extends CI_Controller{
 		$fileName = $householdInfo.$name.'.png';
 		//二维码图片地址
 		$pngAbsoluteFilePath='';
-		$village_id = "100001";
-		$village_name = "和正智汇谷";
 		$temp_path='qrcode/'.$village_id.$village_name.'设备二维码/';
 		//二维码内容,设备的二维码type为101,village暂时写为100001
 		$this->load->model('Building_model');

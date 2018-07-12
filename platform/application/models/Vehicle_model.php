@@ -794,11 +794,9 @@ limit 1
         }
     }
 
-public function updateVehicle($village_id,$code,$effective_date,$effective_status
-,$person_code,$licence,$owner,$color,$model,$remark,$vehicle_type,$if_resident,$if_electro,$if_temp,$create_time){
+public function updateVehicle($village_id,$code,$auz_code,$effective_date,$effective_status,$person_code,$licence,$owner,$color,$model,$remark,$vehicle_type,$if_resident,$if_electro,$if_temp,$create_time){
 
     $sql = " update village_vehicle
-
        set effective_date=".$this->db->escape($effective_date).",".
         "village_id=".$this->db->escape($village_id).",".
         "licence=".$this->db->escape($licence).",".
@@ -812,11 +810,31 @@ public function updateVehicle($village_id,$code,$effective_date,$effective_statu
         "if_resident=".$this->db->escape($if_resident).",".
         "if_electro=".$this->db->escape($if_electro).",".
         "if_temp=".$this->db->escape($if_temp).",".
-        "create_time=".$this->db->escape($create_time)." ".
-        "where code=$code";
+        "create_time=".$this->db->escape($create_time)."  ".
+        "where code=".$this->db->escape($code);
 
     $this->db->query($sql);
 
+    $sql = " update village_vehicle_auz
+       set end_date=".$this->db->escape($effective_date)."  ".
+        "where code=".$this->db->escape($auz_code);
+
+    $this->db->query($sql);
+
+}
+
+public function insert_auz($village_id,$code,$vehicle_code,$begin_date
+    ,$end_date,$remark,$person_code,$create_time){
+    $sql = " INSERT INTO village_vehicle_auz (village_id,code,vehicle_code,person_code,begin_date,end_date,remark,create_time) values (".
+        $this->db->escape($village_id).", ".
+        $this->db->escape($code).", ".
+        $this->db->escape($vehicle_code).", ".
+        $this->db->escape($person_code).", ".
+        $this->db->escape($begin_date).", ".
+        $this->db->escape($end_date).", ".
+        $this->db->escape($remark).", ".
+        $this->db->escape($create_time).")";
+    $this->db->query($sql);
 }
 
 

@@ -493,6 +493,9 @@ if(page<total){
 
 ////////////////////////////////////////////信息管理////////////////////////////////
 function operateFormatter(value,row,index){
+
+
+
     return [
         '<a class="detail" href="javascript:void(0)" style="margin-left: 10px;" title="详情">',
         '<i class=" fa fa-trash-o fa-lg fa-file-text-o"></i>',
@@ -504,8 +507,8 @@ function operateFormatter(value,row,index){
         '<i class="fa fa-credit-card fa-lg "></i>',
         '</a>',
     ].join('');
-}
 
+}
 
 function information(router,rowkeys) {
 
@@ -647,12 +650,6 @@ function information(router,rowkeys) {
 
     }
 
-
-
-
-
-
-
 function maxdate(date,date1) {
     var  index1 = date.split("-");
     var  index2 = date1.split("-");
@@ -665,54 +662,75 @@ function maxdate(date,date1) {
     }
     return max
 }
+    var auz_code=0;
+    $('#vehicle_rewrite').on('mouseover',function(){
+        console.log('111')
+        if($('#vehicle_rewrite .v_effective_status input[type="radio"]').eq(0).is(':checked')){
+            $('.effective_status_more').removeClass("effective_status_more_show")
+            $('.effective_status_more').css({"display":"none"})
+            $('.effective_status_less').css({"display":"none"})
+
+        }
+    if($('#vehicle_rewrite .v_effective_status input[type="radio"]').eq(1).is(':checked')){
+
+     var code=$('#vehicle_rewrite .v_code').html();
+
+     $.ajax({
+         url: router.getauzbyMax_begin_date,
+         method: 'post',
+         data: {
+             code: code
+         },
+         success: function (data) {
+             var data = JSON.parse(data);
+                 var input_date = $('#vehicle_rewrite').find('input[name=v_effective_date]').val();
+                 for (var index in data) {
+                     if (index = 'end_date') {
+                         var max = maxdate(input_date, data[index])
+                         auz_code=data['code']
+                         if (max === 0) {
+                             $('.effective_status_more').addClass("effective_status_more_show")
+                             $('.effective_status_more').css({"display":"block"})
+                             $('.effective_status_less').css({"display":"none"})
+
+                         }
+                         if (max === 1) {
+                             $('.effective_status_more').removeClass("effective_status_more_show")
+                             $('.effective_status_more').css({"display":"none"})
+                             $('.effective_status_less').css({"display":"block"})
+
+                         }
+                     }
+
+                 }
 
 
-
-$('#vehicle_rewrite .confirm').click(function(){
-
-    var update=new platform();
-    update=update.showupdate()
-
-    var updateinsert={}
-    for (var n in update.input){
-        updateinsert[n]=update.input[n]
-        if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
+         }
+     })
     }
-    for (var n in update.select){
-        updateinsert[n]=update.select[n]
-        if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
-    }
-    for (var n in update.radio){
-        updateinsert[n]=update.radio[n]
-        if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
-    }
-    console.log(updateinsert)
+})
 
-    updateinsert.v_code=$('#vehicle_rewrite .v_code').html();
-    $.ajax({
-        url:router.getauzbyMax_begin_date,
-        method:'post',
-        data:{
-            code:rowkeys['v_code']
-        },
-        success:function(data){
-            var data=JSON.parse(data);
-          /*  console.log(data)*/
-            if(updateinsert.v_effective_status==='false'){
-            var input_date=$('#vehicle_rewrite').find('input[name=v_effective_date]').val();
-            for(var index in data){
-                if(index='end_date'){
-
-                    var max= maxdate(input_date,data[index])
-                    if(max===0){openLayer('该车辆的新一条变动记录的时间大于授权结束时间，请再次给该车辆授权'); return;}
-                    if(max===1){openLayer('该车辆失效时间小于系统记录授权信息中的结束日期，系统将会把授权信息中的结束日期设置为该车辆失效的时间点！')}
-
-                }
-
-            }
-            }
-
-
+    $('#vehicle_rewrite .confirm').click(function(){
+        console.log(auz_code);
+        var update=new platform();
+        update=update.showupdate()
+        var updateinsert={}
+        for (var n in update.input){
+            updateinsert[n]=update.input[n]
+            if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
+        }
+        for (var n in update.select){
+            updateinsert[n]=update.select[n]
+            if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
+        }
+        for (var n in update.radio){
+            updateinsert[n]=update.radio[n]
+            if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
+        }
+        console.log(updateinsert)
+        updateinsert['auz_code_latest']=auz_code
+       if ( $('.effective_status_more_show').length>0 ){ openLayer('该车辆的新一条变动记录的时间大于授权结束时间，请再次给该车辆授权!');} else {
+            updateinsert.v_code=$('#vehicle_rewrite .v_code').html();
             //传数据
             $.ajax({
                 url:router.updateVehicle,
@@ -731,7 +749,7 @@ $('#vehicle_rewrite .confirm').click(function(){
                         skin: 'tanhcuang',
                         content: '更新车辆信息成功',
                         cancel: function(){
-                           // window.location.href=href(List);
+                            window.location.href=href(List);
                         }
                     });
                 },
@@ -741,7 +759,8 @@ $('#vehicle_rewrite .confirm').click(function(){
             })
         }
     })
-})
+
+
 
 
 $('#auz_rewrite .confirm').click(function(){

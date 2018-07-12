@@ -192,6 +192,7 @@
 							<label for="radio-1-2"></label>
 							无效
 						</span>
+
                             </p>
                             <div class="select_pull_down select_wrap select_room">
                                 <div>
@@ -626,6 +627,12 @@
 							<label for="radio-5-2"></label>
 							无效
 						</span>
+                                <div class="effective_status_less"  style="margin-left:150px;color:red;display:none;">
+                                    该车辆失效时间小于系统记录授权信息中的结束日期，系统将会把授权信息中的结束日期改为该车辆失效的时间点！
+                                </div>
+                                <div class="effective_status_more"  style="margin-left:150px;color:red;display:none;">
+                                    该车辆的新一条变动记录的时间大于授权结束时间，请再次给该车辆授权!
+                                </div>
                                 </p>
                                 <div class="select_pull_down select_wrap select_room">
                                     <div>

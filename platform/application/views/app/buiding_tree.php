@@ -286,9 +286,13 @@ function update(source) {
           if(d.depth<6){
           $(this).children('.option1_svg').show()
           $(this).children('.option2_svg').show()
+          }else{
+          $(this).children('.option3_svg').show()
+              $(this).children('.option1_svg').hide()
+              $(this).children('.option2_svg').hide()
           }
       })
-      .on('mouseout', function (d) {$(this).children('.option1_svg').hide(); $(this).children('.option2_svg').hide()})
+      .on('mouseout', function (d) {$(this).children('.option1_svg').hide(); $(this).children('.option2_svg').hide();$(this).children('.option3_svg').hide();})
 
 
     nodeEnter.append("svg:rect")
@@ -312,6 +316,7 @@ function update(source) {
       .on("click", function(d) {  togglefornode(d);update(d);});//
 
 
+
     nodeEnter.append("svg")
         .attr("class", "option1_svg")
         .attr("width",18)
@@ -325,11 +330,11 @@ function update(source) {
         .style("display", "none")
      //   .style("fill", function(d) { return  "#E10803"; })
         //.on('mouseover', function (d) { $(this).show(); $(this).siblings('.option2').show()})
-
         .append("svg:use")
         .attr("xlink:href",'#icon-new')
         . append("svg:title")
         . text(function(d) { return "新增"; })
+
     nodeEnter.append("svg")
         .attr("class", "option2_svg")
         .attr("width",18)
@@ -349,6 +354,27 @@ function update(source) {
         . append("svg:title")
         . text(function(d) { return "修正"; })
 
+    nodeEnter.append("svg")
+        .attr("class", "option3_svg")
+        .attr("width",18)
+        .attr("height",18)
+        .attr("x",8)
+        .attr("y",-25)
+        .attr("data-target","#add_building")
+        .attr("data-toggle","modal")
+        .style("position", "absolute")
+        .style("z-index", 99)
+        .style("display", "none")
+        //   .style("fill", function(d) { return  "#E10803"; })
+        //.on('mouseover', function (d) { $(this).show(); $(this).siblings('.option2').show()})
+        .append("svg:use")
+        .attr("xlink:href",'#icon-bianji')
+        . append("svg:title")
+        . text(function(d) { return "修正"; })
+
+
+
+
 
     nodeEnter.append("svg:rect")
         .attr("class", "option1")
@@ -361,6 +387,8 @@ function update(source) {
             if(d.depth<6) {
                 console.log(d);
                 addbuilding(d);
+            }else{
+                updatebuilding(d);
             }
         })
         .style("position", "absolute")
@@ -384,8 +412,8 @@ function update(source) {
             if(d.depth<6) {
                 updatebuilding(d);
             }
-
         })
+
 
 
 
@@ -579,8 +607,8 @@ function addbuilding(d){
             data.level=parseInt(data.level)+1;
             data.level=data.level.toString();
             if( data.level=='100'){name=''}
-            if( data.level=='101'){name='区'}
-            if( data.level=='102'){name='期'}
+            if( data.level=='101'){name='期'}
+            if( data.level=='102'){name='区'}
             if( data.level=='103'){name='栋'}
             if( data.level=='104'){name='单元'}
             if( data.level=='105'){name='层'}
