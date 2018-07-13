@@ -88,7 +88,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入授权编号、车牌号、授权人发起..." value="" title="可输入授权编号、车牌号、授权人发起人、车辆使用人进行搜索"><a id="clear" onclick="return false">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入授权编号、车牌号、授权人发起..." value="" title="可输入授权编号、车牌号、授权人发起人、车辆使用人"><a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -135,7 +135,29 @@
 
 
 
-
+        <style>
+            #person_detail p{
+                margin:10px 0px;
+            }
+            #person_detail .bootstrap-table{
+                width:400px
+            }
+            #person_detail .title{
+                font-size: 16px;
+            }
+            .person_detail .icon_circle {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: #37ACFF;
+                margin-right:10px;
+                vertical-align: middle;
+                position: absolute;
+                left:-15px;
+                top: 0px;
+            }
+        </style>
 
         <!--详细信息 -->
         <div class="modal fade" id="person_detail" tabindex="-1" role="dialog" aria-hidden="true">
@@ -145,8 +167,8 @@
                         <div class="building_header">
                             <h4 class="modal-title tac">车辆详情</h4>
                         </div>
-                        <div class="modal-body building oh">
-                            <div class="fl person_wrap person_detail ">
+                        <div class="modal-body  oh" style="margin-bottom:10px">
+                            <div class=" person_wrap person_detail " style="position:relative">
                                 <p><i class="icon_circle"></i>车辆信息</p>
                                 <p><span class="des">车辆编号:</span>
                                     <span class="v_code col_37A"></span>
@@ -192,20 +214,20 @@
                                 </p>
 
                             </div>
-                            <div class="fl person_wrap person_detail ">
-                                <p><i class="icon_circle"></i>授权信息</p>
-                                <p><span class="des">当前授权:</span>
+                            <div class=" person_wrap person_detail " style="width:500px;margin-top:30px;position:relative">
+                                <span ><i class="icon_circle title"></i>授权信息（</span>
+                                <span><span class="des">当前授权:</span>
                                     <span class="auzfornow_name col_37A"></span>
-                                </p>
-                                <p><span class="des">授权记录有效查询:</span>
+                                </span>
+                                <span style="margin-left:20px;"><span class="des" >授权记录有效查询:</span>
                                     <span class="auzforall_name col_37A"></span>
+                                </span>
+                                <span>）</span>
+                                <span class="team_person_name col_37A"></span>
                                 </p>
-                                <p><span class="des">授权记录:</span>
-                                    <span class="team_person_name col_37A"></span>
-                                </p>
-                                <table id="getauz"
-                                       data-toolbar="#toolbar">
-                                    <thead>
+
+                                <table id="getauz" data-toolbar="#toolbar" >
+                                    <thead >
                                     <tr>
                                         <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
                                         <th data-title="授权编号" data-align="center" data-field="auz_code"></th>
@@ -243,7 +265,20 @@
 
 
                             <div class=" add_item  ">
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;授权编号：<span class="auz_code" style="margin-left:45px;"></span></p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;授权编号：<span class="auz_code" ></span></p>
+                                <div class="select_wrap select_pull_down">
+                                    <div>
+                                        <span class="red_star">*</span>车辆编号：
+                                        <input type="text" class="model_input v_vehicle_code ka_input3" placeholder="请输入车辆编号"  name="v_vehicle_code" data-ajax="" readonly />
+                                    </div>
+
+                                    <div class="ka_drop" >
+                                        <div class="ka_drop_list vehicle_code" >
+                                            <ul>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="select_pull_down select_wrap select_room">
                                     <div>
                                         <span class="red_star">*</span>授权发起人：
@@ -257,6 +292,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <p><span class="red_star">*</span>开始日期：
                                     <input type="text" class="auz_begin_date date form-control" name="auz_begin_date" value=""/>
                                 </p>

@@ -71,7 +71,7 @@
         <form class="search_room" action="" method="get">
             <p>
                 <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称、用..." value="<?php echo $keyword ?>" title="可输入物资编号、物资名称、用途
-供应商、备注进行搜索">
+供应商、备注">
 
                 <input type="hidden" value='<?php echo $material_type;?>' name="material_type" />
                 <input type="hidden" value='<?php echo $building_code;?>' name="building_code" />

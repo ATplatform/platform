@@ -64,7 +64,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入活动名称、物业负责人..." value="" title="请输入活动名称、物业负责人、备注进行搜索"> <a id="clear" onclick="return false">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入活动名称、物业负责人..." value="" title="请输入活动名称、物业负责人、备注"> <a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>

@@ -242,7 +242,6 @@ $('#add_content .save').click(function(){
 			card_no:card_no
 		},
 		success:function(data){
-			$('#add_content').modal('hide');
 			var data = JSON.parse(data);
 			if(data){
 				var old_end_date = data.end_date;
@@ -252,10 +251,12 @@ $('#add_content .save').click(function(){
 					return;
 				}
 				else{
+					$('#add_content').modal('hide');
 					insertAccessCard(code,card_no,person_code,person_type,building_code_arr,begin_date,end_date);
 				}
 			}
 			else {
+				$('#add_content').modal('hide');
 				insertAccessCard(code,card_no,person_code,person_type,building_code_arr,begin_date,end_date);
 			}
 		},

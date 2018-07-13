@@ -743,5 +743,364 @@ class Permission_model extends CI_Model {
     	return 0;
 	}
 
+	public function getDoorOpenList($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$page,$rows){
+		$start=($page-1) * $rows;
+		$sql = " select b.stage_name,b.area_name,b.immeuble_name,b.unit_name,b.floor_name,b.room_name,b.public_name,e.name as equipment_name,d.person_type,concat(p.last_name,p.first_name) as full_name,d.entry_type,d.entry_time,e.equipment_type from village_door_open_rcd as d left join village_equipment as e on d.entry_eqp = e.code and d.village_id = e.village_id left join village_person as p on d.person_code = p.code and d.village_id = p.village_id left join village_tmp_building as b on b.code = e.building_code and b.village_id = e.village_id ";
+		$sql .= " where d.entry_time >= '$push_start_date' and d.entry_time < '$push_end_date' ";
+		//树形图筛选楼宇
+		if(!empty($building_code)){
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
+		}
+		//设备类型
+		if(!empty($equipment_type)){
+			$sql .= " and e.equipment_type = '$equipment_type' ";
+		}
+		if(!empty($keyword)){
+			$sql .= " and concat(p.last_name,p.first_name) like '%$keyword%' ";
+		}
+		$sql=$sql." order by d.entry_time asc limit ".$rows." offset ".$start;
+		// echo $sql;exit;
+    	$q = $this->db->query($sql); //自动转义
+		if ( $q->num_rows() > 0 ) {
+			$arr=$q->result_array();
+			foreach($arr as $key => $row){
+				//赋值中文名称
+				foreach($row as $k1 => $value){
+					//赋值用户类型中文名称
+					if($k1=="person_type"){
+						if($value=="101"){
+							$arr[$key]["person_type_name"] = '业主';
+						}
+						if($value=="102"){
+							$arr[$key]["person_type_name"] = '商户';
+						}
+						if($value=="103"){
+							$arr[$key]["person_type_name"] = '物业人员';
+						}
+						if($value=="104"){
+							$arr[$key]["person_type_name"] = '临时访客';
+						}
+					}
+					//赋值开门方式名称
+					if($k1=="entry_type"){
+						if($value=="100"){
+							$arr[$key]["entry_type_name"] = '普通开门';
+						}
+						if($value=="101"){
+							$arr[$key]["entry_type_name"] = '刷卡';
+						}
+						if($value=="102"){
+							$arr[$key]["entry_type_name"] = '密码';
+						}
+						if($value=="103"){
+							$arr[$key]["entry_type_name"] = '人脸识别';
+						}
+						if($value=="104"){
+							$arr[$key]["entry_type_name"] = '指纹识别';
+						}
+						if($value=="105"){
+							$arr[$key]["entry_type_name"] = '扫二维码';
+						}
+						if($value=="106"){
+							$arr[$key]["entry_type_name"] = '手机一键开门';
+						}
+						if($value=="107"){
+							$arr[$key]["entry_type_name"] = '对讲开门';
+						}
+					}
+				}
+				//得到地点名称
+				$arr[$key]["building_name"] = $this->getHouseholdInfo($row);
+			}
+			$json=json_encode($arr);
+			return $json;
+		}
+		return false;
+	}
+
+	public function getDoorOpenListTotal($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$rows){
+		$sql = " select count(d.entry_type) as count from village_door_open_rcd as d left join village_equipment as e on d.entry_eqp = e.code and d.village_id = e.village_id left join village_person as p on d.person_code = p.code and d.village_id = p.village_id left join village_tmp_building as b on b.code = e.building_code and b.village_id = e.village_id ";
+		$sql .= " where d.entry_time >= '$push_start_date' and d.entry_time < '$push_end_date' ";
+		//树形图筛选楼宇
+		if(!empty($building_code)){
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
+		}
+		//设别类型
+		if(!empty($equipment_type)){
+			$sql .= " and e.equipment_type = '$equipment_type' ";
+		}
+		if(!empty($keyword)){
+			$sql .= " and concat(p.last_name,p.first_name) like '%$keyword%' ";
+		}
+		// echo $sql;exit;
+    	$q = $this->db->query($sql); //自动转义
+    	if ( $q->num_rows() > 0 ) {
+    	    $row = $q->row_array();
+    	    $items=$row["count"];
+    	    if($items%$rows!=0)
+    	    {
+    	        $total=(int)((int)$items/$rows)+1;
+    	    }
+    	    else {
+    	        $total=$items/$rows;
+    	    }
+    	    return $total;
+    	} 
+    	return 0;
+	}
+
+	public function getVideoItcList($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$page,$rows){
+		$start=($page-1) * $rows;
+		$sql = " select b.stage_name,b.area_name,b.immeuble_name,b.unit_name,b.floor_name,b.room_name,b.public_name,concat(p.last_name,p.first_name) as full_name,e.name as call_eqp_name,v.call_duration,v.answer_duration,v.door_open_rcd_id,v.bell_time,v.Entry_EQP from village_video_itc_rcd as v left join village_person as p on v.person_code = p.code and v.village_id = p.village_id left join village_equipment as e ON v.call_eqp = e.code and v.village_id = e.village_id left join village_tmp_building as b on b.code = e.building_code and b.village_id = e.village_id ";
+		$sql .= " where v.bell_time >= '$push_start_date' and v.bell_time < '$push_end_date' ";
+		//树形图筛选楼宇
+		if(!empty($building_code)){
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
+		}
+		//设备类型
+		if(!empty($equipment_type)){
+			$sql .= " and e.equipment_type = '$equipment_type' ";
+		}
+		if(!empty($keyword)){
+			$sql .= " and concat(p.last_name,p.first_name) like '%$keyword%' ";
+		}
+		$sql=$sql." order by v.bell_time asc limit ".$rows." offset ".$start;
+		// echo $sql;exit;
+    	$q = $this->db->query($sql); //自动转义
+		if ( $q->num_rows() > 0 ) {
+			$arr=$q->result_array();
+			foreach($arr as $key => $row){
+				//赋值中文名称
+				foreach($row as $k1 => $value){
+					//根据Entry_EQP得到设备名称
+					if($k1=="entry_eqp"){
+						$equipment = $this->getEquipmentByCode($value,$village_id);
+						if(!empty($equipment)){
+							$arr[$key]["call_entry_name"] = $equipment['name'];
+						}
+					}
+					//根据door_open_rcd_id得到是否开门,以及开门人和开门方式
+					if($k1=="door_open_rcd_id"){
+						if(!empty($value)){
+							$arr[$key]["if_open"] = "是";
+							$arr[$key]["entry_type_name"] = '';
+							$arr[$key]["entry_time"] = '';
+							$dooropen = $this->getDoorOpenByCode($value,$village_id);
+							if(!empty($dooropen)){
+								$arr[$key]["entry_time"] = $dooropen['entry_time'];
+								$entry_type = $dooropen['entry_type'];
+								//赋值开门方式名称
+								if($entry_type=="100"){
+									$arr[$key]["entry_type_name"] = '普通开门';
+								}
+								if($entry_type=="101"){
+									$arr[$key]["entry_type_name"] = '刷卡';
+								}
+								if($entry_type=="102"){
+									$arr[$key]["entry_type_name"] = '密码';
+								}
+								if($entry_type=="103"){
+									$arr[$key]["entry_type_name"] = '人脸识别';
+								}
+								if($entry_type=="104"){
+									$arr[$key]["entry_type_name"] = '指纹识别';
+								}
+								if($entry_type=="105"){
+									$arr[$key]["entry_type_name"] = '扫二维码';
+								}
+								if($entry_type=="106"){
+									$arr[$key]["entry_type_name"] = '手机一键开门';
+								}
+								if($entry_type=="107"){
+									$arr[$key]["entry_type_name"] = '对讲开门';
+								}
+							}
+						}
+						else {
+							$arr[$key]["if_open"] = "否";
+						}
+					}
+					
+				}
+				//得到地点名称
+				$arr[$key]["building_name"] = $this->getHouseholdInfo($row);
+			}
+			$json=json_encode($arr);
+			return $json;
+		}
+		return false;
+	}
+
+	public function getVideoItcListTotal($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$rows){
+		$sql = " select count(v.code) as count from village_video_itc_rcd as v left join village_person as p on v.person_code = p.code and v.village_id = p.village_id left join village_equipment as e ON v.call_eqp = e.code and v.village_id = e.village_id left join village_tmp_building as b on b.code = e.building_code and b.village_id = e.village_id ";
+		$sql .= " where v.bell_time >= '$push_start_date' and v.bell_time < '$push_end_date' ";
+		//树形图筛选楼宇
+		if(!empty($building_code)){
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
+		}
+		//设别类型
+		if(!empty($equipment_type)){
+			$sql .= " and e.equipment_type = '$equipment_type' ";
+		}
+		if(!empty($keyword)){
+			$sql .= " and concat(p.last_name,p.first_name) like '%$keyword%' ";
+		}
+		// echo $sql;exit;
+    	$q = $this->db->query($sql); //自动转义
+    	if ( $q->num_rows() > 0 ) {
+    	    $row = $q->row_array();
+    	    $items=$row["count"];
+    	    if($items%$rows!=0)
+    	    {
+    	        $total=(int)((int)$items/$rows)+1;
+    	    }
+    	    else {
+    	        $total=$items/$rows;
+    	    }
+    	    return $total;
+    	} 
+    	return 0;
+	}
+
+	public function getBuildingByCode($code,$village_id){
+		$sql = "select * from village_tmp_building where code = $code and village_id = $village_id limit 1";
+		// echo $sql;exit;
+		$query = $this->db->query($sql);
+		$row = $query->row_array();
+		return $row;
+	}
+
+	public function getEquipmentByCode($code,$village_id){
+		$sql = "select * from village_equipment where code = '$code' and village_id = $village_id limit 1";
+		// echo $sql;exit;
+		$query = $this->db->query($sql);
+		$row = $query->row_array();
+		return $row;
+	}
+
+	public function getDoorOpenByCode($code,$village_id){
+		$sql = "select * from village_door_open_rcd where code = '$code' and village_id = $village_id limit 1";
+		// echo $sql;exit;
+		$query = $this->db->query($sql);
+		$row = $query->row_array();
+		return $row;
+	}
+
 }
 ?>

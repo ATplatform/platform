@@ -135,7 +135,7 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'no',
-        input:'可输入租赁人进行搜索',
+        input:'可输入租赁人',
         method:'keyword'
     },
     update_info:{
@@ -468,6 +468,7 @@ function insert_data(element,render){
     //点击保存新增
     $('#add_Item .confirm').click(function(){
         var index=getdata(element,render)
+
         console.log(index)
         $.ajax({
             url:render.router.insert,
@@ -525,7 +526,7 @@ function update_data(element,render){
                     skin: 'tanhcuang',
                     content: '更新租赁信息成功',
                     cancel: function () {
-                        window.location.href = render.router.root;
+                       window.location.href = render.router.root;
                     }
                 });
             },

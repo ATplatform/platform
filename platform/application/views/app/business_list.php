@@ -736,7 +736,7 @@ $(function(){
 	})
 	//清除搜索条件
 	$('.search_room #clear').click(function(){
-		window.location.href="businesslist?page=1";
+		window.location.href="businesslist?keyword=&page=1"+"&effective_date="+search_effective_date+'&biz_type='+search_biz_type+'&building_code='+search_building_code;
 	})
 
 })

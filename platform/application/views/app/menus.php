@@ -50,7 +50,7 @@
 
 	<li>
 		<a href="#EquipmentSetting" class="nav-header " data-toggle="collapse"
-			<?php if($nav=="equipmentlist"||$nav=="personequipmentlist"||$nav=="equipmentconfig"||$nav=="equipmentstatus") {echo 'aria-expanded="true"';} ?> 
+			<?php if($nav=="equipmentlist"||$nav=="personequipmentlist"||$nav=="equipmentconfig"||$nav=="equipmentstatus"||$nav=="equipmentservice") {echo 'aria-expanded="true"';} ?> 
 		>
 		<i class="icon fa fa-archive"></i>
 			设备管理
@@ -58,7 +58,7 @@
 		</a>
 		<ul id="EquipmentSetting" 
 			<?php 
-				if($nav=="equipmentlist"||$nav=="personequipmentlist"||$nav=="equipmentconfig"||$nav=="equipmentstatus"){
+				if($nav=="equipmentlist"||$nav=="personequipmentlist"||$nav=="equipmentconfig"||$nav=="equipmentstatus"||$nav=="equipmentservice"){
 					echo 'class="collapse secondmenu in"';
 				} 
 				else{
@@ -69,8 +69,8 @@
 			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>设备运营分析</a></li>
 			<li <?php if($nav=="equipmentlist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Equipment/equipmentlist'?>"><i class="glyphicon"></i>设备管理列表</a></li>
 			<li <?php if($nav=="personequipmentlist") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Equipment/personequipmentlist'?>"><i class="glyphicon"></i>设备授权管理</a></li>
-			<li <?php if($nav=="equipmentstatus") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Equipment/equipmentstatus'?>"><i class="glyphicon"></i>设备状态管理</a></li>
-			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>设备维保管理</a></li>
+			<li <?php if($nav=="equipmentstatus") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Equipment/equipmentstatus'?>"><i class="glyphicon"></i>设备工作状态</a></li>
+			<li <?php if($nav=="equipmentservice") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Equipment/equipmentservice'?>"><i class="glyphicon"></i>设备维保管理</a></li>
 			<li <?php if($nav=="equipmentconfig") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Equipment/equipmentconfig'?>"><i class="glyphicon"></i>设备通讯配置</a></li>
 		</ul>
 	</li>
@@ -124,7 +124,7 @@
 
 	<li>
 	    <a href="#PrivilegeSetting" class="nav-header " data-toggle="collapse"
-	        <?php if($nav=="equipmentprivilegelist"||$nav=="accesscard") {echo 'aria-expanded="true"';} ?>
+	        <?php if($nav=="equipmentprivilegelist"||$nav=="accesscard"||$nav=="permissionfacelist"||$nav=="dooropenlist"||$nav=="videoitclist") {echo 'aria-expanded="true"';} ?>
 	    >
 
 	        <i class="icon fa fa-address-card"></i>
@@ -133,7 +133,7 @@
 	    </a>
 	    <ul id="PrivilegeSetting"
 	        <?php
-	        if($nav=="equipmentprivilegelist"||$nav=="accesscard"||$nav=="permissionfacelist"){
+	        if($nav=="equipmentprivilegelist"||$nav=="accesscard"||$nav=="permissionfacelist"||$nav=="dooropenlist"||$nav=="videoitclist"){
 	            echo 'class="collapse secondmenu in"';
 	        }
 	        else{
@@ -145,8 +145,8 @@
 	        <li <?php if($nav=="accesscard") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Permission/accesscard'?>"><i class="glyphicon"></i>一卡通授权</a></li>
 	        <li <?php if($nav=="permissionfacelist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Permission/permissionfacelist'?>"><i class="glyphicon"></i>人脸识别授权</a></li>
 	        <li ><a href=""><i class="glyphicon"></i>用户权限列表</a></li>
-	        <li ><a href=""><i class="glyphicon"></i>开门记录</a></li>
-	        <li ><a href=""><i class="glyphicon"></i>对讲记录</a></li>
+	        <li <?php if($nav=="dooropenlist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Permission/dooropenlist'?>"><i class="glyphicon"></i>开门记录</a></li>
+	        <li <?php if($nav=="videoitclist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Permission/videoitclist'?>"><i class="glyphicon"></i>对讲记录</a></li>
 	    </ul>
 	</li>
 

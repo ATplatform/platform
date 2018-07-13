@@ -467,5 +467,152 @@ class Permission extends CI_Controller{
 		print_r(json_encode($result));
 	}
 
+	public function dooropenlist(){
+		if ( !isset($_SESSION['username']) ) {
+		   redirect('Login');
+		}
+		$page = $this->input->get('page');
+		$keyword = $this->input->get('keyword');
+		$equipment_type = $this->input->get('equipment_type');
+		$building_code = $this->input->get('building_code');
+		$push_start_date = $this->input->get('push_start_date');
+		$push_end_date = $this->input->get('push_end_date');
+		$village_id = $_SESSION['village_id'];
+		$now = date("Y-m-d",time());
+		if(is_null($page)||empty($page))
+		{
+			$page=1;
+		}
+		if(is_null($push_start_date)||empty($push_start_date))
+		{	
+			//消息的初始查询开始日期为上个月的今天
+			$push_start_date = date("Y-m-d", strtotime("-1 month"))." 00:00";
+		}
+		if(is_null($push_end_date)||empty($push_end_date))
+		{
+			$push_end_date = date('Y-m-d',time())." 23:59";
+		}
+		$level = "";
+		$this->load->model('Permission_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->Permission_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
+		//得到总条数
+		$total = $this->Permission_model->getDoorOpenListTotal($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$this->user_per_page);
+
+		$data['page']=$page>=$total?$total:$page;
+		$data['total']=$total;
+		$data['keyword']=$keyword;
+		$data['push_start_date']=$push_start_date;
+		$data['push_end_date']=$push_end_date;
+		$data['equipment_type']=$equipment_type;
+		$data['building_code'] = $building_code;
+		$data['pagesize']=$this->user_per_page;
+		$data['nav']='dooropenlist';
+		$data['username'] = $_SESSION['username'];
+		$data['at_url']= $this->at_url;
+		//树形菜单
+		$this->load->model('Building_model');
+		$treeNav_data = $this->Building_model->getBuildingTreeData($village_id);
+		$data['treeNav_data']=$treeNav_data;
+		$this->load->view('app/dooropen_list',$data);
+	}
+
+	public function getDoorOpenList(){
+		$page = $this->input->get('page');
+		$keyword = $this->input->get('keyword');
+		$equipment_type = $this->input->get('equipment_type');
+		$building_code = $this->input->get('building_code');
+		$push_start_date = $this->input->get('push_start_date');
+		$push_end_date = $this->input->get('push_end_date');
+		$page = $page?$page:'1';
+		$now=date('Y-m-d',time());
+		$village_id = $_SESSION['village_id'];
+		$level = "";
+		$this->load->model('Permission_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->Permission_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
+		$res = $this->Permission_model->getDoorOpenList($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$page,$this->user_per_page);
+		echo $res;
+	}
+
+	public function videoitclist(){
+		if ( !isset($_SESSION['username']) ) {
+		   redirect('Login');
+		}
+		$page = $this->input->get('page');
+		$keyword = $this->input->get('keyword');
+		$equipment_type = $this->input->get('equipment_type');
+		$building_code = $this->input->get('building_code');
+		$push_start_date = $this->input->get('push_start_date');
+		$push_end_date = $this->input->get('push_end_date');
+		$village_id = $_SESSION['village_id'];
+		$now = date("Y-m-d",time());
+		if(is_null($page)||empty($page))
+		{
+			$page=1;
+		}
+		if(is_null($push_start_date)||empty($push_start_date))
+		{	
+			//消息的初始查询开始日期为上个月的今天
+			$push_start_date = date("Y-m-d", strtotime("-1 month"))." 00:00";
+		}
+		if(is_null($push_end_date)||empty($push_end_date))
+		{
+			$push_end_date = date('Y-m-d',time())." 23:59";
+		}
+		$level = "";
+		$this->load->model('Permission_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->Permission_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
+		//得到总条数
+		$total = $this->Permission_model->getVideoItcListTotal($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$this->user_per_page);
+
+		$data['page']=$page>=$total?$total:$page;
+		$data['total']=$total;
+		$data['keyword']=$keyword;
+		$data['push_start_date']=$push_start_date;
+		$data['push_end_date']=$push_end_date;
+		$data['equipment_type']=$equipment_type;
+		$data['building_code'] = $building_code;
+		$data['pagesize']=$this->user_per_page;
+		$data['nav']='videoitclist';
+		$data['username'] = $_SESSION['username'];
+		$data['at_url']= $this->at_url;
+		//树形菜单
+		$this->load->model('Building_model');
+		$treeNav_data = $this->Building_model->getBuildingTreeData($village_id);
+		$data['treeNav_data']=$treeNav_data;
+		$this->load->view('app/videoitc_list',$data);
+	}
+
+	public function getVideoItcList(){
+		$page = $this->input->get('page');
+		$keyword = $this->input->get('keyword');
+		$equipment_type = $this->input->get('equipment_type');
+		$building_code = $this->input->get('building_code');
+		$push_start_date = $this->input->get('push_start_date');
+		$push_end_date = $this->input->get('push_end_date');
+		$page = $page?$page:'1';
+		$now=date('Y-m-d',time());
+		$village_id = $_SESSION['village_id'];
+		$level = "";
+		$this->load->model('Permission_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->Permission_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
+		$res = $this->Permission_model->getVideoItcList($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$page,$this->user_per_page);
+		echo $res;
+	}
 }
 ?>

@@ -195,7 +195,7 @@
 							</div>
 							<div class="select_buliding_wrap" style="margin-left: 20px;margin-top: 10px;">
 								<span class="des fl" style="line-height: 42px;">新增地址</span>
-								<a href="javascript:;" id="treeNavAdd" class="treeWrap" style="margin-left: 30px;"><span></span></a>
+								<a href="javascript:;" id="treeNavCard" class="treeWrap" style="margin-left: 30px;width: 120px;"><span></span></a>
 								<span class="select_buliding" style="width: 210px;overflow: hidden;">
 								</span>
 							</div>
@@ -234,22 +234,22 @@
 		            <p><span class="des">一卡通授权编号：</span>
 		            	<span class="code col_37A"></span>
 		            </p>
-		            <p><span class="des">一卡通号：</span>
+		            <p><span class="des">一卡通卡号：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		            	<span class="card_no col_37A"></span>
 		            </p>
-		            <p><span class="des">授权用户：</span>
+		            <p><span class="des">授权用户：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		            	<span class="full_name col_37A"></span>
 		            </p>
-		            <p><span class="des">用户类型：</span>
+		            <p><span class="des">用户类型：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		            	<span class="person_type_name col_37A"></span>
 		            </p>
-		            <p><span class="des">开始日期：</span>
+		            <p><span class="des">开始日期：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		            	<span class="begin_date col_37A"></span>
 		            </p>
-		            <p><span class="des">结束日期：</span>
+		            <p><span class="des">结束日期：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		            	<span class="end_date col_37A"></span>
 		            </p>
-		            <p><span class="des">授权地址：</span>
+		            <p><span class="des">授权地址：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		            	<span class="building_name col_37A"></span>
 		            </p>
 	            </div>
@@ -272,25 +272,25 @@
 	                <h4 class="modal-title tac">编辑一卡通授权</h4>
 	            </div>
                 <div class="modal-body building">
-	                <p><span class="des">授权编号：</span>
+	                <p><span class="des">授权编号：&nbsp;&nbsp;&nbsp;&nbsp;</span>
 	                	<span class="code col_37A"></span>
 	                </p>
-	                <p><span class="des">一卡通号：</span>
+	                <p><span class="des">一卡通卡号：</span>
 	                	<span class="card_no col_37A"></span>
 	                </p>
-	                <p><span class="des">授权用户：</span>
+	                <p><span class="des">授权用户：&nbsp;&nbsp;&nbsp;&nbsp;</span>
 	                	<span class="full_name col_37A"></span>
 	                </p>
-	                <p><span class="des">用户类型：</span>
+	                <p><span class="des">用户类型：&nbsp;&nbsp;&nbsp;&nbsp;</span>
 	                	<span class="person_type_name col_37A"></span>
 	                </p>
-	                <p><span class="des">开始日期：</span>
+	                <p><span class="des">开始日期：&nbsp;&nbsp;&nbsp;&nbsp;</span>
 	                	<span class="begin_date col_37A"></span>
 	                </p>
-	                <p>结束日期：
+	                <p>结束日期：&nbsp;&nbsp;&nbsp;&nbsp;
                 		<input type="text" class="end_date date form-control" name="end_date" style="float: none;padding-left: 0px;" />
                 	</p>
-	                <p><span class="des">授权地址：</span>
+	                <p><span class="des">授权地址：&nbsp;&nbsp;&nbsp;&nbsp;</span>
 	                	<span class="building_name col_37A"></span>
 	                </p>
                 </div>
@@ -318,7 +318,7 @@
 $(function(){
 	var treeNav_data = <?php echo $treeNav_data?>;
 	//树形菜单
-	$('#treeNavAdd>span,#treeNav>span').jstree({
+	$('#treeNavCard>span,#treeNav>span').jstree({
 		'core' : {
 	        data: treeNav_data
 	    }
@@ -393,7 +393,7 @@ $(function(){
 			return;
 		}
 		var keyword=getUrlParam('keyword');
-		window.location.href="accesscard?keyword="+search_keyword+"&page="+page+"&effective_date="+search_effective_date+'&person_type='+search_equipment_type+'&building_code='+search_building_code;
+		window.location.href="accesscard?keyword="+search_keyword+"&page="+page+"&effective_date="+search_effective_date+'&person_type='+search_person_type+'&building_code='+search_building_code;
 	})
 	//日期筛选
 	$('.search_wrap .effective_date').datetimepicker().on('changeDate', function(ev){
@@ -414,6 +414,10 @@ $(function(){
 	$('.search_room button[type="submit"]').click(function(){
 		var keyword = $('.search_room .searc_room_text').val();
 		keyword = trim(keyword);
+		if(!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(keyword))){
+			openLayer('搜索框只能输入数字、汉字、字母!');
+			return;
+		}
 		window.location.href="accesscard?keyword="+keyword+"&page=1"+"&effective_date="+search_effective_date+'&person_type='+search_person_type+'&building_code='+search_building_code;
 	})
 	//清除条件
@@ -425,7 +429,7 @@ $(function(){
 </script>
 <script>
 //树节点点击后将节点赋值
-$('#treeNavAdd>span').on("select_node.jstree", function (e, node) {
+$('#treeNavCard>span').on("select_node.jstree", function (e, node) {
   //选择节点后自动关闭菜单
   $(this).jstree('close_all');
   var arr=node.node.id.split("_");
@@ -441,18 +445,16 @@ $('#treeNavAdd>span').on("select_node.jstree", function (e, node) {
   console.log(node);
   //父节点数组
   var parents_arr = node.node.parents;
-  if(parents_arr.length==3){
-  	//表示到了室这一层级,需要获取到父节点,把父节点的名称拼接
-  	var imm_id = parents_arr[0];
-  	var imm_node = that.jstree("get_node", imm_id);
-  	var imm_name = imm_node.text;
+  var imm_name = "";
+  //点击的时候,根据parents数组,找到节点的所有父节点
+  if(parents_arr.length>=2){
+  	//parents数组的最后一项为#
+  		for(var i=parents_arr.length-3;i>=0;i--){
+  			var imm_id = parents_arr[i];
+  			var imm_node = that.jstree("get_node", imm_id);
+  			imm_name += imm_node.text;
+  		}
   }
-  //表示是栋这一层级
-  else if(parents_arr.length==2){
-
-  }
-
-  imm_name = imm_name?imm_name:'';
   var html_tmp = "<em id="+room_code+" data-room_code="+room_code+">"+imm_name+name+"<i class='fa fa-close'></i></em>";
   //选择楼宇赋值时不能重复且不能超过10个
   if(that.closest('.model_content').find('.select_buliding em').length<10){
@@ -557,6 +559,36 @@ function pluginValid()
 }
 //读取串口数据结束
 
+</script>
+<script>
+$('#treeNavCard>span').on(" before_open.jstree", function (e, data) {
+    $('.jstree-container-ul').css({
+        "width":"300px"
+    })
+    $(this).css({
+        "height": "340px",
+        "width":"120px",
+        "overflow": "auto"
+    })
+    $(this).closest('a').css({
+        'width':'120px'
+    })
+})
+
+$('#treeNavCard>span').on(" after_close.jstree", function (e, data) {
+    if(data.node.parents.length==1){
+        $(this).css({
+            "width":"120px",
+            "height": "100%",
+        })
+        $(this).closest('a').css({
+            'width':'120px'
+        })
+        $('.jstree-container-ul').css({
+            "width":"100%"
+        })
+    }
+})
 </script>
 <script src='<?=base_url().'application/views/plugin/app/js/access_card.js'?>'></script>
 </body>

@@ -576,10 +576,10 @@
     							</div>
     						</div>
     					</div>
-    					<p class="regular_date_wrap"><span class="red_star">*</span>巡检日期点：
+    					<p class="regular_date_wrap"  style="display: none;"><span class="red_star">*</span>巡检日期点：
     						<input type="text" class="date regular_date form-control" name="regular_date" placeholder="">
     					</p>
-    					<div class="select_pull_down select_wrap select_position_name">
+    					<div class="select_pull_down select_wrap select_position_name"  style="display: none;">
     						<div>
     							<span class="red_star">*</span>巡检人职位：
     							<input type="text" class="model_input position_code ka_input3" placeholder="请选择巡检人职位" name="position_code" data-ajax="" readonly="">
@@ -623,7 +623,7 @@
     						</div>
     					</div>
 
-    					<p class="annual_date_wrap"><span class="red_star">*</span>外审日期点：
+    					<p class="annual_date_wrap" style="display: none;"><span class="red_star">*</span>外审日期点：
     						<input type="text" class="date annual_date form-control" name="annual_date" placeholder="">
     					</p>
 

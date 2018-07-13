@@ -73,7 +73,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称..." value="<?php echo $keyword ?>" title="可输入物资编号、物资名称、物资使用人、备注进行搜索">
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入物资编号、物资名称..." value="<?php echo $keyword ?>" title="可输入物资编号、物资名称、物资使用人、备注">
 
                 <input type="hidden" value='<?php echo $material_type;?>' name="material_type" />
                 <input type="hidden" value='<?php echo $building_code;?>' name="building_code" />

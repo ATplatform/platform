@@ -125,6 +125,9 @@ $(document).on('click','.search_person_only .single_person .add',function(){
 				$(this).closest('.search_person_only').find('.person_building_data ul').append(html);
 			}
 		}
+		else{
+			openLayer('授权住户已满10个！');
+		}
 		//选择授权住户时,就要清空授权楼宇
 		$(this).closest('.model_content').find(".select_buliding_wrap .select_buliding").empty();
 })
@@ -186,51 +189,55 @@ $('#add_content .save').click(function(){
 	//先验证必填项是否有
 	if(!code){
 		openLayer('请选择授权设备!');
+		return;
 	}
-	else if(!person_code&&!building_code){
+	if(!person_code&&!building_code){
 		openLayer('请选择授权楼宇或授权住户!');
+		return;
 	}
-	else if(!begin_date){
+	if(!begin_date){
 		openLayer('请选择开始日期!');
+		return;
 	}
-	else {
-		//数据写入库
-		$.ajax({
-			url:getRootPath()+'/index.php/Equipment/insertPersonEquipment',
-			method:'post',
-			data:{
-				code:code,
-				person_code:person_code,
-				building_code:building_code,
-				begin_date:begin_date,
-				end_date:end_date,
-				remark:remark
-			},
-			success:function(data){
-				content_wrap.modal('hide');
-				var data = JSON.parse(data);
-				//成功之后自动刷新页面
-				layer.open({
-					  type: 1,
-					  title: false,
-					  //打开关闭按钮
-					  closeBtn: 1,
-					  shadeClose: false,
-					  skin: 'tanhcuang',
-					  content: data.message,
-					  cancel: function(){ 
-					  	//右上角关闭回调,成功后跳页
-				    	window.location = getRootPath() + "/index.php/Equipment/personequipmentlist";
-
-					  }
-				});
-			},
-			error:function(){
-				console.log('新增出错');
-			}
-		})
-
+	if(begin_date>end_date){
+		openLayer('开始日期必须小于结束日期!');
+		return;
 	}
+	//数据写入库
+	$.ajax({
+		url:getRootPath()+'/index.php/Equipment/insertPersonEquipment',
+		method:'post',
+		data:{
+			code:code,
+			person_code:person_code,
+			building_code:building_code,
+			begin_date:begin_date,
+			end_date:end_date,
+			remark:remark
+		},
+		success:function(data){
+			content_wrap.modal('hide');
+			var data = JSON.parse(data);
+			//成功之后自动刷新页面
+			layer.open({
+				  type: 1,
+				  title: false,
+				  //打开关闭按钮
+				  closeBtn: 1,
+				  shadeClose: false,
+				  skin: 'tanhcuang',
+				  content: data.message,
+				  cancel: function(){ 
+				  	//右上角关闭回调,成功后跳页
+			    	window.location = getRootPath() + "/index.php/Equipment/personequipmentlist";
+
+				  }
+			});
+		},
+		error:function(){
+			console.log('新增出错');
+		}
+	})
 })
 
 //编辑保存
@@ -272,51 +279,54 @@ $('#content_write .save').click(function(){
 	//先验证必填项是否有
 	if(!person_code&&!building_code){
 		openLayer('请选择授权楼宇或授权住户!');
+		return;
 	}
-	else if(!begin_date){
+	if(!begin_date){
 		openLayer('请选择开始日期!');
+		return;
 	}
-	else {
-		//数据写入库
-		$.ajax({
-			url:getRootPath()+'/index.php/Equipment/updatePersonEquipment',
-			method:'post',
-			data:{
-				code:data_code,
-				person_code:person_code,
-				building_code:building_code,
-				begin_date:begin_date,
-				end_date:end_date,
-				remark:remark,
-				search_keyword:search_keyword,
-				search_effective_date:search_effective_date,
-				search_equipment_type:search_equipment_type,
-				search_building_code:search_building_code
-			},
-			success:function(data){
-				content_wrap.modal('hide');
-				var data = JSON.parse(data);
-				//成功之后自动刷新页面
-				layer.open({
-					  type: 1,
-					  title: false,
-					  //打开关闭按钮
-					  closeBtn: 1,
-					  shadeClose: false,
-					  skin: 'tanhcuang',
-					  content: data.message,
-					  cancel: function(){ 
-					    	//编辑完后异步刷新页面
-				    		asynRefreshPage(getRootPath()+'/index.php/Equipment/personequipmentlist','Equipment/getPersoneEquipmentList',table,data.total,'&keyword='+search_keyword+'&effective_date='+search_effective_date+'&equipment_type='+search_equipment_type+'&building_code='+search_building_code);
-					  }
-				});
-			},
-			error:function(){
-				console.log('编辑出错');
-			}
-		})
-
+	if(begin_date>end_date){
+		openLayer('开始日期必须小于结束日期!');
+		return;
 	}
+	//数据写入库
+	$.ajax({
+		url:getRootPath()+'/index.php/Equipment/updatePersonEquipment',
+		method:'post',
+		data:{
+			code:data_code,
+			person_code:person_code,
+			building_code:building_code,
+			begin_date:begin_date,
+			end_date:end_date,
+			remark:remark,
+			search_keyword:search_keyword,
+			search_effective_date:search_effective_date,
+			search_equipment_type:search_equipment_type,
+			search_building_code:search_building_code
+		},
+		success:function(data){
+			content_wrap.modal('hide');
+			var data = JSON.parse(data);
+			//成功之后自动刷新页面
+			layer.open({
+				  type: 1,
+				  title: false,
+				  //打开关闭按钮
+				  closeBtn: 1,
+				  shadeClose: false,
+				  skin: 'tanhcuang',
+				  content: data.message,
+				  cancel: function(){ 
+				    	//编辑完后异步刷新页面
+			    		asynRefreshPage(getRootPath()+'/index.php/Equipment/personequipmentlist','Equipment/getPersoneEquipmentList',table,data.total,'&keyword='+search_keyword+'&effective_date='+search_effective_date+'&equipment_type='+search_equipment_type+'&building_code='+search_building_code);
+				  }
+			});
+		},
+		error:function(){
+			console.log('编辑出错');
+		}
+	})
 
 })
 

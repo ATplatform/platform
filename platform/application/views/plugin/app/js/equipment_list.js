@@ -143,10 +143,10 @@ $('.add_btn').click(function(){
 }) 
 
 //填写生效日期后,自动给外审日期点赋值
-$('#add_content .effective_date').datetimepicker().on('changeDate',function(e){
+/*$('#add_content .effective_date').datetimepicker().on('changeDate',function(e){
 	effective_date = $(this).val();
 	$('#add_content .annual_date').val(effective_date);
-})
+})*/
 //新增保存操作
 $('#add_content .save').click(function(){
 	var that = $(this);
@@ -519,6 +519,8 @@ window.operateEvents = {
 			var qr_code = JSON.parse(qr_code);
 			var img_url = qr_code.img_url;
 			img_url = getRootPath() +"/"+ img_url;
+			// img_url = encodeURI(img_url);
+			console.log(img_url);
 			content_wrap.find('.qr_code').find('img').attr('src',img_url);
 		}
 	},
@@ -588,5 +590,20 @@ window.operateEvents = {
 		content_wrap.find('.annual_check').val(annual_check_name);
 		content_wrap.find('.annual_check').data('ajax',annual_check);
 		content_wrap.find('.annual_date').val(annual_date);
+
+		if(regular_date){
+			content_wrap.find('.regular_date_wrap').show();
+			content_wrap.find('.select_position_name').show();
+		}
+		else {
+			content_wrap.find('.regular_date_wrap').hide();
+			content_wrap.find('.select_position_name').hide();
+		}
+		if(annual_date){
+			content_wrap.find('.annual_date_wrap').show();
+		}
+		else {
+			content_wrap.find('.annual_date_wrap').hide();
+		}
 	}
 }

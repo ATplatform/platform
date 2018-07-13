@@ -124,7 +124,7 @@ pay_method:{
         show:'no',
         detail:'no',
         update:'no',
-        input:'可输入交易流水号、缴费人进行搜索',
+        input:'可输入交易流水号、缴费人',
         method:'keyword'
     },
     update_info:{

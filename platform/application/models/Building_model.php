@@ -329,6 +329,7 @@ class Building_model extends CI_Model {
 
     public function getBuildingNameCode($village_id){
         $sql = "select * from village_tmp_building where village_id = $village_id ORDER BY code,name";
+        // echo $sql;exit;
         $q = $this->db->query($sql);
         if ( $q->num_rows() > 0 ) {
             $arr=$q->result_array();
@@ -406,8 +407,9 @@ class Building_model extends CI_Model {
     }
 
     public function getTreeNodeByPcode($parent_code,$village_id){
-        $sql = "select concat(code,'_',id) as id,code,parent_code,name as text,id as real_id,level from village_building a where effective_date =(select max(effective_date) from village_building b where a.name = b.name and a.parent_code = b.parent_code and b.effective_status = true and b.effective_date <= now() ) and a.parent_code = $parent_code and a.code != $parent_code and a.effective_status = true and a.village_id = $village_id order by a.code,a.id";
+        $sql = "select concat(code,'_',id) as id,code,parent_code,name as text,id as real_id,level from village_building a where effective_date =(select max(effective_date) from village_building b where a.code = b.code and a.name = b.name and a.parent_code = b.parent_code and b.effective_status = true and b.effective_date <= now() ) and a.parent_code = $parent_code and a.code != $parent_code and a.effective_status = true and a.village_id = $village_id order by a.code,a.id";
         // echo $sql;
+        // exit;
         // echo '<br />';
         $query = $this->db->query($sql);
         $row = $query->result_array();
@@ -456,7 +458,6 @@ class Building_model extends CI_Model {
     }
 
     public function setQRcode($qrcodeData,$temp_path,$fileName){
-        // echo $temp_path;exit;
         if (!file_exists(iconv('utf-8', 'gbk', $temp_path)))
         {
             mkdir(iconv('utf-8', 'gbk', $temp_path), 0777, true);

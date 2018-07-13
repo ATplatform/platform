@@ -40,7 +40,7 @@ var platform_index={
         detail:'yes',
         update:'no',
         must:'no',
-        input:'小区车/临时车',
+        input:'小区车/访客车',
         method:'select',
         ajax:{t:'小区车',f:'访客车'}
 
@@ -234,7 +234,7 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'no',
-        input:'可输入车辆编码、缴费人进行搜索',
+        input:'可输入车辆编码、缴费人',
         method:'keyword'
     },
     update_info:{

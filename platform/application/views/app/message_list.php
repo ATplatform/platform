@@ -606,19 +606,16 @@ $('#treeNavAdd>span').on("select_node.jstree", function (e, node) {
   var that = $(this);
   //父节点数组
   var parents_arr = node.node.parents;
-  if(parents_arr.length==3){
-  	//表示到了室这一层级,需要获取到父节点,把父节点的名称拼接
-  	var imm_id = parents_arr[0];
-  	var imm_node = that.jstree("get_node", imm_id);
-  	var imm_name = imm_node.text;
-  	console.log(imm_node);
+  var imm_name = "";
+  //点击的时候,根据parents数组,找到节点的所有父节点
+  if(parents_arr.length>=2){
+  	//parents数组的最后一项为#
+  		for(var i=parents_arr.length-3;i>=0;i--){
+  			var imm_id = parents_arr[i];
+  			var imm_node = that.jstree("get_node", imm_id);
+  			imm_name += imm_node.text;
+  		}
   }
-  //表示是栋这一层级
-  else if(parents_arr.length==2){
-
-  }
-
-  imm_name = imm_name?imm_name:'';
   var html_tmp = "<em id="+id+" data-room_code="+room_code+">"+imm_name+name+"<i class='fa fa-close'></i></em>";
   if(that.closest('.model_content').find('.select_buliding #'+id).length==0){
   	 that.closest('.model_content').find('.select_buliding').append(html_tmp);

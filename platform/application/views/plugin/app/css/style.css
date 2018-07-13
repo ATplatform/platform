@@ -520,13 +520,18 @@ input:-ms-input-placeholder,.form-control:-ms-input-placeholder{ /* Internet Exp
 	margin-left: 10px;
 }
 .table_wrap .sub_nav a {
+	color:#666;
 	display: inline-block;
 	height: 40px;
 	line-height: 40px;
 	margin-right: 10px;
+	padding:0 8px;
+	border-radius: 5px;
+	border:1px solid #ddd;
 }
-.table_wrap .sub_nav a.active{
+.table_wrap .sub_nav a.active,.table_wrap .sub_nav a:hover{
 	color: #37ACFF;
+	border:1px solid #37ACFF;
 }
 .add_btn {
 	min-width: 120px;
@@ -854,10 +859,12 @@ input:-ms-input-placeholder,.form-control:-ms-input-placeholder{ /* Internet Exp
 .search_person_text .search_person_btn:hover {
 	cursor: pointer;
 }
+/* .search_person_results {
+	min-height: 100px;
+} */
 .search_person_results,.person_building_data {
 	padding-left:120px;
 	max-height: 156px;
-    /*min-height: 173px;*/
 	overflow: auto;
 }
 .search_person_only .search_person_results .single_person{
@@ -866,7 +873,7 @@ input:-ms-input-placeholder,.form-control:-ms-input-placeholder{ /* Internet Exp
 	margin-top: 10px;
 }
 .search_person_results .single_person{
-	height: 56px;
+	height: 80px;
 	line-height: 40px;
 	margin-top: 10px;
 }

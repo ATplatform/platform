@@ -567,6 +567,10 @@ $('#message_write .cancle').click(function(){
 $('#add_message .search_equipment_wrap .search_person_btn').click(function(){
 	var name = $(this).closest('.search_equipment_wrap').find('.search_person_name').val();
 	var search_person_wrap = $(this).closest('.search_equipment_wrap');
+	if(!name||/^\s*$/.test(name)){
+	    openLayer('请输入设备名称!');
+	    return;
+	}
 	$.ajax({
 		method:'post',
 		data:{

@@ -304,7 +304,7 @@ $(function(){
 			return;
 		}
 		var keyword=getUrlParam('keyword');
-		window.location.href="managementlist?keyword="+search_keyword+"&page="+page+'&msg_type='+search_msg_type;
+		window.location.href="messagerecordlist?keyword="+search_keyword+"&page="+page+'&msg_type='+search_msg_type+'&cycle_type='+search_cycle_type+'&push_start_date='+search_start_date+'&push_end_date='+search_end_date+'&if_has_receipt='+search_if_has_receipt;
 	})
 	//消息类型筛选
 	$('.msg_type_wrap .ka_drop_list li').click(function(){

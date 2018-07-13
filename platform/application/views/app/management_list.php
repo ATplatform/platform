@@ -314,7 +314,7 @@
 
 <!--新增物业人员关系-->
 <div class="modal fade" id="add_relation" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog"  style="width: 630px;">
+    <div class="modal-dialog"  style="width: 660px;">
         <div class="modal-content model_wrap">
         	<div class="model_content">
 	            <div class="building_header">
@@ -712,7 +712,7 @@ $(function(){
     })
     //清除搜索条件
     $('.search_room #clear').click(function(){
-    	window.location.href="managementlist?page=1";
+    	window.location.href="managementlist?keyword=&page=1"+"&effective_date="+search_effective_date;
     })
 })
 </script>
@@ -742,18 +742,16 @@ $('#treeNavAdd>span').on("select_node.jstree", function (e, node) {
   
   //父节点数组
   var parents_arr = node.node.parents;
-  if(parents_arr.length==3){
-  	//表示到了室这一层级,需要获取到父节点,把父节点的名称拼接
-  	var imm_id = parents_arr[0];
-  	var imm_node = that.jstree("get_node", imm_id);
-  	var imm_name = imm_node.text;
+  var imm_name = "";
+  //点击的时候,根据parents数组,找到节点的所有父节点
+  if(parents_arr.length>=2){
+  	//parents数组的最后一项为#
+  		for(var i=parents_arr.length-3;i>=0;i--){
+  			var imm_id = parents_arr[i];
+  			var imm_node = that.jstree("get_node", imm_id);
+  			imm_name += imm_node.text;
+  		}
   }
-  //表示是栋这一层级
-  else if(parents_arr.length==2){
-
-  }
-  alert(name);
-  imm_name = imm_name?imm_name:'';
   var html_tmp = "<em id="+id+" data-room_code="+room_code+">"+imm_name+name+"<i class='fa fa-close'></i></em>";
   if(that.closest('.model_content').find('.select_buliding #'+id).length==0){
   	 that.closest('.model_content').find('.select_buliding').append(html_tmp);

@@ -116,7 +116,7 @@ class People_model extends CI_model {
 			}
 			//单元
 			else if($level == '104'){
-				$sql .= " and bs.stage = $building_code ";
+				$sql .= " and bs.unit = $building_code ";
 			}
 			//层
 			else if($level == '105'){
@@ -298,7 +298,7 @@ class People_model extends CI_model {
 			}
 			//单元
 			else if($level == '104'){
-				$sql .= " and bs.stage = $building_code ";
+				$sql .= " and bs.unit = $building_code ";
 			}
 			//层
 			else if($level == '105'){
@@ -921,7 +921,7 @@ class People_model extends CI_model {
 			}
 			//单元
 			else if($level == '104'){
-				$sql .= " and bs.stage = $building_code ";
+				$sql .= " and bs.unit = $building_code ";
 			}
 			//层
 			else if($level == '105'){
@@ -1057,7 +1057,7 @@ class People_model extends CI_model {
 			}
 			//单元
 			else if($level == '104'){
-				$sql .= " and bs.stage = $building_code ";
+				$sql .= " and bs.unit = $building_code ";
 			}
 			//层
 			else if($level == '105'){

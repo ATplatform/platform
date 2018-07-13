@@ -314,6 +314,10 @@ $(function(){
 	$('.search_room button[type="submit"]').click(function(){
 		var keyword = $('.search_room .searc_room_text').val();
 		keyword = trim(keyword);
+		if(!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(keyword))){
+			openLayer('搜索框只能输入数字、汉字、字母!');
+			return;
+		}
 		window.location.href="refusefacelist?keyword="+keyword+"&page=1"+"&start_date="+search_start_date+"&end_date="+search_end_date+'&person_type='+search_person_type+'&building_code='+search_building_code;
 	})
 	//清除条件

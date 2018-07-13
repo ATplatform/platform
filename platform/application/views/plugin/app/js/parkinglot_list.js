@@ -13,7 +13,7 @@ var search_index={
         lot_biz_status:{input:'车位状态',ajax:{101:'已占用',102:'公共车位'}},
         lot_biz_reason:{input:'占位原因',ajax:{101:'已出售',102:'租赁中',103:'被占用'}}
     },
-    keyword:'可输入车位编码、占用人进行搜索'
+    keyword:'可输入车位编码、占用人'
 }
 
 //初始化详情html
@@ -605,7 +605,7 @@ function information(router,rowkeys) {
 
 
             $('#rewrite .lot_code').html(rowkeys['lot_code']);
-            $('#rewrite .lot_parkcode').val(rowkeys['par_parkname']);
+            $('#rewrite .lot_parkcode').val(rowkeys['lot_parkcode_name']);
             $('#rewrite .lot_parkcode').data('ajax', rowkeys['lot_parkcode']);
             $('#rewrite .lot_owner').val(rowkeys['lot_owner_fullname']);
             $('#rewrite .lot_owner').data('ajax', rowkeys['lot_owner_name']);
@@ -629,11 +629,11 @@ function information(router,rowkeys) {
     $('#rewrite .confirm').click(function (){
         var update = new platform();
         update = update.showupdate()
-
         var updateinsert = {}
-        for (var n in update.input) {
-            updateinsert = update[n].value
-            }
+        for (var n in update) {
+            updateinsert[n] = update[n].value
+            if(!update[n].value){ updateinsert[n]=undefined}
+        }
 
 
 
@@ -641,7 +641,7 @@ function information(router,rowkeys) {
         updateinsert.lot_code = $('#rewrite .lot_code').html();
         console.log('updateinsert')
         console.log(updateinsert)
-
+        console.log(update)
                 $.ajax({
                     url: router.updateParkinglot,
                     method: 'post',

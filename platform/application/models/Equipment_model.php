@@ -124,7 +124,7 @@ class Equipment_model extends CI_model {
 			}
 			//单元
 			else if($level == '104'){
-				$sql .= " and b.stage = $building_code ";
+				$sql .= " and b.unit = $building_code ";
 			}
 			//层
 			else if($level == '105'){
@@ -226,7 +226,6 @@ class Equipment_model extends CI_model {
 							$arr[$key]["e_parent_code_name"] = $parent_equipment['name'];
 						}
 					}
-
 				}
 				//得到安装地点名称
 				$arr[$key]["building_name"] = $this->getHouseholdInfo($row);
@@ -323,7 +322,7 @@ class Equipment_model extends CI_model {
 			}
 			//单元
 			else if($level == '104'){
-				$sql .= " and b.stage = $building_code ";
+				$sql .= " and b.unit = $building_code ";
 			}
 			//层
 			else if($level == '105'){
@@ -371,6 +370,15 @@ class Equipment_model extends CI_model {
 		}
 		if(empty($parent_code)){
 			$parent_code = null;
+		}
+		if(empty($annual_date)){
+			$annual_date = null;
+		}
+		if(empty($regular_date)){
+			$regular_date = null;
+		}
+		if(empty($position_code)){
+			$position_code = null;
 		}
 		$sql = " update village_equipment set name=".
 		$this->db->escape($name).", qr_code=".
@@ -456,19 +464,13 @@ class Equipment_model extends CI_model {
 		if(!empty($building_code_single)){
 			$sql .= " and $building_code_single = any(pe.building_code) ";
 		}
-		//设备名称
-		if(isset($keyword)&&$keyword!=""){
-			if(!$building_code&&!$person_code){
-				$sql .= " and e.name like '%$keyword%' ";
-			}
-		}
 		//楼宇搜索
-		if(!empty($building_code)){
+		/*if(!empty($building_code)){
 			//转化成 array[1001,1002]的形式
 			$building_code = implode(',',$building_code);
 			$building_code = "array[".$building_code."]";
 			$sql .= " and pe.building_code &&  $building_code";
-		}
+		}*/
 		//住户名字搜索
 		if(!empty($person_code)){
 			//转化成 array[1001,1002]的形式
@@ -587,19 +589,6 @@ class Equipment_model extends CI_model {
 		//树形图菜单筛选
 		if(!empty($building_code_single)){
 			$sql .= " and $building_code_single = any(pe.building_code) ";
-		}
-		//设备名称
-		if(isset($keyword)&&$keyword!=""){
-			if(!$building_code&&!$person_code){
-				$sql .= " and e.name like '%$keyword%' ";
-			}
-		}
-		//楼宇搜索
-		if(!empty($building_code)){
-			//转化成 array[1001,1002]的形式
-			$building_code = implode(',',$building_code);
-			$building_code = "array[".$building_code."]";
-			$sql .= " and pe.building_code &&  $building_code";
 		}
 		//住户名字搜索
 		if(!empty($person_code)){
@@ -744,19 +733,13 @@ class Equipment_model extends CI_model {
 		if(!empty($building_code_single)){
 			$sql .= " and $building_code_single = any(pe.building_code) ";
 		}
-		//设备名称
-		if(isset($keyword)&&$keyword!=""){
-			if(!$building_code_arr&&!$person_code_arr){
-				$sql .= " and e.name like '%$keyword%' ";
-			}
-		}
 		//楼宇搜索
-		if(!empty($building_code_arr)){
+		/*if(!empty($building_code_arr)){
 			//转化成 array[1001,1002]的形式
 			$building_code_arr = implode(',',$building_code_arr);
 			$building_code_arr = "array[".$building_code_arr."]";
 			$sql .= " and pe.building_code &&  $building_code_arr";
-		}
+		}*/
 		//住户名字搜索
 		if(!empty($person_code_arr)){
 			//转化成 array[1001,1002]的形式
@@ -791,19 +774,6 @@ class Equipment_model extends CI_model {
 		//树形图菜单筛选
 		if(!empty($building_code_single)){
 			$sql .= " and $building_code_single = any(pe.building_code) ";
-		}
-		//设备名称
-		if(isset($keyword)&&$keyword!=""){
-			if(!$building_code_arr&&!$person_code_arr){
-				$sql .= " and e.name like '%$keyword%' ";
-			}
-		}
-		//楼宇搜索
-		if(!empty($building_code_arr)){
-			//转化成 array[1001,1002]的形式
-			$building_code_arr = implode(',',$building_code_arr);
-			$building_code_arr = "array[".$building_code_arr."]";
-			$sql .= " and pe.building_code &&  $building_code_arr";
 		}
 		//住户名字搜索
 		if(!empty($person_code_arr)){
@@ -899,6 +869,12 @@ class Equipment_model extends CI_model {
 			foreach($arr as $key => $row){
 				//赋值中文名称
 				foreach($row as $k1 => $value){
+					//url转换
+					if($k1=="tdcode_url"){
+						if(!empty($value)){
+							$arr[$key]["tdcode_url"] = urlencode($value);
+						}
+					}
 				}
 				//得到安装地点名称
 				$arr[$key]["building_name"] = $this->getHouseholdInfo($row);
@@ -1065,7 +1041,7 @@ class Equipment_model extends CI_model {
 			}
 			//单元
 			else if($level == '104'){
-				$sql .= " and b.stage = $building_code ";
+				$sql .= " and b.unit = $building_code ";
 			}
 			//层
 			else if($level == '105'){
@@ -1154,7 +1130,7 @@ class Equipment_model extends CI_model {
 			}
 			//单元
 			else if($level == '104'){
-				$sql .= " and b.stage = $building_code ";
+				$sql .= " and b.unit = $building_code ";
 			}
 			//层
 			else if($level == '105'){
@@ -1183,5 +1159,207 @@ class Equipment_model extends CI_model {
 		return 0;
 	}
 
+	public function verifyLanip($village_id,$lan_ip,$code){
+		$sql = "select lan_ip from village_equipment where village_id = '$village_id' and lan_ip = '$lan_ip' and code != $code limit 1";
+		// echo $sql;exit;
+		$query = $this->db->query($sql);
+		if($query->num_rows() > 0 ){
+			$res=$query->row_array();
+			return $res['lan_ip'];
+		}
+		return false;
+	}
+
+	public function getEquipmentService($village_id,$page,$keyword,$effective_date,$push_start_date,$push_end_date,$equipment_type,$regular_check,$building_code,$level,$rows){
+		$start=($page-1) * $rows;
+		$equipment_type_arr=$this->equipment_type_arr;
+		$regular_check_arr=$this->regular_check_arr;
+		$if_se_arr=$this->if_se_arr;
+		$effective_status_arr=$this->effective_status_arr;
+		$annual_check_arr=$this->annual_check_arr;
+		$sql = "select e.code as equipment_code,e.name,e.equipment_type,e.regular_check,e.regular_date,r.accept_person_code as person_code,r.work_code,r.complete_time,b.stage_name,b.area_name,b.immeuble_name,b.unit_name,b.floor_name,b.room_name,b.public_name from village_order_record as r left join village_equipment as e on r.equipment_code = e.code and r.village_id = e.village_id LEFT JOIN village_tmp_building as b on b.code = e.building_code and b.village_id = e.village_id where r.equipment_code is not null and r.village_id = $village_id  ";
+		//开始日期筛选
+		if(!empty($push_start_date)){
+			$sql=$sql." and r.complete_time >= '$push_start_date' ";
+		}
+		if(!empty($push_end_date)){
+			$sql=$sql." and r.complete_time <= '$push_end_date' ";
+		}
+		if(isset($keyword)&&$keyword!=''){
+			$sql=$sql." and e.name like '%$keyword%' ";
+		}
+		//树形图筛选楼宇
+		if(!empty($building_code)){
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
+		}
+		$sql=$sql." order by e.code asc limit ".$rows." offset ".$start;
+		// echo $sql;exit;
+		$q = $this->db->query($sql); //自动转义
+		if ( $q->num_rows() > 0 ) {
+			$arr=$q->result_array();
+			foreach($arr as $key => $row){
+				//赋值中文名称
+				foreach($row as $k1 => $value){
+					//设备类型
+					if($k1=="equipment_type"){
+						foreach($equipment_type_arr as $k2 => $v2){
+						    if($value == $v2['code']){
+						        $arr[$key]["equipment_type_name"] = $v2['name'];
+						        break;
+						    }
+						}
+					}
+					//巡检周期
+					if($k1=="regular_check"){
+						foreach($regular_check_arr as $k2 => $v2){
+						    if($value == $v2['code']){
+						        $arr[$key]["regular_check_name"] = $v2['name'];
+						        break;
+						    }
+						}
+					}
+					//得到维保人姓名
+					if($k1=="person_code"){
+						$person = $this->getPersonByCode($value,$village_id);
+						$arr[$key]["person_name"] = $person['full_name'];
+					}
+					//得到实际维保时间
+					if($k1=="complete_time"){
+						$push_time = $value;
+						if(!empty($value)){
+							$push_time = explode('.',$value);
+							$push_time = $push_time[0];
+						}
+						$arr[$key]["complete_time"] = $push_time;
+					}
+					//得到计划维保时间和维保类型
+					if($k1=="work_code"){
+						$workorder = $this->getWorkOrder($value,$village_id);
+						$arr[$key]["check_date"] = $workorder['regular_date'];
+						$create_type = $workorder['create_type'];
+						$first = substr($create_type,0,1);
+						if($first==1){
+							$arr[$key]["order_type"] = "自动工单";
+						}
+						if($first==2){
+							$arr[$key]["order_type"] = "手动工单";
+						}
+					}
+
+				}
+				//得到安装地点名称
+				$arr[$key]["building_name"] = $this->getHouseholdInfo($row);
+			}
+			$json=json_encode($arr);
+			return $json;
+		}
+		return false;
+	}
+
+	public function getEquipmentServiceTotal($village_id,$keyword,$effective_date,$push_start_date,$push_end_date,$equipment_type,$regular_check,$building_code,$level,$rows){
+		$sql = "select count(e.code) as count from village_order_record as r left join village_equipment as e on r.equipment_code = e.code and r.village_id = e.village_id LEFT JOIN village_tmp_building as b on b.code = e.building_code and b.village_id = e.village_id where r.equipment_code is not null and r.village_id = $village_id  ";
+		//开始日期筛选
+		if(!empty($push_start_date)){
+			$sql=$sql." and r.complete_time >= '$push_start_date' ";
+		}
+		if(!empty($push_end_date)){
+			$sql=$sql." and r.complete_time <= '$push_end_date' ";
+		}
+		if(isset($keyword)&&$keyword!=''){
+			$sql=$sql." and e.name like '%$keyword%' ";
+		}
+		//树形图筛选楼宇
+		if(!empty($building_code)){
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
+		}
+		// echo $sql;exit;
+		$q = $this->db->query($sql); //自动转义
+		if ( $q->num_rows() > 0 ) {
+		    $row = $q->row_array();
+		    $items=$row["count"];
+		    
+		    if($items%$rows!=0)
+		    {
+		        $total=(int)((int)$items/$rows)+1;
+		    }
+		    else {
+		        $total=$items/$rows;
+		    }
+		    return $total;
+		} 
+		return 0;
+	}
+
+	public function getPersonByCode($code,$village_id){
+		$sql = "select *,concat(last_name,first_name) as full_name from village_person where code = $code and village_id = $village_id limit 1";
+		$query = $this->db->query($sql);
+		$row = $query->row_array();
+		return $row;
+	}
+
+	public function getWorkOrder($code,$village_id){
+		$sql = "select * from village_work_order where code = $code and village_id = $village_id limit 1";
+		$query = $this->db->query($sql);
+		$row = $query->row_array();
+		return $row;
+	}
 
 }

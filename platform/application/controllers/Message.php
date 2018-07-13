@@ -116,8 +116,8 @@ class Message extends CI_Controller{
 		if(!file_exists($folderpath)){  
 		    mkdir($folderpath);  
 		}  
-		//生成文件名字  
-		$filename=$code.".html"; 
+		//生成文件名字,加上viilage_id用以区别  
+		$filename=$_SESSION['village_id'].'_'.$code.".html"; 
 		//生成文件路径  
 		$filepath="{$folderpath}{$filename}";  
 		//判断是否有此文件  

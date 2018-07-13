@@ -91,7 +91,7 @@
         <!-- 筛选条件 查找-->
         <form class="search_room" action="" method="get">
             <p>
-                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入车辆编号、车牌号、登记人姓名..." value="" title="可输入车辆编号、车牌号、登记人姓名、车主姓名、型号进行搜索"><a id="clear" onclick="return false">X</a>
+                <input type="text" class="searc_room_text" name="keyword" placeholder="可输入车辆编号、车牌号、登记人姓名..." value="" title="可输入车辆编号、车牌号、登记人姓名、车主姓名、型号"><a id="clear" onclick="return false">X</a>
             </p>
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -504,7 +504,29 @@
 
 
 
-
+        <style>
+            #person_detail p{
+                margin:10px 0px;
+            }
+            #person_detail .bootstrap-table{
+                width:400px
+            }
+            #person_detail .title{
+                font-size: 16px;
+            }
+            .person_detail .icon_circle {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: #37ACFF;
+                margin-right:10px;
+                vertical-align: middle;
+                position: absolute;
+                left:-15px;
+                top: 0px;
+            }
+        </style>
 
         <!--详细信息 -->
         <div class="modal fade" id="person_detail" tabindex="-1" role="dialog" aria-hidden="true">
@@ -514,8 +536,8 @@
                         <div class="building_header">
                             <h4 class="modal-title tac">车辆详情</h4>
                         </div>
-                        <div class="modal-body building oh">
-                            <div class="fl person_wrap person_detail ">
+                        <div class="modal-body  oh" style="margin-bottom:10px">
+                            <div class=" person_wrap person_detail " style="position:relative">
                                 <p><i class="icon_circle"></i>车辆信息</p>
                                 <p><span class="des">车辆编号:</span>
                                     <span class="v_code col_37A"></span>
@@ -561,20 +583,20 @@
                                 </p>
 
                             </div>
-                            <div class="fl person_wrap person_detail ">
-                                <p><i class="icon_circle"></i>授权信息</p>
-                                <p><span class="des">当前授权:</span>
+                            <div class=" person_wrap person_detail " style="width:500px;margin-top:30px;position:relative">
+                                <span ><i class="icon_circle title"></i>授权信息（</span>
+                                <span><span class="des">当前授权:</span>
                                     <span class="auzfornow_name col_37A"></span>
-                                </p>
-                                <p><span class="des">授权记录有效查询:</span>
+                                </span>
+                                <span style="margin-left:20px;"><span class="des" >授权记录有效查询:</span>
                                     <span class="auzforall_name col_37A"></span>
-                                </p>
-                                <p><span class="des">授权记录:</span>
+                                </span>
+                                <span>）</span>
                                     <span class="team_person_name col_37A"></span>
                                 </p>
-                                <table id="getauz"
-                                       data-toolbar="#toolbar">
-                                    <thead>
+
+                                <table id="getauz" data-toolbar="#toolbar" >
+                                    <thead >
                                     <tr>
                                         <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
                                         <th data-title="授权编号" data-align="center" data-field="auz_code"></th>
@@ -671,13 +693,13 @@
 
 
                                 <p class="v_if_resident"> <span class="red_star">*</span>小区车/访客车：
-                                    <span style="margin-left:70px;">
+                                    <span style="margin-left:45px;">
 							<input type="radio" id="radio-6-1" name="radio-6-set" class="regular-radio" >
 							<label for="radio-6-1"></label>
 							小区车
 						</span>
 
-                                    <span style="margin-left:95px;">
+                                    <span style="margin-left:70px;">
 							<input type="radio" id="radio-6-2" name="radio-6-set" class="regular-radio">
 							<label for="radio-6-2"></label>
 							访客车

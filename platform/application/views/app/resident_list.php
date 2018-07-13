@@ -763,7 +763,7 @@ $(function(){
     })
     //清除搜索条件
     $('.search_room #clear').click(function(){
-    	window.location.href="residentlist?page=1";
+    	window.location.href="residentlist?keyword=&page=1"+"&effective_date="+search_effective_date+'&household_type='+search_household_type+'&person_type='+search_person_type+'&building_code='+search_building_code;
     })
 })
 /*toLocation('residentlist','keyword','effective_date','search_effective_date');

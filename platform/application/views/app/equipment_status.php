@@ -148,28 +148,24 @@
 	                <h4 class="modal-title tac">设备状态详情</h4>
 	            </div>
 	            <div class="modal-body building oh">
-		            <div class="fl person_wrap person_detail">
-		            	<p><span class="des">设备编号：</span>
-		            		<span class="code col_37A"></span>
-		            	</p>
-		            	<p><span class="des">设备名称：</span>
-		            		<span class="name col_37A"></span>
-		            	</p>
-		            	<p><span class="des">设备类型：</span>
-		            		<span class="equipment_type_name col_37A"></span>
-		            	</p>
-		            	<p><span class="des">安装地点：</span>
-		            		<span class="building_name col_37A"></span>
-		            	</p>
-		            	<p><span class="des">巡检周期：</span>
-		            		<span class="regular_check_name col_37A"></span>
-		            	</p>
-		            	<p><span class="des">当前状态：</span>
-		            		<span class="status_name col_37A"></span>
-		            	</p>
-		            	
-		            </div>
-		            
+	            	<p><span class="des">设备编号：</span>
+	            		<span class="code col_37A"></span>
+	            	</p>
+	            	<p><span class="des">设备名称：</span>
+	            		<span class="name col_37A"></span>
+	            	</p>
+	            	<p><span class="des">设备类型：</span>
+	            		<span class="equipment_type_name col_37A"></span>
+	            	</p>
+	            	<p><span class="des">安装地点：</span>
+	            		<span class="building_name col_37A"></span>
+	            	</p>
+	            	<p><span class="des">巡检周期：</span>
+	            		<span class="regular_check_name col_37A"></span>
+	            	</p>
+	            	<p><span class="des">当前状态：</span>
+	            		<span class="status_name col_37A"></span>
+	            	</p>
 	            </div>
         	</div>
             <div class="modal_footer bg_eee">

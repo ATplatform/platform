@@ -51,7 +51,7 @@ left join village_person_building as pb on v.person_code=pb.person_code
 left join village_tmp_building as tmp on tmp.code=pb.building_code
 left join village_vehicle_auz as auz on auz.vehicle_code=v.code
 where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.vehicle_code=auz_s.vehicle_code)
-
+and pb.code = (select max(code) from village_person_building as pb_s where pb.person_code=pb_s.person_code)
 ";}
 
 
@@ -85,6 +85,7 @@ left join village_person_building as pb on v.person_code=pb.person_code
 left join village_tmp_building as tmp on tmp.code=pb.building_code
 left join village_vehicle_auz as auz on auz.vehicle_code=v.code
 where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.vehicle_code=auz_s.vehicle_code)
+and pb.code = (select max(code) from village_person_building as pb_s where pb.person_code=pb_s.person_code)
 ";
          }
              if(empty($effective_date)){
@@ -124,7 +125,7 @@ where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.v
 
 
 
-        $sqlshow = $sql . " ORDER BY v.code ASC limit ".$rows." offset ".$start;
+        $sqlshow = $sql . " ORDER BY v.effective_date desc limit ".$rows." offset ".$start;
         $arrayres=array($sql,$sqlshow);
         return $arrayres;
     }
@@ -1113,8 +1114,18 @@ public function getAuzlist($sql)
     return false;
 }
 
+public function getvehicle_code()
+{
+    $sql="select code from village_vehicle ";
+    $q = $this->db->query($sql);
+    $q=$q->result_array();
+    // $res=$res->row_array();
+    return $q;
+}
 
-public function verifyauz($licence)
+
+
+    public function verifyauz($licence)
 {
     $sql="select licence from village_vehicle where licence='$licence'";
     $q = $this->db->query($sql);
@@ -1448,7 +1459,7 @@ public function updateParkinglot($code,$effective_date,$effective_status,$linked
         "biz_reason=".$this->db->escape($biz_reason).",".
         "owner=".$this->db->escape($owner).",".
         "remark=".$this->db->escape($remark)." ".
-        "where code=$code";
+        "where code=".$this->db->escape($code);
 
     $this->db->query($sql);
 }

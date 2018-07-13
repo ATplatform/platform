@@ -379,42 +379,42 @@ $('#write_person .save').click(function(){
 		if_disabled = 'true';
 	}
 	//数据写入库
-		$.ajax({
-			url:getRootPath()+'/index.php/People/updatePeople',
-			method:'post',
-			data:{
-				code:code,
-				oth_mob_no:oth_mob_no,
-				remark:remark,
-				if_disabled:if_disabled,
-				search_keyword:search_keyword,
-				search_effective_date:search_effective_date,
-				search_household_type:search_household_type,
-				search_person_type:search_person_type,
-				search_building_code:search_building_code
-			},
-			success:function(data){
-				$('#write_person').modal('hide');
-				var data = JSON.parse(data);
-				//成功之后自动刷新页面
-				layer.open({
-					  type: 1,
-					  title: false,
-					  //打开关闭按钮
-					  closeBtn: 1,
-					  shadeClose: false,
-					  skin: 'tanhcuang',
-					  content: data.message,
-					  cancel: function(){ 
-					    	//编辑完后异步刷新页面
-				    		asynRefreshPage(getRootPath()+'/index.php/People/residentlist','People/getResidentList',table,data.residentlist_total,'&keyword='+search_keyword+'&effective_date='+search_effective_date+'&household_type='+search_household_type+'&person_type='+search_person_type);
-					  }
-				});
-			},
-			error:function(){
-				console.log('编辑人员出错');
-			}
-		})
+	$.ajax({
+		url:getRootPath()+'/index.php/People/updatePeople',
+		method:'post',
+		data:{
+			code:code,
+			oth_mob_no:oth_mob_no,
+			remark:remark,
+			if_disabled:if_disabled,
+			search_keyword:search_keyword,
+			search_effective_date:search_effective_date,
+			search_household_type:search_household_type,
+			search_person_type:search_person_type,
+			search_building_code:search_building_code
+		},
+		success:function(data){
+			$('#write_person').modal('hide');
+			var data = JSON.parse(data);
+			//成功之后自动刷新页面
+			layer.open({
+				  type: 1,
+				  title: false,
+				  //打开关闭按钮
+				  closeBtn: 1,
+				  shadeClose: false,
+				  skin: 'tanhcuang',
+				  content: data.message,
+				  cancel: function(){ 
+				    	//编辑完后异步刷新页面
+			    		asynRefreshPage(getRootPath()+'/index.php/People/residentlist','People/getResidentList',table,data.residentlist_total,'&keyword='+search_keyword+'&effective_date='+search_effective_date+'&household_type='+search_household_type+'&person_type='+search_person_type);
+				  }
+			});
+		},
+		error:function(){
+			console.log('编辑人员出错');
+		}
+	})
 })
 
 //编辑住户关系

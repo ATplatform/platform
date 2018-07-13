@@ -208,6 +208,20 @@ class Equipment extends CI_Controller{
 		//如果设备类型\设备号\安装地点发生了变化,就要重新生成设备sip地址
 		if($old_equipment_type!=$equipment_type||$old_sign!=$sign||$old_building_code!=$building_code){
 			$this->updateEquipmentSip($building_code,$code,$equipment_type,$sign);
+			//更新完sip地址后,紧接着重新生成设备网络配置二维码
+        	//删除旧的网络配置二维码
+			$old_config_img_url = $equipment['tdcode_url'];
+			$old_config_img_url = iconv('utf-8', 'gbk', $old_config_img_url);
+			if(file_exists($old_config_img_url)){
+            	unlink($old_config_img_url);
+        	}
+        	//生成新的网络配置二维码
+        	//得到新sip地址
+        	$new_equipment = $this->Equipment_model->getEquipmentByCode($code,$village_id);
+        	//得到新二维码信息
+        	$config_qrcodeData = $this->Equipment_model->getConfigData($code,$equipment['server_ip'],$equipment['lan_ip'],$equipment['ip'],$equipment['gateway'],$equipment['netmask'],$equipment['dns1'],$equipment['dns2'],$new_equipment['sip']);
+        	//生成一张二维码图片
+        	$pngAbsoluteFilePath = $this->setConfigQRcodeImg($equipment['building_code'],$name,$config_qrcodeData);
 		}
 		
 		//如果名称已经改变,则重新生成二维码图片(设备二维码和网络配置二维码)
@@ -252,7 +266,7 @@ class Equipment extends CI_Controller{
 		$this->load->model('Equipment_model');
 		$level = ' ';
 		//先根据buildingcode查出当前搜索的楼栋的层级信息
-		if(!empty($building_code)){
+		if(!empty($search_building_code)){
 			$buildings = $this->Equipment_model->getBuildingByCode($search_building_code,$village_id);
 			$level = $buildings['level'];
 		}
@@ -639,6 +653,7 @@ class Equipment extends CI_Controller{
 		$dns2 = $this->input->post('dns2');
 		$village_id = $_SESSION['village_id'];
 		$this->load->model('Equipment_model');
+
 		//先得到设备的名称和building_code,设备类型,设备号
 		$equipment = $this->Equipment_model->getEquipmentByCode($code,$village_id);
 		$building_code = $equipment['building_code'];
@@ -651,6 +666,7 @@ class Equipment extends CI_Controller{
 
 		$qrcodeData = $this->Equipment_model->getConfigData($code,$severip,$lan_ip,$ip,$gatewayip,$netmask,$dns1,$dns2,$equipment_sip);
 
+		// print_r($qrcodeData);exit;
 		//生成一张二维码图片
 		$pngAbsoluteFilePath = $this->setConfigQRcodeImg($building_code,$name,$qrcodeData);
 
@@ -718,6 +734,13 @@ class Equipment extends CI_Controller{
 		$dns1 = $this->input->post('dns1');
 		$dns2 = $this->input->post('dns2');
 		$old_tdcode_url = $this->input->post('old_tdcode_url');
+		//带search为查找总条数的分页参数
+		$page = $this->input->post('page');
+		$search_keyword = $this->input->post('search_keyword');
+		$search_effective_date = $this->input->post('search_effective_date');
+		$search_equipment_type = $this->input->post('search_equipment_type');
+		$search_building_code = $this->input->post('search_building_code');
+		$page = $page?$page:1;
 		$village_id = $_SESSION['village_id'];
 		$this->load->model('Equipment_model');
 		//先得到设备的名称和building_code,设备类型,设备号
@@ -742,6 +765,9 @@ class Equipment extends CI_Controller{
 
 		//更新设备配置信息
 		$res = $this->Equipment_model->updateEquipmentConfig($code,$village_id,$severip,$lan_ip,$ip,$gatewayip,$netmask,$dns1,$dns2,$pngAbsoluteFilePath);
+
+		//得到总条数
+		$data['total'] = $this->Equipment_model->getEquipmentConfigTotal($village_id,$page,$search_keyword,$search_effective_date,$search_equipment_type,$search_building_code,$this->user_per_page);
 
 		if($res==true){
 			$data['message'] = '编辑成功';
@@ -816,4 +842,101 @@ class Equipment extends CI_Controller{
 		$res = $this->Equipment_model->getEquipmentStatus($village_id,$page,$keyword,$effective_date,$equipment_type,$regular_check,$building_code,$level,$this->user_per_page);
 		echo $res;
 	}
+
+	public function verifyLanip(){
+		$code = $this->input->post('code');
+		$lan_ip = $this->input->post('lan_ip');
+		$village_id = $_SESSION['village_id'];
+		$this->load->model('Equipment_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		$res = $this->Equipment_model->verifyLanip($village_id,$lan_ip,$code);
+		if(!empty($res)){
+			$data['message'] = "局域网ip已存在";
+		}
+		else {
+			$data['message'] = '局域网ip不存在';
+		}
+		print_r(json_encode($data));
+	}
+
+	public function equipmentservice(){
+		if ( !isset($_SESSION['username']) ) {
+			redirect('Login');
+		}
+		$page = $this->input->get('page');
+		$keyword = $this->input->get('keyword');
+		$effective_date = $this->input->get('effective_date');
+		$equipment_type = $this->input->get('equipment_type');
+		$regular_check = $this->input->get('regular_check');
+		$building_code = $this->input->get('building_code');
+		$push_start_date = $this->input->get('push_start_date');
+		$push_end_date = $this->input->get('push_end_date');
+		$village_id = $_SESSION['village_id'];
+		if(is_null($page)||empty($page))
+		{
+			$page=1;
+		}
+		if(is_null($push_start_date)||empty($push_start_date))
+		{	
+			//消息的初始查询开始日期为上个月的今天
+			$push_start_date = date("Y-m-d", strtotime("-1 month"))." 00:00";
+		}
+		if(is_null($push_end_date)||empty($push_end_date))
+		{
+			$push_end_date = date('Y-m-d',time())." 23:59";
+		}
+		$level = ' ';
+		$this->load->model('Equipment_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->Equipment_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
+		//得到总条数
+		$total = $this->Equipment_model->getEquipmentServiceTotal($village_id,$keyword,$effective_date,$push_start_date,$push_end_date,$equipment_type,$regular_check,$building_code,$level,$this->user_per_page);
+
+		$data['page']=$page>=$total?$total:$page;
+		$data['total']=$total;
+		$data['keyword']=$keyword;
+		$data['effective_date']=$effective_date;
+		$data['equipment_type']=$equipment_type;
+		$data['regular_check'] = $regular_check;
+		$data['building_code'] = $building_code;
+		$data['push_start_date'] = $push_start_date;
+		$data['push_end_date'] = $push_end_date;
+		$data['pagesize']=$this->user_per_page;
+		$data['nav']='equipmentservice';
+		$data['username'] = $_SESSION['username'];
+		$data['at_url']= $this->at_url;
+		//树形菜单
+		$this->load->model('Building_model');
+		$treeNav_data = $this->Building_model->getBuildingTreeData($village_id);
+		$data['treeNav_data']=$treeNav_data;
+		$this->load->view('app/equipment_service',$data);
+	}
+
+	public function getEquipmentService(){
+		$page = $this->input->get('page');
+		$keyword = $this->input->get('keyword');
+		$effective_date = $this->input->get('effective_date');
+		$equipment_type = $this->input->get('equipment_type');
+		$regular_check = $this->input->get('regular_check');
+		$building_code = $this->input->get('building_code');
+		$push_start_date = $this->input->get('push_start_date');
+		$push_end_date = $this->input->get('push_end_date');
+		$page = $page?$page:'1';
+		$village_id = $_SESSION['village_id'];
+		$level = ' ';
+		$this->load->model('Equipment_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->Equipment_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
+		// print_r($buildings);exit;
+		//获得数据
+		$res = $this->Equipment_model->getEquipmentService($village_id,$page,$keyword,$effective_date,$push_start_date,$push_end_date,$equipment_type,$regular_check,$building_code,$level,$this->user_per_page);
+		echo $res;
+	}
+		
 }

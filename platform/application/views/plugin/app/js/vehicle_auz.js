@@ -89,6 +89,7 @@ function platform() {
                 auz_remark:null
             },
             select:{
+                vehicle_code:null,
                 vehicle_type:null,
                 v_person_code:null,
                 auz_person_code:null
@@ -153,6 +154,13 @@ function platform() {
                 this.update.must[n] = must
 
             }
+            this.update.must.v_vehicle_code = $('.add_item').find('input[name=v_vehicle_code]').data('ajax');
+            if(!this.update.must.v_vehicle_code) {openLayer('请输入车辆编号');return;}
+            if(!this.update.must.auz_person_code) {openLayer('请输入授权发起人');return;}
+            if(this.update.must.auz_begin_date>this.update.must.auz_end_date){
+                openLayer('开始日期不能晚于结束日期!');
+                return;
+            }
             return this.update
 
         },
@@ -184,6 +192,10 @@ function platform() {
                 if(this.update.radio[n]){    must= this.update.radio[n]}
                 this.update.must[n] = must
 
+            }
+            if(this.update.must.auz_begin_date>this.update.must.auz_end_date){
+                openLayer('开始日期不能晚于结束日期!');
+                return;
             }
             return this.update
 
@@ -267,6 +279,7 @@ init_time = init_time?init_time:now;
 $('.search_wrap .select_time').val(init_time);
 $('.add_Item').find('input[name="effective_date"]').val(init_time);
 $('.add_Item').find('input[name="begin_date"]').val(init_time);
+$('.add_item').find('input[name="auz_begin_date"]').val(init_time);
 //$('.add_Item').find('input[name="end_date"]').val(init_time);
 //初始化输入框
 $('.searc_room_text').val(init_keyword);
@@ -618,7 +631,7 @@ $('#auz_rewrite .confirm').click(function(){
                 success:function(data){
                     //var data = JSON.parse(data);
                     //成功之后自动刷新页面
-                    $('#vehicle_rewrite').modal('hide');
+                    $('#auz_rewrite').modal('hide');
                     layer.open({
                         type: 1,
                         title: false,
@@ -628,6 +641,7 @@ $('#auz_rewrite .confirm').click(function(){
                         skin: 'tanhcuang',
                         content: '更新授权信息成功',
                         cancel: function(){
+
                             window.location.href=href(List);
                         }
                     });
@@ -733,7 +747,7 @@ $.ajax({
 $('#vehicle_auz .confirm').click(function(){
 
     var update=new platform();
-    update=update.showupdate()
+    update=update.findinsert()
 
     var updateinsert={}
     for (var n in update.input){
@@ -749,6 +763,7 @@ $('#vehicle_auz .confirm').click(function(){
         if(updateinsert[n]=='' ){updateinsert[n]=undefined;}
     }
     updateinsert.auz_code=$('#vehicle_auz .auz_code').html();
+    updateinsert.v_code=$('#vehicle_auz').find('input[name=v_vehicle_code]').data('ajax')
     console.log('updateinsert')
     console.log(updateinsert)
     //传数据
@@ -783,7 +798,6 @@ $('#vehicle_auz .confirm').click(function(){
 
 
 
-
 //点击新增按钮,从后端取得楼宇编号信息
 function insert(){
    var getLatestCodeUrl=arguments[0];
@@ -808,19 +822,43 @@ $('.add_btn').click(function(){
 })
 
 
+///动态获取物业负责人
+    $.ajax({
+        type:"POST",
+        url:'getvehicle_code',
+        dataType:"text",
+        success:function(message){
+            var data=JSON.parse(message);
+            for(var i=0;i<data.length;i++){
+                var d = data[i];
+                var vehicle_code =d['code'];
+
+                if($(".add_item ."+vehicle_code).length==0){
+                    $('.add_item .vehicle_code ul').append('<li><a href="javascript:;" id='+vehicle_code+' data-ajax='+vehicle_code+'>'+vehicle_code+'</a></li>');
+                }
+            }
+        },
+        error:function(jqXHR,textStatus,errorThrown){
+        }
+    })
+
+
+
     $('.add_btn').click(function(){
         $.ajax({
-            url:getLatestCodeforauzUrl,
+            url:getLatestCodeUrl,
             success:function(data){
                 if(parseInt(data)){
                     var code = parseInt(data) + 1;
                 }else{
                     var code = 1000001;
                 }
-                $('.add_Item .auz_code').html(code);
+                $('.add_Item .code').html(code);
             }
         })
     })
+
+
 
 
 ///动态获取物业负责人

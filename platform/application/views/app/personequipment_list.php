@@ -57,7 +57,7 @@
 			
 			<div class="search_room msg_search_room">
 				<p>
-					<input type="text" class="searc_room_text" name="keyword" placeholder="可输入设备名称、授权住户、授权地址" value="">
+					<input type="text" class="searc_room_text" name="keyword" placeholder="可输入授权住户" value="">
 					<a id="clear" href="javascript:;">X</a>
 				</p>
 				<button type="submit"><i class="fa fa-search"></i></button>
@@ -419,6 +419,10 @@ $(function(){
 	$('.search_room button[type="submit"]').click(function(){
 		var keyword = $('.search_room .searc_room_text').val();
 		keyword = trim(keyword);
+		if(!(/^[A-Za-z0-9\u4e00-\u9fa5]+$/.test(keyword))){
+			openLayer('搜索框只能输入数字、汉字、字母!');
+			return;
+		}
 		window.location.href="personequipmentlist?keyword="+keyword+"&page=1"+"&effective_date="+search_effective_date+'&equipment_type='+search_equipment_type+'&building_code='+search_building_code;
 	})
 	//清除条件
@@ -454,18 +458,16 @@ $('#treeNavAdd>span').on("select_node.jstree", function (e, node) {
   console.log(node);
   //父节点数组
   var parents_arr = node.node.parents;
-  if(parents_arr.length==3){
-  	//表示到了室这一层级,需要获取到父节点,把父节点的名称拼接
-  	var imm_id = parents_arr[0];
-  	var imm_node = that.jstree("get_node", imm_id);
-  	var imm_name = imm_node.text;
+  var imm_name = "";
+  //点击的时候,根据parents数组,找到节点的所有父节点
+  if(parents_arr.length>=2){
+  	//parents数组的最后一项为#
+  		for(var i=parents_arr.length-3;i>=0;i--){
+  			var imm_id = parents_arr[i];
+  			var imm_node = that.jstree("get_node", imm_id);
+  			imm_name += imm_node.text;
+  		}
   }
-  //表示是栋这一层级
-  else if(parents_arr.length==2){
-  		
-  }
-  // alert(imm_name);
-  imm_name = imm_name?imm_name:'';
   var html_tmp = "<em id="+room_code+" data-room_code="+room_code+">"+imm_name+name+"<i class='fa fa-close'></i></em>";
   //选择楼宇赋值时不能重复且不能超过10个
   if(that.closest('.model_content').find('.select_buliding em').length<10){

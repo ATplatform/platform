@@ -120,44 +120,68 @@ $('#add_content .save').click(function(){
 		return;
 	}
 	
-	
-	//数据写入库
+	//首先验证局域网ip是否已经存在
 	$.ajax({
-		url:getRootPath()+'/index.php/Equipment/insertEquipmentConfig',
+		url:getRootPath()+'/index.php/Equipment/verifyLanip',
 		method:'post',
 		data:{
 			code:code,
-			severip:severip,
-			lan_ip:lan_ip,
-			ip:ip,
-			gatewayip:gatewayip,
-			netmask:netmask,
-			dns1:dns1,
-			dns2:dns2
+			lan_ip:lan_ip
 		},
 		success:function(data){
-			content_wrap.modal('hide');
-			var data = JSON.parse(data);
-			//成功之后自动刷新页面
-			layer.open({
-				  type: 1,
-				  title: false,
-				  //打开关闭按钮
-				  closeBtn: 1,
-				  shadeClose: false,
-				  skin: 'tanhcuang',
-				  content: data.message,
-				  cancel: function(){ 
-				  	//右上角关闭回调,成功后跳页
-			    	window.location = getRootPath() + "/index.php/Equipment/equipmentconfig";
+				var data = JSON.parse(data);
+				console.log(data);
+				if(data.message == "局域网ip已存在"){
+					openLayer('局域网ip已存在!');
+					return;
+				}
+				else{
+					//数据写入库
+					$.ajax({
+						url:getRootPath()+'/index.php/Equipment/insertEquipmentConfig',
+						method:'post',
+						data:{
+							code:code,
+							severip:severip,
+							lan_ip:lan_ip,
+							ip:ip,
+							gatewayip:gatewayip,
+							netmask:netmask,
+							dns1:dns1,
+							dns2:dns2
+						},
+						success:function(data){
+							content_wrap.modal('hide');
+							var data = JSON.parse(data);
+							//成功之后自动刷新页面
+							layer.open({
+								  type: 1,
+								  title: false,
+								  //打开关闭按钮
+								  closeBtn: 1,
+								  shadeClose: false,
+								  skin: 'tanhcuang',
+								  content: data.message,
+								  cancel: function(){ 
+								  	//右上角关闭回调,成功后跳页
+							    	window.location = getRootPath() + "/index.php/Equipment/equipmentconfig";
 
-				  }
-			});
+								  }
+							});
+						},
+						error:function(){
+							console.log('新增出错');
+						}
+					})
+				}		
 		},
 		error:function(){
-			console.log('新增出错');
+			console.log('查询局域网ip出错');
 		}
 	})
+
+	
+
 })
 
 //编辑保存
@@ -227,47 +251,71 @@ $('#content_write .save').click(function(){
 		return;
 	}
 
-	//数据写入库
+	//首先验证局域网ip是否已经存在
 	$.ajax({
-		url:getRootPath()+'/index.php/Equipment/updateEquipmentConfig',
+		url:getRootPath()+'/index.php/Equipment/verifyLanip',
 		method:'post',
 		data:{
 			code:code,
-			old_tdcode_url:old_tdcode_url,
-			severip:severip,
-			lan_ip:lan_ip,
-			ip:ip,
-			gatewayip:gatewayip,
-			netmask:netmask,
-			dns1:dns1,
-			dns2:dns2
+			lan_ip:lan_ip
 		},
 		success:function(data){
-			//先隐藏编辑页
-			content_wrap.modal('hide');
 			var data = JSON.parse(data);
-			//成功之后自动刷新页面
-			layer.open({
-				  type: 1,
-				  title: false,
-				  //打开关闭按钮
-				  closeBtn: 1,
-				  shadeClose: false,
-				  skin: 'tanhcuang',
-				  content: data.message,
-				  cancel: function(){ 
-	  		    	//编辑完后异步刷新页面
-	  	    		// asynRefreshPage(getRootPath()+'/index.php/Equipment/equipmentlist','Equipment/getEquipmentList',table,data.total,'&keyword='+search_keyword+'&effective_date='+search_effective_date+'&equipment_type='+search_equipment_type+'&building_code='+search_building_code);
-				  }
-			});
+			console.log(data);
+			if(data.message == "局域网ip已存在"){
+				openLayer('局域网ip已存在!');
+				return;
+			}
+			else{
+				//数据写入库
+				$.ajax({
+					url:getRootPath()+'/index.php/Equipment/updateEquipmentConfig',
+					method:'post',
+					data:{
+						code:code,
+						old_tdcode_url:old_tdcode_url,
+						severip:severip,
+						lan_ip:lan_ip,
+						ip:ip,
+						gatewayip:gatewayip,
+						netmask:netmask,
+						dns1:dns1,
+						dns2:dns2,
+						page:page,
+						search_keyword:search_keyword,
+						search_effective_date:search_effective_date,
+						search_equipment_type:search_equipment_type,
+						search_building_code:search_building_code
+					},
+					success:function(data){
+						//先隐藏编辑页
+						content_wrap.modal('hide');
+						var data = JSON.parse(data);
+						//成功之后自动刷新页面
+						layer.open({
+							  type: 1,
+							  title: false,
+							  //打开关闭按钮
+							  closeBtn: 1,
+							  shadeClose: false,
+							  skin: 'tanhcuang',
+							  content: data.message,
+							  cancel: function(){ 
+				  		    	//编辑完后异步刷新页面
+				  	    		asynRefreshPage(getRootPath()+'/index.php/Equipment/equipmentconfig','Equipment/getEquipmentConfig',table,data.total,'&keyword='+search_keyword+'&effective_date='+search_effective_date+'&equipment_type='+search_equipment_type+'&building_code='+search_building_code);
+							  }
+						});
+					},
+					error:function(){
+						console.log('新增出错');
+					}
+				})
+			}		
 		},
 		error:function(){
-			console.log('新增出错');
+			console.log('查询局域网ip出错');
 		}
 	})
-
-
-
 })
 
 //信息管理操作
