@@ -118,26 +118,25 @@ class Material extends CI_Controller
                 $material_type_name = $v['name'];
             }
         }
+
+        $url = $_SERVER['SERVER_ADDR'];
+        $base_url = 'http://'.$url;
         //二维码名称
-        $fileName = $householdInfo.$material_type_name.$name.'.png';
+        $fileName =$url.'_'.$code.'.png';
         //二维码图片地址
         $village_id = $_SESSION['village_id'];
 
         $village_name= $this->Building_model->getvillagename($village_id);
 
-        $temp_path='qrcode/'.$village_id.$village_name.'物资二维码/';
+        $temp_path='qrcode/'.$village_id.'_QRCODE_MATERIAL';
 
         //二维码内容,设备的二维码type为101,village暂时写为100001
         $this->load->model('Building_model');
-        $qrcodeData = $this->Building_model->getQrcodeData(101,$village_id,$code);
-        $this->Building_model->setQRcode($qrcodeData,$temp_path,$fileName);
 
-
-        $url = $_SERVER['SERVER_ADDR'];
-        $base_url = 'http://'.$url;
         $pushserver_address=$base_url;
-        $qr_code=$pushserver_address.'/platform/'.$temp_path.$fileName;
-
+        $qr_code=$pushserver_address.'/platform/'.$temp_path.'/'.$fileName;
+        $qrcodeData = $this->Building_model->getQrcodeData(104,$village_id,$code,$qr_code);
+        $this->Building_model->setQRcode($qrcodeData,$temp_path,$fileName);
 
         $res = $this->Material_model->insertMaterial($village_id,$code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark, $qr_code,$create_time);
         if ($res) {

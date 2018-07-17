@@ -143,6 +143,8 @@ where M.code=A.code
                     }
                     if ($key2 == 'function') {
                         $arr[$key][$key2] = $value2 ;
+                        $arr[$key]['materialfunction'] = $value2 ;
+
                     }
                     if ($key2 == 'supplier') {
                         $arr[$key][$key2] = $value2 ;

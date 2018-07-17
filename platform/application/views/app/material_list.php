@@ -10,7 +10,7 @@
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/jstree/dist/jstree.min.js'?>'></script>
 <script src='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js'?>'></script>
-
+<script src="http://vuejs.org/js/vue.js"></script>
 
 
 <div class="oh pt10">
@@ -102,7 +102,7 @@
                     <th  data-title="数量" data-align="center" data-field="pcs"></th>
                     <th  data-title="状态" data-align="center" data-field="effective_status_name"></th>
                     <th data-title="生效日期" data-align="center" data-field="effective_date_name"></th>
-                    <th  data-title="用途" data-align="center" data-field="function"></th>
+                    <th  data-title="用途" data-align="center" data-field="materialfunction"></th>
                     <th  data-title="供应商" data-align="center" data-field="supplier"></th>
                     <th  data-title="内部编号" data-align="center" data-field="internal_no"></th>
                     <th  data-title="出厂编号" data-align="center" data-field="initial_no"></th>
@@ -142,101 +142,140 @@
 
         <!-- 增加物资 -->
         <div class="modal fade" id="add_Item" tabindex="-1" role="dialog" aria-hidden="true">
+      <!--      <my-component></my-component>-->
             <div class="modal-dialog"  style="width: 630px;">
                 <div class="modal-content model_wrap">
                     <div class="model_content">
                         <div class="building_header">
-                            <h4 class="modal-title tac">新增物资信息</h4>
+                            <h4 class="modal-title tac">{{title}}</h4>
                         </div>
-                        <div class="modal-body building add_Item">
+                        <div class="modal-body building add_Item" >
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;物资编号：<span class="code" style="margin-left:26px;"></span>
                             </p>
-                            <p><span class="red_star">*</span>生效日期：
-                                <input type="text" class="effective_date date form-control" name="effective_date" value=""/ >
-                            </p>
-                           <p class="effective_status"><span class="red_star">*</span>状态：
+                            <div v-for="insert in inserts">
+                                <p v-if="insert.method=='time'"><span v-if="insert.must" class="red_star">*</span>
+                                    <span v-else>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    {{insert.text}}：
+                                    <input  v-model="insert.value" type="text" class=" date form-control"   value=""/>
+                                </p>
+
+                                <p  v-if="insert.method=='building'" class="select_buliding_wrap" >
+                                    <span v-if="insert.must" class="red_star">*</span>
+                                    <span v-else>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <span>{{insert.text}}：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <a v-on:click="onClick_building_code" href="javascript:;" id="treeNavWrite" class="treeWrap"><span v-on:click="onClick_building_code"></span></a>
+                                    <span class="select_buliding"></span>
+                                </p>
+
+
+                            <p  v-if="insert.method=='radio'" >
+                                <span v-if="insert.must" class="red_star">*</span>
+                                <span v-else>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                {{insert.text}}：
                                 <span style="margin-left:45px;">
-							<input type="radio" id="radio-1-1" name="radio-1-set" class="regular-radio" checked="">
+							<input v-model="insert.value" type="radio" id="radio-1-1" name="radio-1-set" class="regular-radio" checked="" value="true">
 							<label for="radio-1-1"></label>
 							有效
 						</span>
 
                                 <span class="fr">
-							<input type="radio" id="radio-1-2" name="radio-1-set" class="regular-radio">
+							<input v-model="insert.value"  type="radio" id="radio-1-2" name="radio-1-set" class="regular-radio" value="false">
 							<label for="radio-1-2"></label>
 							无效
 						</span>
                             </p>
-                            <p><span class="red_star">*</span>物资名称：
-                                <input type="text" class="model_input name" placeholder="请输入物资名称"  name="name" />
                             </p>
-                            <p><span class="red_star">*</span>数量：<input type="text" class="model_input pcs" placeholder="请输入数量" name="pcs" /></p>
+
+                                <p v-if="insert.method=='input'" >
+                                    <span v-if="insert.must" class="red_star">*</span>
+                                    <span v-else>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    {{insert.text}}：
+                                    <input v-model="insert.value" type="text" class="model_input " :placeholder=textplaceholder(insert.text) />
+                                </p>
+
+
+
+                                <div v-if="insert.method=='select'" class="select_wrap select_pull_down" >
+                                    <div>
+                                        <span v-if="insert.must" class="red_star">*</span>
+                                        <span v-else>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                        {{insert.text}}：
+                                        <input v-bind:data-ajax="insert.value" type="text" class="model_input  ka_input3" :placeholder=textplaceholder(insert.text)   readonly />
+                                    </div>
+                                    <div class="ka_drop">
+                                        <div class="ka_drop_list">
+                                            <ul>
+                                                <li v-for="(item,index) in material_types"><a href="javascript:;"  v-bind:data-ajax="item.ajax" v-on:click="onClick_material_type(item)">{{item.text}}</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+<!--                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;物资编号：<span class="code" style="margin-left:26px;"></span>
+                            </p>
+                            <p  ><span class="red_star">*</span>{{effective_date.text}}：
+                                <input  v-model="effective_date.value" type="text" class=" date form-control"   value=""/>
+                            </p>
+                           <p><span class="red_star">*</span>{{effective_status.text}}：
+                                <span style="margin-left:45px;">
+							<input v-model="effective_status.value" type="radio" id="radio-1-1" name="radio-1-set" class="regular-radio" checked="" value="true">
+							<label for="radio-1-1"></label>
+							有效
+						</span>
+
+                                <span class="fr">
+							<input v-model="effective_status.value"  type="radio" id="radio-1-2" name="radio-1-set" class="regular-radio" value="false">
+							<label for="radio-1-2"></label>
+							无效
+						</span>
+                            </p>
+                            <p><span class="red_star">*</span>{{name.text}}：
+                                <input v-model="name.value"  type="text" class="model_input name" :placeholder=textplaceholder(name.text)  name="name" />
+                            </p>
+                            <p><span class="red_star">*</span>{{pcs.text}}：<input v-model="pcs.value"  type="text" class="model_input pcs" :placeholder=textplaceholder(pcs.text)  /></p>
                             <div class="select_wrap select_pull_down">
                                 <div>
-                                    <span class="red_star">*</span>物资类型：
-                                    <input type="text" class="model_input material_type ka_input3" placeholder="请输入物资类型"  name="material_type" data-ajax="" readonly />
+                                    <span class="red_star">*</span>{{material_type.text}}：
+                                    <input v-bind:data-ajax="material_type.value" type="text" class="model_input  ka_input3" :placeholder=textplaceholder(material_type.text)   readonly />
                                 </div>
                                 <div class="ka_drop">
                                     <div class="ka_drop_list">
                                         <ul>
-                                            <li><a href="javascript:;" data-ajax="101">工程物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="102">安防物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="103">消防物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="104">保洁物资</a></li>
-                                            <li><a href="javascript:;" data-ajax="105">办公物资</a></li>
+                                            <li v-for="(item,index) in material_types"><a href="javascript:;"  v-bind:data-ajax="item.ajax" v-on:click="onClick_material_type(item)">{{item.text}}</a></li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-                      <!--      <div class="select_wrap select_pull_down">
-                                <div>
-                                    <span class="red_star">*</span>楼宇层级：
-                                    <input type="text" class="model_input level ka_input3" placeholder="请输入楼宇层级"  name="level" data-ajax="" readonly />
-                                </div>
-                                <div class="ka_drop">
-                                    <div class="ka_drop_list">
-                                        <ul>
-                                            <li><a href="javascript:;" data-ajax="100">小区</a></li>
-                                            <li><a href="javascript:;" data-ajax="101">期</a></li>
-                                            <li><a href="javascript:;" data-ajax="102">区</a></li>
-                                            <li><a href="javascript:;" data-ajax="103">栋</a></li>
-                                            <li><a href="javascript:;" data-ajax="104">单元</a></li>
-                                            <li><a href="javascript:;" data-ajax="105">层</a></li>
-                                            <li><a href="javascript:;" data-ajax="106">室</a></li>
-                                            <li><a href="javascript:;" data-ajax="107">公共设施</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>-->
 
                             <p class="select_buliding_wrap">
-                                <span class="red_star">*</span><span>地址：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                <a href="javascript:;" id="treeNavWrite" class="treeWrap"><span></span></a>
+                                <span class="red_star">*</span><span>{{building_code.text}}：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                <a v-on:click="onClick_building_code" href="javascript:;" id="treeNavWrite" class="treeWrap"><span v-on:click="onClick_building_code"></span></a>
                                 <span class="select_buliding"></span>
                             </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用途：
-                                <input type="text" class="model_input function" placeholder="请输入用途"  name="function" />
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{materialfunction.text}}：
+                                <input v-model="materialfunction.value"   type="text" class="model_input " :placeholder=textplaceholder(materialfunction.text)  />
                             </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;供应商：
-                                <input type="text" class="model_input supplier" placeholder="请输入供应商"  name="supplier" />
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{supplier.text}}：
+                                <input v-model="supplier.value" type="text" class="model_input " :placeholder=textplaceholder(supplier.text)  />
                             </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;内部编号：
-                                <input type="text" class="model_input internal_no" placeholder="请输入内部编号"  name="internal_no" />
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{internal_no.text}}：
+                                <input v-model="internal_no.value" type="text" class="model_input " :placeholder=textplaceholder(internal_no.text)   />
                             </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;出厂编号：
-                                <input type="text" class="model_input initial_no" placeholder="请输入出厂编号"  name="initial_no" />
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{initial_no.text}}：
+                                <input v-model="initial_no.value" type="text" class="model_input " :placeholder=textplaceholder(initial_no.text) />
                             </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark" /></p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{remark.text}}：<input v-model="remark.value" type="text" class="model_input " :placeholder=textplaceholder(remark.text) /></p>-->
                         </div>
                     </div>
                     <div class="modal_footer bg_eee">
                         <p class="tac pb17">
-                            <span class="col_37A confirm">保存</span>
+                            <span class="col_37A confirm  " v-on:click="confirminsert()">保存</span>
                             <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal -->
+                </div>
+            </div>
         </div>
 
 
@@ -324,6 +363,156 @@
 <input type="hidden" value='<?php echo $parent_code;?>' name="parent_codes" />
 <input type="hidden" value='<?php echo $effective_date;?>' name="effective_dates" />
 <script>
+
+
+    //初始化新增楼宇信息 && 点击保存新增楼宇信息
+    var vm= new Vue({
+        el:'#add_Item',
+        data:{
+            title:'新增物资信息',
+            material_types:[
+                {ajax:'101',text:"工程物资"},
+                {ajax:'102',text:"安防物资"},
+                {ajax:'103',text:"消防物资"},
+                {ajax:'104',text:"保洁物资"},
+                {ajax:'105',text:"办公物资"}
+            ],
+            inserts:{
+                effective_date:{method:"time",value:"",text:"生效日期",must:true},
+                effective_status:{method:"radio",value:true,text:"物资状态"},
+                name:{method:"input",value:"",text:'物资名称',must:true},
+                pcs:{method:"input",value:"",text:"数量",must:true},
+                material_type:{method:"select",value:"",text:"物资类型",must:true},
+                building_code:{method:"building",value:"",text:"地址",must:true},
+                parent_code:{method:"",value:"",text:""},
+                materialfunction:{method:"input",value:"",text:"用途"},
+                supplier:{method:"input",value:"",text:"供应商"},
+                internal_no:{method:"input",value:"",text:"内部编号"},
+                initial_no:{method:"input",value:"",text:"出厂编号"},
+                remark:{method:"input",value:"",text:"备注"}
+
+            }
+        }
+        ,
+        computed:{
+
+        },
+        methods : {
+            textplaceholder:function(index){
+                return "请输入"+index
+            },
+            onClick_material_type: function (item) {
+                console.log(item.ajax);
+                this.inserts.material_type.value=item.ajax
+            },
+            onClick_building_code:function (){
+                var self=this
+                $('#treeNavWrite>span').on("select_node.jstree", function (e, node) {
+                    // var arr=node.node.id.split("_");
+
+                    var building_code = node.node.original.code;
+                    var parent_code = node.node.original.code;
+                    self.inserts.building_code.value=building_code
+                    self.inserts.parent_code.value=parent_code
+                })
+            },
+            dateDefind:function() {
+                var self = this;
+                var now = new Date();
+                now = formatDate(now);
+                self.inserts.effective_date.value = now;
+                //初始化
+                $('#add_Item .effective_date').datetimepicker({
+                    language:  'zh-CN',
+                    format: 'yyyy-mm-dd',
+                    weekStart: 1,
+                    autoclose: 1,
+                    todayHighlight: 1,
+                    startView: 2,
+                    minView: 2,
+                    forceParse: 1
+                });
+                //当选择器隐藏时，讲选择框只赋值给data里面的time
+                $('#add_Item .effective_date').datetimepicker().on('hide', function (ev) {
+                    var value = $("#add_Item .effective_date").val();
+                    self.inserts.effective_date.value = value;
+                });
+            },
+            confirminsert:function(){
+                var vm=this
+                var insertdata = {}
+                for (var n in vm._data['inserts']) {
+                    insertdata[n] = vm._data['inserts'][n]['value']
+                }
+                /*    for (var n in vm._data['inserts']) {
+                        if(vm._data['inserts'][n]['must'] &&  !insertdata[n]){
+
+                        }
+
+                    }*/
+                console.log(insertdata)
+                if (!insertdata.effective_date) {
+                    openLayer('请输入生效日期');
+                    return;
+                }
+                if (!insertdata.name) {
+                    openLayer('请输入物资名称');
+                    return;
+                }
+                if (!insertdata.pcs) {
+                    openLayer('请输入物资数量');
+
+                    return;
+                }
+                if (!/^[0-9]*$/.test(insertdata.pcs)) {
+                    openLayer('物资数量请输入数字');
+                    return;
+                }
+                if (!insertdata.material_type) {
+                    openLayer('请选择物资类型');
+                    return;
+                }
+                if (!insertdata.building_code) {
+                    openLayer('请选择至少一个地点!');
+                    return;
+                }
+
+                //传数据
+                $.ajax({
+                    url: insertMaterial(),
+                    method: 'post',
+                    data: insertdata,
+                    success: function (data) {
+                        //var data = JSON.parse(data);
+                        $('#add_Item').modal('hide');
+                        //成功之后自动刷新页面
+                        layer.open({
+                            type: 1,
+                            title: false,
+                            //打开关闭按钮
+                            closeBtn: 1,
+                            shadeClose: false,
+                            skin: 'tanhcuang',
+                            content: '新增物资成功',
+                            cancel: function () {
+                                //右上角关闭回调
+                                /* asynRefreshPage(getRootPath()+'/index.php/Material/materialList','Material/getMaterialList',table,data.total,'&keyword='+search_keyword);*/
+                                materialList();
+                            }
+                        });
+                    },
+                    error: function () {
+                        console.log('新增物资出错');
+                    }
+                })
+            }
+
+        },
+        mounted: function(){
+            this.dateDefind();
+        }
+    })
+
 
     //////////////////////////////搜索模块的树形地点///////////////////////////////////
         var treeNav_data =<?php echo $treeNav_data?>;
@@ -487,7 +676,7 @@
             var effective_date_name = row.effective_date_name;
             var room_name = row.building_name;
             var pcs = row.pcs;
-            var materialfunction = row.function;
+            var materialfunction = row.materialfunction;
             var supplier = row.supplier;
             var internal_no = row.internal_no;
             var initial_no = row.initial_no;

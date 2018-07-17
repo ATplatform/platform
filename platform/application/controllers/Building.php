@@ -12,6 +12,58 @@ class Building extends CI_Controller{
 		$this->user_per_page=$this->config->item('user_per_page');
 		$this->at_url=$this->config->item('at_url');
 	}
+
+    public function txtToImg(){
+        $file_name = "test";
+        $type = 101;
+        $village_id = '100001';
+        $code = '100001';
+        $sip = 'zg_jsnixwq_neiwangxiaoqu_s0a0b5u0f0r0';
+        $text = "11111期22222区3333栋44444单元6666层11室11号";
+
+        //先生成一张二维码图片
+        $temp_path='qrcode/'.$village_id.'_QRCODE_'.$file_name;
+        // $temp_path = '';
+        $fileName = $sip.'.png';
+        //生成的二维码图片地址
+        $pngAbsoluteFilePath = $temp_path.'/'.$fileName;
+        // $qrcodeData = '';
+        $this->load->model('Building_model');
+        $qrcodeData = $this->Building_model->getQrcodeData($type,$village_id,$code,$pngAbsoluteFilePath);
+
+        if (!file_exists($temp_path)){
+            mkdir($temp_path, 0777, true);
+        }
+        //有图片的情况下,先删除原来的图片
+        if(file_exists($pngAbsoluteFilePath)){
+            unlink($pngAbsoluteFilePath);
+        }
+        QRcode::png($qrcodeData, $pngAbsoluteFilePath,H,5,10);
+
+        //下面是生成文字
+        //text为要显示的文字
+        $size = 10;
+        //字体路径，微软雅黑
+        $font =APPPATH.'libraries/include/font/msyh.ttf';
+        //打开已经生成好的二维码图片
+        $im = imagecreatefrompng($pngAbsoluteFilePath);
+        //设置字体颜色
+        $black = imagecolorallocate($im, 0, 0, 0);
+        //将ttf文字写到图片中
+        imagettftext($im, $size, 0, 10, 20, $black, $font, $text);
+        //先删除原来的二维码图片
+        if(file_exists($pngAbsoluteFilePath)){
+            unlink($pngAbsoluteFilePath);
+        }
+        //重新生成增加了文字的二维码图片
+        ob_start();
+          imagejpeg($im);
+        $img = ob_get_contents();
+        ob_end_clean();
+        $fp2=@fopen($pngAbsoluteFilePath, "a");
+        fwrite($fp2,$img);
+        fclose($fp2);
+    }
 	//模拟生成tmp_building表
 	public function setTmpBuilding(){
 		$this->load->model('TmpBuilding_model');
