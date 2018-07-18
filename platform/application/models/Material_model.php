@@ -159,7 +159,7 @@ where M.code=A.code
                         $arr[$key][$key2] = $value2 ;
                     }
                     $arr[$key]["building_name"] = $this->getHouseholdInfo($value);
-
+                    $arr[$key]["building_code_name"] = $this->getHouseholdInfo($value);
                 }
             }
             $json = json_encode($arr);

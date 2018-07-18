@@ -315,7 +315,7 @@ function update(source) {
         .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
       .on("click", function(d) {  togglefornode(d);update(d);});//
 
-
+/*
 
     nodeEnter.append("svg")
         .attr("class", "option1_svg")
@@ -412,7 +412,7 @@ function update(source) {
             if(d.depth<6) {
                 updatebuilding(d);
             }
-        })
+        })*/
 
 
 

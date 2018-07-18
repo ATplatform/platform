@@ -487,9 +487,9 @@ function html_render(index){
             html +='\n'+
                 '<div class="Search_Item_wrap search_wrap_'+name+' select_pull_down query_wrap col_37A fl"  style="margin-right:10px;">' +
                 '<div >' +
-                '<input type="text"  class="model_input search_'+name+' ka_input3" placeholder="'+index['input']+'" name="'+name+'" data-ajax="" value="" readonly style="width:100px;" >' +
+                '<input type="text"  class="model_input search_'+name+' ka_input3" placeholder="'+index['input']+'" name="'+name+'" data-ajax="" value="" readonly style="width:150px;" >' +
                 '</div>' +
-                '<div class="ka_drop"  style="display: none;width:100px;">' +
+                '<div class="ka_drop"  style="display: none;width:150px;">' +
                 '<div class="ka_drop_list '+name+'" >' +
                 '<ul >' +
                 choice_html	+

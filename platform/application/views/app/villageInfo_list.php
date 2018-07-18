@@ -20,17 +20,21 @@
         font-size:14px;
     }
 .show{
-    float:left;
-    font-size: 14px;
-    width:50%;
-
+  margin-left:auto;
+margin-right:auto;
+    font-size: 18px;
+    width:1000px;
+    margin-bottom:20px;
+    height:100%;
 }
 
 .brief{
-    width:70%;
+    width:40%;
     height:200px;
     resize:none;
     margin-left:8px;
+    word-break:break-all
+
 }
     #container{
         margin-top:10px;
@@ -73,7 +77,7 @@
     }
     .update{
         position:absolute;
-        right:20px;
+        right:380px;
     }
 /*
 
@@ -106,12 +110,11 @@
 
     <div class=" col-sm-12 main_wrap">
 <!--<?php echo 'x'; ?>-->
-
-
-        <div class="left show" >
+        <div class="show" style="overflow:hidden;zoom:1;">
 
             <div class="title">
                 <p class="col_37A " ><i class="icon_circle" ></i>社区基本信息</p>
+            </div>
               <!-- <button class=" add_btn update"  >编辑</button>-->
             <div class=" fl" style="width:30%;  ">
                 <div class="content">
@@ -147,26 +150,24 @@
             </div>
 
         </div>
-        </div>
+   </div>
+    <!-- <div class="right"  >
 
-        <div class="right"  >
+       <div class="title">
+           <div>
+           <p class="col_37A" ><i class="icon_circle"></i>社区平面图</p>
+       </div>
+       <div class="imgwrap" >
+           <img   class="villageimg" src="" alt="#" >
+       </div>
 
-            <div class="title">
-                <div>
-                <p class="col_37A" ><i class="icon_circle"></i>社区平面图</p>
-                </div>
-            <div class="imgwrap" >
-                <img   class="villageimg" src="" alt="#" >
-            </div>
-            </div>
-            <!--<div class="title">
-                <p class="col_37A" ><i class="icon_circle" ></i>社区地图位置</p>
-                <div id="container"  >
-                </div>
-            </div>-->
+       <!--<div class="title">
+           <p class="col_37A" ><i class="icon_circle" ></i>社区地图位置</p>
+           <div id="container"  >
+           </div>
+       </div>
 
-        </div>
-    </div>
+   </div>-->
 </div>
 <input type="hidden" value='<?php echo $username;?>' name="username" />
 <script>
