@@ -41,6 +41,21 @@ var search_parent_code = getUrlParam('parent_code');
 var search_keyword = getUrlParam('keyword');
 var search_effective_date = getUrlParam('effective_date');
 
+/*
+
+//初始化第一类搜索条件  /!*********************************需要改动********************!/
+switch(material_type){
+    case '101':$('.search_wrap #material_type_select').val('工程物资');break;
+    case '102':$('.search_wrap #material_type_select').val('安防物资');break;
+    case '103':$('.search_wrap #material_type_select').val('消防物资');break;
+    case '104':$('.search_wrap #material_type_select').val('保洁物资');break;
+    case '105':$('.search_wrap #material_type_select').val('办公物资');break;
+    default:$('.search_wrap #material_type_select').val('物资类型');break;
+}
+
+*/
+
+
 init_time=search_effective_date
 init_time = init_time?init_time:now;
 init_time=init_time.split(' ')['0']

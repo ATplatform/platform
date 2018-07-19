@@ -179,12 +179,12 @@
 		<a href="#FinanceSetting" class="nav-header " data-toggle="collapse"
 		>
 		<i class="icon fa fa-money"></i>
-			财务管理
+			收费管理
 			<span class="pull-right fa fa-angle-right"></span> 
 		</a>
 		<ul id="FinanceSetting" 
 			<?php 
-				if($nav=="Parkrent"){
+				if($nav=="Parkrent"  || $nav=="property_fee" || $nav=="pkg_fee" || $nav=="water_fee"){
 					echo 'class="collapse secondmenu in"';
 				} 
 				else{
@@ -192,12 +192,12 @@
 				} 
 			?>   
 		aria-expanded="true" >
-			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>社区经营分析</a></li>
 			<li <?php if($nav=="Parkrent") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/ParkRent/Parkrent'?>"><i class="glyphicon"></i>车位租赁管理</a></li>
-			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>车位租金缴纳</a></li>
-			<li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>临时停车缴费</a></li>
-            <li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>物业费管理</a></li>
-            <li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>其他费用缴纳</a></li>
+			<li <?php if($nav=="property_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/property_fee'?>"><i class="glyphicon"></i>物业费管理</a></li>
+            <li <?php if($nav=="pkg_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/pkg_fee'?>"><i class="glyphicon"></i>车位服务费管理</a></li>
+            <li <?php if($nav=="water_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/water_fee'?>"><i class="glyphicon"></i>供水加压费管理</a></li>
+            <li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>物业增值服务管理</a></li>
+            <li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>账单管理页面</a></li>
 		</ul>
 	</li>
 

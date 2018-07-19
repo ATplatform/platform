@@ -33,7 +33,9 @@ function platform() {
             for (var n in this.index) {
 
                 $('.show').find('.'+n).html(data[n]);
-                $('.villageimg').attr("src",data['image'])
+                $('#village_rewrite').find('.'+n).val(data[n]);
+                $('#village_rewrite').find('.id').html(data['id']);
+               // $('.villageimg').attr("src",data['image'])
                 this.index[n] = data[n]
             }
             return this.index
@@ -50,26 +52,26 @@ $.ajax({
 
     },
     success:function(data){
-        var index=new platform;
+    var index=new platform;
         var getdata={};
         data=JSON.parse(data)
         getdata=index.showdata(data)
+        /*
+             var longitude=getdata.longitude
+             var latitude= getdata.latitude
 
-        var longitude=getdata.longitude
-        var latitude= getdata.latitude
+                 console.log(getdata)
+                 console.log(longitude)
+                 console.log(latitude)
 
-        console.log(getdata)
-        console.log(longitude)
-        console.log(latitude)
-
-    var map = new BMap.Map("container");
-    var point = new BMap.Point(longitude,latitude);
-    map.enableScrollWheelZoom(true);
-    map.centerAndZoom(point, 18);
-    map.addControl(new BMap.NavigationControl());
-    var marker = new BMap.Marker(point);        // 创建标注
-    map.addOverlay(marker);                     // 将标注添加到地图中
-
+             var map = new BMap.Map("container");
+             var point = new BMap.Point(longitude,latitude);
+             map.enableScrollWheelZoom(true);
+             map.centerAndZoom(point, 18);
+             map.addControl(new BMap.NavigationControl());
+             var marker = new BMap.Marker(point);        // 创建标注
+             map.addOverlay(marker);                     // 将标注添加到地图中
+         */
 
 
     },
@@ -78,6 +80,62 @@ $.ajax({
     }
 })
 
+$('#village_rewrite .confirm').click(function(){
+    var id = $('#village_rewrite .id').html()
+    var brief = $('#village_rewrite .brief').val()
+    var full_name = $('#village_rewrite .full_name').val()
+    var name = $('#village_rewrite .name').val()
+    var city = $('#village_rewrite .city').val()
+    var location = $('#village_rewrite .location').val()
+    var longitude = $('#village_rewrite .longitude').val()
+    var latitude = $('#village_rewrite .latitude').val()
+    var households = $('#village_rewrite .households').val()
+    var parking_lots = $('#village_rewrite .parking_lots').val()
+    $.ajax({
+        url: getRootPath() + '/index.php/Building/updatevillageInfo',
+        method: 'post',
+        data: {
+            id:id,
+            brief: brief,
+            full_name: full_name,
+            name: name,
+            city: city,
+            location: location,
+            longitude: longitude,
+            latitude: latitude,
+            households: households,
+            parking_lots: parking_lots
+        },
+        success:function(data){
+            $('#village_rewrite').modal('hide');
+            layer.open({
+                type: 1,
+                title: false,
+                //打开关闭按钮
+                closeBtn: 1,
+                shadeClose: false,
+                skin: 'tanhcuang',
+                content: '编辑成功',
+                cancel: function(){
+                    window.location.href=getRootPath() + '/index.php/Building/villageInfo'
+                }
+            });
+
+        }
+        ,
+        error:function () {
+
+        }
+    })
+
+
+})
+
+
+
+
+
+/*
 $('.brief').on("keydown",function(e) {
     console.log(e)
     if(e.keyCode===13){
@@ -101,6 +159,8 @@ $('.brief').on("keydown",function(e) {
 })
     }
 })
+*/
+
 
 
 /*
@@ -120,7 +180,7 @@ $('add_btn').click(function(){
 })
 */
 
-$('.update').click(function(e){
+/*$('.update').click(function(e){
     e.stopPropagation();
     inputlisten()
     brief.removeAttribute('readonly');
@@ -129,9 +189,9 @@ $('.update').click(function(e){
     })
     brief.focus()
 
-})
+})*/
 
-function inputlisten(){
+/*function inputlisten(){
 var myDiv = document.getElementById("brief");
 document.addEventListener("click", function (e) {
     var id = $('.show .id').html()
@@ -152,9 +212,10 @@ document.addEventListener("click", function (e) {
         }
     })
 
-});
+});*/
 
+/*
 myDiv.addEventListener("click", function (event) {
     event = event || window.event;
     event.stopPropagation();
-});}
+});}*/

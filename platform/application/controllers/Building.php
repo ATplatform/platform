@@ -474,10 +474,22 @@ class Building extends CI_Controller{
     public function updatevillageInfo(){
         $id=$this->input->post('id');
         $brief=$this->input->post('brief');
+        $full_name=$this->input->post('full_name');
+        $name=$this->input->post('name');
+        $city=$this->input->post('city');
+        $location=$this->input->post('location');
+        $longitude=$this->input->post('longitude');
+        $latitude=$this->input->post('latitude');
+        $households=$this->input->post('households');
+        $parking_lots=$this->input->post('parking_lots');
+
         $this->load->model('Building_model');
 
 
-        $res = $this->Building_model->updatevillageInfo($id,$brief);
+
+
+
+        $res = $this->Building_model->updatevillageInfo($id,$brief,$full_name,$name,$city,$location,$longitude,$latitude,$households,$parking_lots);
         echo $res;
     }
 

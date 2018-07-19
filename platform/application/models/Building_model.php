@@ -554,9 +554,19 @@ class Building_model extends CI_Model {
         return $json;
     }
 
-    public function updatevillageInfo($id,$brief)
+    public function updatevillageInfo($id,$brief,$full_name,$name,$city,$location,$longitude,$latitude,$households,$parking_lots)
     {
-        $sql = "update village_village set brief='$brief'  where id=$id";
+        $sql = "update village_village set 
+                  brief='$brief' ,  
+                  full_name='$full_name',
+                      name='$name',
+                          city='$city',
+                              location='$location',
+                                  longitude='$longitude',
+                                      latitude='$latitude',
+                                          households='$households',
+                                              parking_lots='$parking_lots'
+                  where id=$id";
         $query = $this->db->query($sql);
 
     }

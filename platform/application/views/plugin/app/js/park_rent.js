@@ -135,7 +135,7 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'no',
-        input:'可输入租赁人',
+        input:'可输入租赁人、车位编号',
         method:'keyword'
     },
     update_info:{
@@ -468,8 +468,14 @@ function insert_data(element,render){
     //点击保存新增
     $('#add_Item .confirm').click(function(){
         var index=getdata(element,render)
+if(!index.rent_pay_type){openLayer('请输入缴费方式');return;}
+if(!index.rent_begin_date){openLayer('请输入起始日期');return;}
 
-        console.log(index)
+        var daysbetween =  new Date(index.rent_end_date).getTime()-new Date(index.rent_begin_date).getTime();   //时间差的毫秒数
+        var daysbetween=Math.floor(daysbetween/(24*3600*1000))
+        console.log(daysbetween)
+        if(daysbetween<31){openLayer('起租日期和结束日期必须相差大于或等于31天，目前相差'+daysbetween+'天');return;}
+
         $.ajax({
             url:render.router.insert,
             method:'post',
@@ -485,7 +491,7 @@ function insert_data(element,render){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: '新增租赁',
+                    content: '新增租赁成功',
                     cancel: function(){
                         window.location.href=render.router.root;
                     }
@@ -508,6 +514,12 @@ function update_data(element,render){
 
     $('#rewrite .confirm').click(function (){
         var index=getdata(element,render)
+        var rent_begin_date= $('#rewrite .rent_begin_date').html()
+        var daysbetween =  new Date(index.rent_end_date).getTime()-new Date(rent_begin_date).getTime();   //时间差的毫秒数
+        var daysbetween=Math.floor(daysbetween/(24*3600*1000))
+        console.log(daysbetween)
+        if(daysbetween<31){openLayer('起租日期和结束日期必须相差大于或等于31天，目前相差'+daysbetween+'天');return;}
+
         console.log(index)
         $.ajax({
             url: render.router.update,

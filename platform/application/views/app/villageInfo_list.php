@@ -8,8 +8,8 @@
 <script src='<?='http://api.map.baidu.com/getscript?v=2.0&ak=aRMXU5OVYpSZCqXlS0zL1K3OepYKZhr4&services=&t=20180529182003,'?>'></script>
 <style>
 
-    p{
-        margin:10px;
+    .show  p{
+        margin:20px;
     }
     .title{
         position:relative;
@@ -18,6 +18,7 @@
     }
     .content{
         font-size:14px;
+
     }
 .show{
   margin-left:auto;
@@ -33,6 +34,7 @@ margin-right:auto;
     height:200px;
     resize:none;
     margin-left:8px;
+
     word-break:break-all
 
 }
@@ -54,8 +56,8 @@ margin-right:auto;
 }
 
 
-    .right{
-        float:left;
+    .right-content{
+       margin-left:100px;
     }
 
     .icon_circle {
@@ -115,7 +117,7 @@ margin-right:auto;
             <div class="title">
                 <p class="col_37A " ><i class="icon_circle" ></i>社区基本信息</p>
             </div>
-              <!-- <button class=" add_btn update"  >编辑</button>-->
+            <button class="update add_btn" data-target="#village_rewrite" data-toggle="modal" style="z-index:999">编辑</button>
             <div class=" fl" style="width:30%;  ">
                 <div class="content">
                      <p> 当前所在社区:</p>
@@ -133,6 +135,7 @@ margin-right:auto;
                 </div>
             </div>
             <div class=" fl content" style="width:70%; position:relative;">
+                <div class="  right-content">
     <p  class="name "></p>
     <p  class="id"></p>
     <p  class="full_name "></p>
@@ -143,10 +146,11 @@ margin-right:auto;
     <p  class="latitude "><p>
     <p  class="households "></p>
     <p  class="parking_lots "></p>
-                <textarea class="brief" id="brief" title="可修改社区简介" readonly>
+                <textarea class="brief" id="brief" title="可修改社区简介" readonly >
 </textarea>
    <!-- <p class=" brief " style=" white-space:normal; word-break:break-all;"></p>-->
-    <i class="fa  fa-pencil-square-o fa-lg update"></i>
+   <!-- <i class="fa  fa-pencil-square-o fa-lg update"></i>-->
+                </div>
             </div>
 
         </div>
@@ -168,7 +172,80 @@ margin-right:auto;
        </div>
 
    </div>-->
+
+    <!--修改 -->
+    <div class="modal fade" id="village_rewrite" tabindex="-1" role="dialog" aria-hidden="true" >
+        <div class="modal-dialog"  style="width:630px;">
+            <div class="modal-content model_wrap" style="width:630px;">
+                <div class="model_content" style="width:630px;">
+                    <div class="building_header">
+                        <h4 class="modal-title tac">编辑</h4>
+                    </div>
+                    <div class=" modal-body building  oh">
+
+
+                        <div class=" rewrite  ">
+
+
+
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区编号：<span class="id" style="margin-left:25px;"></span></p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区全称：
+                                <input type="text" class="model_input full_name" placeholder="请输入备注"  name="auz_remark" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区简称：
+                                <input type="text" class="model_input name" placeholder="请输入备注"  name="auz_remark" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;所在城市：
+                                <input type="text" class="model_input city" placeholder="请输入备注"  name="auz_remark" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区位置：
+                                <input type="text" class="model_input location" placeholder="请输入备注"  name="auz_remark" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;经度：
+                                <input type="text" class="model_input longitude" placeholder="请输入备注"  name="auz_remark" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;纬度：
+                                <input type="text" class="model_input latitude" placeholder="请输入备注"  name="auz_remark" />
+                            </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区户数：
+                                <input type="text" class="model_input households" placeholder="请输入备注"  name="auz_remark" />
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区户数：
+                                <input type="text" class="model_input parking_lots" placeholder="请输入备注"  name="auz_remark" />
+                            </p>
+                            <div>
+                            <p class="fl">&nbsp;&nbsp;&nbsp;&nbsp;社区简介：</p>
+                            <textarea class="brief fl col_37A" id="brief" title="可修改社区简介" style="width:70%;   margin-top:10px;margin-left:42px;">
+</textarea></div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal_footer bg_eee">
+                    <p class="tac pb17">
+                        <span class="col_37A confirm">保存</span>
+                        <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div><!-- /.modal-content -->
+    <!-- /.modal -->
+
+
+
+
+
+
+
 </div>
+
+
+
+
+
+
 <input type="hidden" value='<?php echo $username;?>' name="username" />
 <script>
 

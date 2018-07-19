@@ -33,9 +33,9 @@
         <!-- 筛选条件 物资类别-->
         <div class="Search_Item_wrap  selectMaterial select_pull_down query_wrap col_37A fl">
             <div >
-                <input type="button" id="material_type_select" class="model_input material_type ka_input3" placeholder="物资类型" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly>
+                <input type="text" id="material_type_select" class="model_input material_type ka_input3" placeholder="物资类型" name="material_type" data-ajax="" value="<?php echo $material_type_name; ?>" readonly>
             </div>
-            <div class="ka_drop"  style="display: none;">
+            <div class="ka_drop">
                 <div class="ka_drop_list">
                     <ul>
                         <li><a href="javascript:;" data-ajax="101">工程物资</a></li>
