@@ -25,7 +25,7 @@ router：路由参数
 
 var platform_index={
     property_building_effective_date:{
-        search:'yes',
+        search:'no',
         show:'no',
         detail:'no',
         update:'no',
@@ -41,13 +41,13 @@ var platform_index={
         detail:'yes',
         update:'yes',
         insert:'no',
-        must:'yes',
+        must:'no',
         input:'地址',
         method:'show',
         disabledonly:'update',
     },
     property_building_code:{
-        search:'yes',
+        search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
@@ -58,7 +58,30 @@ var platform_index={
         disabledonly:'update',
 
     },
+   building_code:{
+        search:'yes',
+        show:'no',
+        detail:'no',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'楼宇编号',
+        method:'building',
+        disabledonly:'update',
 
+    },
+    parent_code:{
+        search:'yes',
+        show:'no',
+        detail:'no',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'楼宇编号',
+        method:'other',
+        disabledonly:'update',
+
+    },
     property_building_name:{
         search:'no',
         show:'yes',
@@ -72,17 +95,41 @@ var platform_index={
     },
     property_building_type:{
         search:'no',
+        show:'no',
+        detail:'no',
+        update:'no',
+        insert:'yes',
+        must:'yes',
+        input:'物业费类型',
+        method:'select',
+        ajax:{'101':'住宅物业费','102':'商铺物业费','103':'公寓物业费','104':'写字楼物业费','105':'别墅物业费'
+        },
+        disabledonly:'update'
+    },
+    property_building_type_1:{
+        search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
-        input:'住宅类型',
+        insert:'no',
+        input:'房产类型',
         method:'select',
-        ajax:{'101':'住宅','102':'商铺','102':'商铺','103':'公寓','104':'写字楼','105':'别墅'
-},
+        ajax:{'101':'住宅','102':'商铺','103':'公寓','104':'写字楼','105':'别墅'
+        },
         disabledonly:'update'
     },
-    property_building_area:{
+    property_floor_area:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        insert:'no',
+        update:'no',
+        input:'建筑面积',
+        method:'other',
+        ajax:{},
+        disabledonly:'update'
+    },
+    property_floor_area_name:{
         search:'no',
         show:'yes',
         detail:'yes',
@@ -93,7 +140,19 @@ var platform_index={
         ajax:{},
         disabledonly:'update'
     },
-    property_fee_standard:{
+    property_standard:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'物业费标准',
+        method:'input',
+        ajax:{},
+        disabledonly:'update'
+    },
+    property_standard_name:{
         search:'no',
         show:'yes',
         detail:'yes',
@@ -107,12 +166,23 @@ var platform_index={
     },
     property_fee_standard_per_month:{
         search:'no',
-        show:'yes',
-        detail:'yes',
+        show:'no',
+        detail:'no',
         update:'yes',
         insert:'no',
         input:'每月应缴纳物业费',
         must:'yes',
+        method:'input',
+        disabledonly:'no'
+    },
+    property_fee_standard_per_month_name:{
+        search:'no',
+        show:'yes',
+        detail:'yes',
+        update:'no',
+        insert:'no',
+        input:'每月应缴纳物业费',
+        must:'no',
         method:'input',
         disabledonly:'no'
     },
@@ -131,7 +201,7 @@ var platform_index={
     property_change_reason:{
         search:'no',
         show:'no',
-        detail:'no',
+        detail:'yes',
         update:'yes',
         insert:'no',
         must:'yes',
@@ -139,14 +209,14 @@ var platform_index={
         method:'input',
         disabledonly:'no'
     },
-    property_standard:{
+    property_fee_standard:{
         search:'no',
         show:'no',
         detail:'no',
         update:'no',
         insert:'yes',
         must:'no',
-        input:'当前生效物业费',
+        input:'当前生效房产物业费',
         method:'show',
         disabledonly:'no'
     },
@@ -167,9 +237,9 @@ var platform_index={
         detail:'no',
         update:'no',
         insert:'yes',
-        must:'no',
-        input:'更新后物业费标准',
-        method:'show',
+        must:'yes',
+        input:'更新物业费标准',
+        method:'input',
         disabledonly:'update'
     },
     property_update_history:{
@@ -203,13 +273,11 @@ var platform_index={
     router:{
         root:getRootPath()+'/index.php/Moneypay/property_fee',
         get:'getList_property_fee',
-        insert:'insert',
+        insert:'insert_property',
         getfloor:'getfloor',
-        update:'update',
-        getparking_lot_code:'getparking_lot_code',
-        getparkingcode:'getparkingcode',
-        getperson_code:'getperson_code',
-        getLatestCode:getRootPath()+'/index.php/ParkRent/getLatestCode',
+        update:'update_property',
+        getbuilding_type:'getbuilding_type',
+        change_history:'change_history'
 
     }
 
@@ -296,33 +364,7 @@ function getdetail(location,rowkeys){
         console.log(row)
 
 ////////////////////////////////////////额外补充//////////////////////////////////////////////////
-        /*   var code = keys.v_code
-           console.log(code)
-           $("#getauz").bootstrapTable('destroy');
-           $('#getauz').bootstrapTable({
-               method: "get",
-               undefinedText: '/',
-               cache: false,
-               url: rowkeys.router.getauz,
-               queryParams: {
-                   code: code
-               }
-               ,
-               contentType: "application/x-www-form-urlencoded",
-               responseHandler: function (res) {
-                   //用于处理后端返回数据
-                   console.log('1');
-                   console.log(res);
-                   return res;
-               },
-               onLoadSuccess: function (data) {  //加载成功时执行
-                   console.log('2');
-                   console.log(data);
-               },
-               onLoadError: function () {  //加载失败时执行
-                   console.info("加载数据失败");
-               }
-           })*/
+
     }
 
 }
@@ -336,10 +378,13 @@ function getrewrite(location,rowkeys){
         for(var n in rowkeys){
             if(rowkeys[n]['update']=='yes'){
                 if(rowkeys[n]['disabledonly']!=='update'){
-                if(rowkeys[n]['method']=='input'||rowkeys[n]['method']=='show'){
+                if(rowkeys[n]['method']=='show'){
                     $(location+'  .'+n).html(row[n]);
                 }
-                if(rowkeys[n]['method'] == "time"){
+                if( rowkeys[n]['method']=='input'){
+                    $(location).find('input[name=' + n + ']').val(row[n]);
+                }
+                if( rowkeys[n]['method'] == "time"){
                     $(location).find('input[name=' + n + ']').val(row[n+'_name']);
                 }
                 if(rowkeys[n]['method']=='select'){
@@ -359,7 +404,7 @@ function getrewrite(location,rowkeys){
 
                 }
                 }else{
-                    if(rowkeys[n]['method']=='input'||rowkeys[n]['method']=='show'){
+                    if(rowkeys[n]['method']=='input'||rowkeys[n]['method']=='show'||rowkeys[n]['method']=='building'||rowkeys[n]['method']=='other'){
                         $(location+'  .'+n).html(row[n]);
                     }
                     if(rowkeys[n]['method'] == "time"){
@@ -391,24 +436,67 @@ function getrewrite(location,rowkeys){
 //////////////////////////////////////////////////////////////////////////////////////
 
 
-////////////////////////////////车位编号///////////////////////////
-$('.add_btn').click(function(){
+///////////////////////////////////////////////////////////
+
+
+////////////////////////////////停车场///////////////////////////
+$('#add_Item .property_building_type li').click(function(e){
+    var type=$(e.target).data('ajax')
+
     $.ajax({
-        url:platform_index.router.getLatestCode,
-        success:function(data){
-            if(parseInt(data)){
-                var code = parseInt(data) + 1;
-            }else{
-                var code = 1000001;
-            }
-            $('.add_item .rent_id').html(code);
+        type:"POST",
+        url:platform_index.router.getbuilding_type,
+        data:{
+            building_type:type
+        },
+        dataType:"text",
+        success:function(message){
+            var data=JSON.parse(message);
+           console.log(data)
+            var date=new Date;
+            var year=date.getFullYear();
+            var month=date.getMonth()+1;
+            var nextmonth=month+1
+            if(month==12){nextmonth=1}
+            var now=year+'-'+nextmonth+'-'+'1'
+            console.log(now)
+            $('#add_Item .property_fee_standard').addClass('col_37A')
+            $('#add_Item .property_update_date').addClass('col_37A')
+            $('#add_Item .property_fee_standard').html(data['0'].fee_standard+'元/平米')
+            $('#add_Item .property_update_date').html(now)
+            $("#getauz").bootstrapTable('destroy');
+            $('#getauz').bootstrapTable({
+                method: "get",
+                undefinedText: '/',
+                cache: false,
+                url: platform_index.router.change_history,
+                queryParams:{
+                    building_type:type
+                },
+                contentType : "application/x-www-form-urlencoded",
+                responseHandler: function (res) {
+                    //用于处理后端返回数据
+                    console.log('1');
+                    console.log(res);
+                    return res;
+                },
+                onLoadSuccess: function (data) {  //加载成功时执行
+                    console.log('2');
+                    console.log(data);
+                },
+                onLoadError: function () {  //加载失败时执行
+                    console.info("加载数据失败");
+                }
+            })
+        },
+        error:function(jqXHR,textStatus,errorThrown){
         }
     })
 })
 
 
-////////////////////////////////停车场///////////////////////////
-$.ajax({
+
+/*$.ajax({
     type: "POST",
     url: platform_index.router.getparkingcode,
     dataType: "text",
@@ -513,20 +601,32 @@ $('#add_Item .rent_parking_lot_code').click(function() {
             }
         })
 
-})
+})*/
 //////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////点击保存的事件//////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 function insert_data(element,render){
     //点击保存新增
     $('#add_Item .confirm').click(function(){
-        var index=getdata(element,render)
-
-        console.log(index)
+      /*  var index=getdata(element,render)*/
+        var date=new Date;
+        var nowdate=date.getDate();
+        nowdate=date.getDate();
+        if(nowdate==1 || nowdate==2|| nowdate==3){openLayer('每月的1日~3日不可更新物业费标准');return;}
+        var building_type=$('#add_Item').find('input[name=property_building_type]').data('ajax')
+        var change_date=$('#add_Item .property_update_date').html()
+        var fee_standard=$('#add_Item').find('input[name=property_update_standard]').val()
+        console.log(building_type)
+        console.log(change_date)
+        console.log(fee_standard)
         $.ajax({
             url:render.router.insert,
             method:'post',
-            data:index,
+            data:{
+                building_type:building_type,
+                change_date:change_date,
+                fee_standard:fee_standard
+            },
             success:function(data){
                 //var data = JSON.parse(data);
                 //成功之后自动刷新页面
@@ -538,7 +638,7 @@ function insert_data(element,render){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: '新增租赁',
+                    content: '系统将按新标准覆盖所有相关物业费，请手工修改个别有区别的房产物业费！',
                     cancel: function(){
                         window.location.href=render.router.root;
                     }
@@ -560,12 +660,20 @@ function insert_data(element,render){
 function update_data(element,render){
 
     $('#rewrite .confirm').click(function (){
-        var index=getdata(element,render)
-        console.log(index)
+       // var index=getdata(element,render)
+        //console.log(index)
+
+        var property_building_code=$('#rewrite .property_building_code ').html()
+        var property_fee_standard_per_month=$('#rewrite').find('input[name=property_fee_standard_per_month]').val()
+        var property_change_reason=$('#rewrite').find('input[name=property_change_reason]').val()
         $.ajax({
             url: render.router.update,
             method: 'post',
-            data: index,
+            data: {
+                building_code:property_building_code,
+                ppe_payable:property_fee_standard_per_month,
+                change_reason:property_change_reason
+            },
             success: function (data) {
                 //var data = JSON.parse(data);
                 //成功之后自动刷新页面
@@ -577,7 +685,7 @@ function update_data(element,render){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: '更新租赁信息成功',
+                    content: '更新物业费成功',
                     cancel: function () {
                        window.location.href = render.router.root;
                     }
@@ -679,6 +787,7 @@ function html_render(index){
         var  final_html='';
         var must_html='&nbsp;&nbsp;&nbsp;&nbsp;';
         if(index.must=='yes') {must_html='<span class="red_star">*</span>'}
+        if(index.disabledonly=='update'){must_html='&nbsp;&nbsp;&nbsp;&nbsp;';}
         if(index.disabledonly=='update') {
             var html='\n'+' <p>'+ must_html+ index.input +
                 ':<span class=" '+n+' col_37A" style="position:absolute;left:140px;"></span>' +
@@ -895,8 +1004,6 @@ function html_render(index){
         for(var n in index){
 
             if(index[n]['search']=='yes' || index[n]['method']=='time' ||index[n]['method']=='building'){
-
-
 
 
                 var param = getUrlParam(n); //从url获取的参数
@@ -1117,8 +1224,9 @@ function pageChange(index){
             if(index[n]['method']=='building'){
 
                 $('#treeNav>span').on("select_node.jstree", function (e, node) {
+                    console.log(node)
                     urlParam['building_code']=node.node.original.code
-                    urlParam['parent_code']=node.node.node.original.code
+                    urlParam['parent_code']=node.node.original.code
 
                     window.location.href=href(urlParam)
                 })
@@ -1229,7 +1337,7 @@ function showdata(render){
     }
 
     var datahref=href(render.pagechange.urlparam)
-
+console.log(datahref)
     $('#table').bootstrapTable({
         method: "get",
         undefinedText: ' ',

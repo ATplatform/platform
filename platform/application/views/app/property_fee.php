@@ -35,7 +35,7 @@
         <div class="table_wrap">
          <div class="oh pt10">
 
-         <span class="fr add_btn " data-target="#add_Item" data-toggle="modal">统一更新住宅物业费</span>
+         <span class="fr add_btn " data-target="#add_Item" data-toggle="modal">统一更新物业费标准</span>
 
              <a class="fr add_btn" id="reset" >清除筛选</a>
             </div>
@@ -129,11 +129,21 @@
                 <div class="modal-content model_wrap">
                     <div class="model_content">
                         <div class="building_header">
-                            <h4 class="modal-title tac">统一更新物业费</h4>
+                            <h4 class="modal-title tac">统一更新房产物业费</h4>
                         </div>
                         <div class=" modal-body building  oh">
                             <div class="add_item">
+
                             </div>
+                            <table id="getauz" data-toolbar="#toolbar" >
+                                <thead >
+                                <tr>
+                                    <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+                                    <th data-title="更新时间" data-align="center" data-field="change_date"></th>
+                                    <th data-title="更新后费用" data-align="center" data-field="fee_standard"></th>
+                                </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                     <div class="modal_footer bg_eee">
@@ -152,7 +162,13 @@
     </div>
 </div>
 
+<style>
+    .person_detail p{
+        width:500px
+    }
 
+
+</style>
 
 
 

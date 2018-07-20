@@ -295,13 +295,7 @@ public function getOrderRecordPerson($team_person_code,$property_person_code)
 }
 
 
-    public function getLatestCode()
-    {
-        $sql = "select id from village_park_rent order by id desc limit 1";
-        $query = $this->db->query($sql);
-        $row = $query->row_array();
-        return $row['id'];
-    }
+
 
     public function getLatestCodeforauz()
     {
@@ -465,24 +459,22 @@ FROM
 
             /////////////////////////普通查询sql语句/////////////////////////
         {
+
             $sql = "  select 
-  rent.id as rent_iD,
-  parklot.parkcode as parklot_parkcode,
-  park.parkname as parklot_parkcode_name,
-  parklot.floor as parklot_floor,
-  rent.parking_lot_code as rent_parking_lot_code,
-  rent.renter as rent_renter,
-  rent.rent as rent_rent,
-  rent.pay_type as rent_pay_type,
-  rent.begin_date as rent_begin_date,
-  rent.end_date as rent_end_date,
-  p.first_name,
-  p.last_name
- from village_park_rent as rent
- left join village_parking_lot as parklot on rent.parking_lot_code=parklot.code
- left join village_park as park on parklot.parkcode=park.parkcode
- left join village_person as p on rent.renter=p.code
-  where rent.renter=p.code
+  property.standard as property_standard,
+  property.ppe_payable as property_fee_standard_per_month,
+  property.if_standard as property_if_standard,
+  property.change_reason as property_change_reason,
+  b.code as property_building_code,
+  b.name as property_building_name,
+  b.building_type as property_building_type,
+  b.parent_code,
+  b.floor_area as property_floor_area,
+  tmp.*
+  from village_dtl_ppe_fee as property
+    left join village_building as b on b.code=property.building_code
+  left join village_tmp_building as tmp on tmp.code=b.code
+    where tmp.code=b.code
 ";}
 
 
@@ -490,46 +482,36 @@ FROM
         /////////////////////////搜索查询sql语句/////////////////////////
         else {
             $sql = "
-             select 
-  rent.id as rent_iD,
-  parklot.parkcode as parklot_parkcode,
-  park.parkname as parklot_parkcode_name,
-  parklot.floor as parklot_floor,
-  rent.parking_lot_code as rent_parking_lot_code,
-  rent.renter as rent_renter,
-  rent.rent as rent_rent,
-  rent.pay_type as rent_pay_type,
-  rent.begin_date as rent_begin_date,
-  rent.end_date as rent_end_date,
-  p.first_name,
-  p.last_name
- from village_park_rent as rent
- left join village_parking_lot as parklot on rent.parking_lot_code=parklot.code
- left join village_park as park on parklot.parkcode=park.parkcode
- left join village_person as p on rent.renter=p.code
- where rent.renter=p.code
+          select 
+  property.standard as property_standard,
+  property.ppe_payable as property_fee_standard_per_month,
+  property.if_standard as property_if_standard,
+  property.change_reason as property_change_reason,
+  b.code as property_building_code,
+  b.name as property_building_name,
+  b.building_type as property_building_type,
+   b.parent_code,
+  b.floor_area as property_floor_area,
+  tmp.*
+  from village_dtl_ppe_fee as property
+  left join village_building as b on b.code=property.building_code
+  left join village_tmp_building as tmp on tmp.code=b.code
+  where tmp.code=b.code
 ";
         }
-        if(empty($rent_end_date)){
+     /*   if(empty($rent_end_date)){
             $sql .= " and rent.end_date >= '$now' ";
-        }
-        if(!empty($rent_end_date)){
-            $sql .= " and rent.end_date>='$rent_end_date' ";
-        }
+        }*/
 
-        /*   if(!empty($building_code)){
-               $sql .= " and (pb.building_code=$building_code or tmp.parent_code=$parent_code) ";
-           }*/
 
-        if(!empty($parklot_parkcode)){
-            $sql .= " and parklot.parkcode='$parklot_parkcode' ";
-        }
-
+         if(!empty($building_code)){
+               $sql .= " and (b.code=$building_code or b.parent_code=$parent_code) ";
+           }
 
 
         if (!empty($keyword)) {
-            if (preg_match('/^[\x7f-\xff]*\w*\d*$/', $keyword)) {
-                $sql .= " and concat (p.last_name,p.first_name) like '%$keyword%'";
+            if (preg_match('/^\d*\w*[\x7f-\xff]*$/', $keyword)) {
+                $sql .= " and concat (b.name) like '%$keyword%'";
             }
 
         }
@@ -537,7 +519,7 @@ FROM
 
 
 
-        $sqlshow = $sql . " ORDER BY rent.id ASC limit ".$rows." offset ".$start;
+        $sqlshow = $sql . " ORDER BY property.building_code ASC limit ".$rows." offset ".$start;
         $arrayres=array($sql,$sqlshow);
         return $arrayres;
     }
@@ -545,6 +527,7 @@ FROM
 
     //////////////// 根据输入的sql语句参数，得到数据////////////////
     public function getList_property_fee( $sql){
+
         $brand_arr = $this->brand_arr;
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {
@@ -552,17 +535,45 @@ FROM
 
             foreach ($arr as $key => $value) {
                 foreach ($value as $key2 => $value2) {
-                    if ($key2 == "rent_pay_type") {
-                        if ($value2 == "101") {$arr[$key]['rent_pay_type_name'] = '年缴';}
-                        if ($value2 == "102") {$arr[$key]['rent_pay_type_name'] = '半年缴';}
-                        if ($value2 == "103") {$arr[$key]['rent_pay_type_name'] = '月缴';}
-                    }
-                    if ($key2 == 'parklot_floor') {
+                    if ($key2 == "property_building_type") {
                         if ($value2 == "101") {
-                            $arr[$key]['parklot_floor_name'] = '地面';
+                            $arr[$key]['property_building_type_name'] = '住宅';
+                            $arr[$key]['property_building_type_1_name'] = '住宅';}
+                        if ($value2 == "102") {
+                            $arr[$key]['property_building_type_name'] = '商铺';
+                            $arr[$key]['property_building_type_1_name'] = '商铺';}
+                        if ($value2 == "103") {
+                            $arr[$key]['property_building_type_name'] = '公寓';
+                            $arr[$key]['property_building_type_1_name'] = '公寓';}
+                        if ($value2 == "104") {
+                            $arr[$key]['property_building_type_name'] = '写字楼';
+                            $arr[$key]['property_building_type_1_name'] = '写字楼';
+                        }
+                        if ($value2 == "105") {
+                            $arr[$key]['property_building_type_name'] = '别墅';
+                            $arr[$key]['property_building_type_1_name'] = '写字楼';
+                        }
+                    }
+
+                    if ($key2 == 'property_building_code') {
+                        $arr[$key]['property_building_code_name'] = $value2;
+                    }
+                       if ($key2 == 'property_floor_area') {
+                           $arr[$key]['property_floor_area_name'] = $value2.'平米';
+                       }
+
+                    if ($key2 == 'property_fee_standard_per_month') {
+                            $arr[$key]['property_fee_standard_per_month_name'] = $value2.'元';
+                    }
+                    if ($key2 == 'property_standard') {
+                        $arr[$key]['property_standard_name'] = $value2.'元/平米/月';
+                    }
+                    if ($key2 == 'property_if_standard') {
+                        if ($value2 == "t") {
+                            $arr[$key]['property_if_standard_name'] = '是';
                         }
                         if ($value2 == "102") {
-                            $arr[$key]['parklot_floor_name'] = '地下一层';
+                            $arr[$key]['property_if_standard_name'] = '否';
                         }
                     }
                     if ($key2 == 'rent_parking_lot_code') {
@@ -592,11 +603,150 @@ FROM
                     }
 
                 }
+                $arr[$key]["property_building_fullname"] = $this->getHouseholdInfo($value);
+
             }
             $json = json_encode($arr);
             return $json;
         }
         return false;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////
+    public function getHouseholdInfo($row){
+        $result="";
+        if(!empty($row['stage_name']))
+        {
+            $result=$result.$row['stage_name']."(期)";
+        }
+        if(!empty($row['area_name']))
+        {
+            $result=$result.$row['area_name']."(区)";
+        }
+        if(!empty($row['immeuble_name']))
+        {
+            $result=$result.$row['immeuble_name']."(栋)";
+        }
+        if(!empty($row['unit_name']))
+        {
+            $result=$result.$row['unit_name']."(单元)";
+        }
+        if(!empty($row['floor_name']))
+        {
+            $result=$result.$row['floor_name']."(层)";
+        }
+        if(!empty($row['room_name']))
+        {
+            $result=$result.$row['room_name']."(室)";
+        }
+        if(!empty($row['public_name']))
+        {
+            $result=$result.$row['public_name']."(公共设施)";
+        }
+        if(!empty($row['level'])){
+            if($row['level']==100){
+                $result=$result.$row['name'];
+            }
+        }
+        return $result;
+    }
+
+    public function update_property($building_code,$ppe_payable,$change_reason)
+    {
+        $sql = " update village_dtl_ppe_fee
+         set 
+            ppe_payable=".$this->db->escape($ppe_payable).",".
+            "change_reason=".$this->db->escape($change_reason)." ".
+            "where building_code=$building_code";
+
+        $this->db->query($sql);
+    }
+
+    public function getbuilding_type($building_type)
+    {
+        $sql = " 
+        select * from village_type_ppe_fee where building_type=$building_type
+        and change_date=(select max(change_date) from village_type_ppe_fee where building_type=$building_type and change_date<now())
+        
+        ";
+
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+        return $row;
+    }
+    public function change_history($building_type)
+    {
+        $sql = " 
+        select change_date,fee_standard from village_type_ppe_fee where building_type=$building_type
+        
+        ";
+
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+          foreach ($row as $key => $value) {
+              foreach ($value as $key2 => $value2) {
+                  if ($key2 == "fee_standard") {
+                      $row[$key][$key2] = $value2 . "元/平米";
+                  }
+              }
+          }
+        return $row;
+    }
+
+    public function insert_property($code,$building_type,$change_date,$fee_standard)
+    {
+
+
+        $sql=" INSERT INTO village_type_ppe_fee (code,building_type,change_date,fee_standard) values (".
+            $this->db->escape($code).", ".
+            $this->db->escape($building_type).", ".
+            $this->db->escape($change_date).", ".
+            $this->db->escape($fee_standard).")";
+        $this->db->query($sql);
+
+        $sql = " select 
+        property.building_code,
+        b.floor_area,
+        b.building_type
+      from  village_dtl_ppe_fee as property
+      left join village_building as b on b.code=property.building_code
+            ";
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+        foreach ($row as $key => $value) {
+            foreach ($value as $key2 => $value2) {
+                if ($key2 == "building_type") {
+                   if( $row[$key][$key2]==$building_type && $row[$key]['building_type']==$building_type){
+                       $floor=$row[$key]['floor_area'];
+                       $building_code=$row[$key]['building_code'];
+                       $this->change_standard_fee($building_code,$floor,$building_type,$fee_standard);
+                   }
+                }
+            }
+        }
+
+    }
+
+    public function change_standard_fee($building_code,$floor,$building_type,$fee_standard)
+    {
+        $floor=intval($floor, 10);
+        $fee_standard=intval($fee_standard, 10);
+        $update_standard=$floor*$fee_standard;
+        $sql = " update village_dtl_ppe_fee
+         set  standard=".$this->db->escape($fee_standard).",".
+            "ppe_payable=".$this->db->escape($update_standard)." ".
+            "where building_code=$building_code";
+
+         $this->db->query($sql);
+    }
+
+
+    public function getLatestCode()
+    {
+        $sql = "select code from village_type_ppe_fee order by code desc limit 1";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row['code'];
     }
 }
 
