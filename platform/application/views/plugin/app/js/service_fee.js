@@ -24,7 +24,7 @@ router：路由参数
 */
 
 var platform_index={
-    rent_id:{
+    service_type:{
         search:'no',
         show:'yes',
         detail:'yes',

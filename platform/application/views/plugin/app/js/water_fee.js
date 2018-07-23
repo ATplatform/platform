@@ -40,7 +40,7 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'yes',
         input:'地址',
         method:'show',
@@ -51,10 +51,10 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'no',
         input:'楼宇编号',
-        method:'building',
+        method:'show',
         disabledonly:'no',
 
     },
@@ -63,21 +63,21 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'no',
         input:'楼宇名称',
         method:'show',
         disabledonly:'no'
     },
-    water_rank:{
+    water_building_rank:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'no',
         input:'层顺序号',
-        method:'input',
+        method:'show',
         ajax:{},
         disabledonly:'no'
     },
@@ -86,21 +86,43 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         input:'本月用水量',
         must:'yes',
         method:'input',
         disabledonly:'no'
     },
-    water_press_fee_tandard:{
+    water_fee_standard:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'yes',
         input:'供水加压费标准',
-        method:'input',
+        method:'select',
+        disabledonly:'no'
+    },
+    water_fee_standard_insert:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        update:'no',
+        insert:'yes',
+        must:'no',
+        input:'当前生效标准',
+        method:'show',
+        disabledonly:'no'
+    },
+    water_changer_date_insert:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        update:'no',
+        insert:'yes',
+        must:'no',
+        input:'更新时间',
+        method:'show',
         disabledonly:'no'
     },
     water_fee_per_month:{
@@ -108,12 +130,22 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'no',
         input:'本月应缴纳供水加压费',
-        method:'input',
+        method:'select',
     },
-
+    water_fee_per_month_insert:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        update:'no',
+        insert:'yes',
+        must:'yes',
+        input:'更新后标准',
+        method:'input',
+        disabledonly:'no'
+    },
     keyword:{
         search:'yes',
         show:'no',
@@ -133,9 +165,10 @@ var platform_index={
     pagechange:{urlparam:{route:'',page:''}, pagesize:'', total:'',page:''},
     router:{
         root:getRootPath()+'/index.php/Moneypay/water_fee',
-        get:'getList',
-        insert:'insert',
-        getfloor:'getfloor',
+        get:'getList_water_fee',
+        insert:'insert_water_fee',
+        getwater:'getwater',
+        change_history:'change_history_water_fee',
         update:'update',
         getparking_lot_code:'getparking_lot_code',
         getparkingcode:'getparkingcode',
@@ -324,15 +357,50 @@ function getrewrite(location,rowkeys){
 
 ////////////////////////////////车位编号///////////////////////////
 $('.add_btn').click(function(){
+
+
     $.ajax({
-        url:platform_index.router.getLatestCode,
-        success:function(data){
-            if(parseInt(data)){
-                var code = parseInt(data) + 1;
-            }else{
-                var code = 1000001;
-            }
-            $('.add_item .rent_id').html(code);
+        type:"get",
+        url:platform_index.router.getwater,
+        data:{},
+        dataType:"text",
+        success:function(message){
+            var data=JSON.parse(message);
+            console.log(data)
+            var date=new Date;
+            var year=date.getFullYear();
+            var month=date.getMonth()+1;
+            var nextmonth=month+1
+            if(month==12){nextmonth=1}
+            var now=year+'-'+nextmonth+'-'+'1'
+            console.log(now)
+            $('#add_Item .water_fee_standard_insert').addClass('col_37A')
+            $('#add_Item .water_changer_date_insert').addClass('col_37A')
+            $('#add_Item .water_fee_standard_insert').html(data['0'].fee_standard+'元/平米')
+            $('#add_Item .water_changer_date_insert').html(now)
+            $("#getauz").bootstrapTable('destroy');
+            $('#getauz').bootstrapTable({
+                method: "get",
+                undefinedText: '/',
+                cache: false,
+                url: platform_index.router.change_history,
+                contentType : "application/x-www-form-urlencoded",
+                responseHandler: function (res) {
+                    //用于处理后端返回数据
+                    console.log('1');
+                    console.log(res);
+                    return res;
+                },
+                onLoadSuccess: function (data) {  //加载成功时执行
+                    console.log('2');
+                    console.log(data);
+                },
+                onLoadError: function () {  //加载失败时执行
+                    console.info("加载数据失败");
+                }
+            })
+        },
+        error:function(jqXHR,textStatus,errorThrown){
         }
     })
 })
@@ -365,7 +433,7 @@ $.ajax({
     }
 })
 
-////////////////////////////////车库楼层///////////////////////////
+/*////////////////////////////////车库楼层///////////////////////////
 $.ajax({
     type: "POST",
     url: platform_index.router.getfloor,
@@ -390,7 +458,7 @@ $.ajax({
     },
     error: function (jqXHR, textStatus, errorThrown) {
     }
-})
+})*/
 
 
 ////////////////////////////////占用人///////////////////////////
@@ -451,13 +519,20 @@ $('#add_Item .rent_parking_lot_code').click(function() {
 function insert_data(element,render){
     //点击保存新增
     $('#add_Item .confirm').click(function(){
-        var index=getdata(element,render)
+        var date=new Date;
+        var nowdate=date.getDate();
+        nowdate=date.getDate();
+        if(nowdate==1 || nowdate==2|| nowdate==3){openLayer('每月的1日~3日不可更新物业费标准');return;}
+        var change_date=$('#add_Item .water_changer_date_insert').html()
+        var fee_standard=$('#add_Item').find('input[name=water_fee_per_month_insert]').val()
 
-        console.log(index)
         $.ajax({
             url:render.router.insert,
             method:'post',
-            data:index,
+            data:{
+                change_date:change_date,
+                fee_standard:fee_standard
+            },
             success:function(data){
                 //var data = JSON.parse(data);
                 //成功之后自动刷新页面
@@ -469,7 +544,7 @@ function insert_data(element,render){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: '新增租赁',
+                    content: '修改加压标准成功',
                     cancel: function(){
                         window.location.href=render.router.root;
                     }

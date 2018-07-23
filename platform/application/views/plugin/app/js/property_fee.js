@@ -158,11 +158,23 @@ var platform_index={
         detail:'yes',
         update:'yes',
         insert:'no',
-        must:'no',
+        must:'yes',
         input:'物业费标准',
         method:'input',
         ajax:{},
         disabledonly:'update'
+    },
+    property_if_standard:{
+        search:'yes',
+        show:'yes',
+        detail:'yes',
+        update:'yes',
+        insert:'no',
+        must:'no',
+        input:'是否特殊收费',
+        method:'select',
+        ajax:{t:'是',f:'否'},
+        disabledonly:'no'
     },
     property_fee_standard_per_month:{
         search:'no',
@@ -186,16 +198,16 @@ var platform_index={
         method:'input',
         disabledonly:'no'
     },
-    property_if_standard:{
+
+    property_if_standard_date:{
         search:'no',
-        show:'yes',
+        show:'no',
         detail:'yes',
         update:'yes',
         insert:'no',
         must:'no',
-        input:'是否标准费用',
-        method:'radio',
-        option:{true:'是',false:'否'},
+        input:'特殊收费变更日期',
+        method:'show',
         disabledonly:'update'
     },
     property_change_reason:{
@@ -205,7 +217,7 @@ var platform_index={
         update:'yes',
         insert:'no',
         must:'yes',
-        input:'变更原因',
+        input:'特殊收费原因',
         method:'input',
         disabledonly:'no'
     },
@@ -422,6 +434,32 @@ function getrewrite(location,rowkeys){
 
                 }
             }
+
+            if(n=='property_if_standard'){
+                if(row[n]=='t'){
+                    $('#rewrite .property_fee_standard_per_month').parent().append( '<input type="text" class="model_input" placeholder="请输入每月应缴纳物业费" name="property_fee_standard_per_month">');
+                    $('#rewrite .property_change_reason').parent().append(
+                        '<input type="text" class="model_input 特殊收费原因" placeholder="请输入特殊收费原因" name="property_change_reason">');
+                    $('#rewrite').find('input[name=property_fee_standard_per_month]').val(row['property_fee_standard_per_month'])
+                    $('#rewrite').find('input[name=property_change_reason]').val(row['property_change_reason'])
+                    $('#rewrite .property_fee_standard_per_month').remove();
+                    $('#rewrite .property_change_reason').remove();
+                }
+                if(row[n]=='f'){
+
+                    $('#rewrite').find('input[name=property_fee_standard_per_month]').parent().append( '<span class="property_fee_standard_per_month col_37A" style="position:absolute;left:140px;">'+  row['property_fee_standard_per_month'] +' </span>');
+                    $('#rewrite').find('input[name=property_change_reason]').parent().append(
+                    '<span class=" property_change_reason col_37A" style="position:absolute;left:140px;"></span>');
+                    $('#rewrite').find('input[name=property_change_reason]').remove();
+                    $('#rewrite').find('input[name=property_fee_standard_per_month]').remove();
+                   // $('#rewrite .property_if_standard_date').html(' ');
+                }
+
+            }
+
+
+
+
         }
 
     }
@@ -658,21 +696,71 @@ function insert_data(element,render){
 
 
 function update_data(element,render){
+    $('#rewrite .property_if_standard li').click(function (e){
+
+        var property_if_standard=$(e.target).data('ajax')
+        console.log(property_if_standard)
+        if(property_if_standard=='t'){
+            var date=new Date
+            now = formatDate(date);
+            var property_if_standard_date=$('#rewrite .property_if_standard_date').html(now)
+            var property_change_reason=$('#rewrite .property_change_reason').html()
+            var property_fee_standard_per_month=$('#rewrite .property_fee_standard_per_month').html()
+            $('#rewrite .property_fee_standard_per_month').parent().append( '<input type="text" class="model_input" placeholder="请输入每月应缴纳物业费" name="property_fee_standard_per_month">');
+            $('#rewrite .property_change_reason').parent().append(
+                '<input type="text" class="model_input 特殊收费原因" placeholder="请输入特殊收费原因" name="property_change_reason">');
+            $('#rewrite').find('input[name=property_fee_standard_per_month]').val(property_fee_standard_per_month)
+            $('#rewrite').find('input[name=property_change_reason]').val(property_change_reason)
+            $('#rewrite .property_fee_standard_per_month').remove();
+            $('#rewrite .property_change_reason').remove();
+        }
+        else {
+            var property_change_reason=$('#rewrite').find('input[name=property_change_reason]').val()
+            var property_fee_standard_per_month= $('#rewrite').find('input[name=property_fee_standard_per_month]').val()
+            var property_floor_area_name = $('#rewrite .property_floor_area_name').html()
+            var property_standard_name = $('#rewrite .property_standard_name').html()
+            console.log(property_floor_area_name)
+            property_floor_area_name=parseInt(property_floor_area_name.split('平米')['0'])
+            property_standard_name=parseInt(property_standard_name.split('元/平米/月')['0'])
+            property_fee_standard_per_month=property_floor_area_name*property_standard_name
+
+            $('#rewrite').find('input[name=property_fee_standard_per_month]').parent().append( '<span class="property_fee_standard_per_month col_37A" style="position:absolute;left:140px;">'+ property_fee_standard_per_month +' </span>');
+            var property_if_standard_date=$('#rewrite .property_if_standard_date').html('')
+
+            $('#rewrite').find('input[name=property_change_reason]').parent().append(
+                '<span class=" property_change_reason col_37A" style="position:absolute;left:140px;"></span>');
+            $('#rewrite').find('input[name=property_change_reason]').remove();
+            $('#rewrite').find('input[name=property_fee_standard_per_month]').remove();
+        }
+
+    })
 
     $('#rewrite .confirm').click(function (){
-       // var index=getdata(element,render)
-        //console.log(index)
+        var property_building_code=$('#rewrite .property_building_code').html()
+        var property_if_standard=$('#rewrite').find('input[name=property_if_standard]').data('ajax')
 
-        var property_building_code=$('#rewrite .property_building_code ').html()
-        var property_fee_standard_per_month=$('#rewrite').find('input[name=property_fee_standard_per_month]').val()
-        var property_change_reason=$('#rewrite').find('input[name=property_change_reason]').val()
+        if(property_if_standard=='t'){
+            var property_if_standard_date=$('#rewrite .property_if_standard_date').html()
+            var property_change_reason=$('#rewrite').find('input[name=property_change_reason]').val()
+            var property_fee_standard_per_month= $('#rewrite').find('input[name=property_fee_standard_per_month]').val()
+            if(!property_fee_standard_per_month){openLayer('请输入每月应缴纳物业费');return}
+            if(!property_change_reason){openLayer('请输入变更原因');return}
+        }
+        else {
+            var property_fee_standard_per_month= $('#rewrite .property_fee_standard_per_month').html()
+            var property_change_reason=undefined
+            var property_if_standard_date=undefined
+        }
+
         $.ajax({
             url: render.router.update,
             method: 'post',
             data: {
                 building_code:property_building_code,
                 ppe_payable:property_fee_standard_per_month,
-                change_reason:property_change_reason
+                change_reason:property_change_reason,
+                if_standard_date:property_if_standard_date,
+                if_standard:property_if_standard
             },
             success: function (data) {
                 //var data = JSON.parse(data);

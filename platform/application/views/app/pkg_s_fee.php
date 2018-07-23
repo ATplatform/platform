@@ -56,7 +56,7 @@
                     <th  data-title="车位租金" data-align="center" data-field="lot_monthly_rent_name"></th>
                     <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>-->
 
-                    <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>
+                   <!-- <th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>-->
                 </tr>
                 </thead>
 
@@ -132,6 +132,15 @@
                         <div class=" modal-body building  oh">
                             <div class="add_item">
                             </div>
+                            <table id="getauz" data-toolbar="#toolbar" >
+                                <thead >
+                                <tr>
+                                    <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+                                    <th data-title="更新时间" data-align="center" data-field="change_date"></th>
+                                    <th data-title="更新后费用" data-align="center" data-field="fee_standard"></th>
+                                </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                     <div class="modal_footer bg_eee">

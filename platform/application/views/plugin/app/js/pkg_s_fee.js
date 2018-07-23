@@ -31,7 +31,7 @@ var platform_index={
         update:'no',
         insert:'no',
         must:'no',
-        input:'停车场编号',
+        input:'生效日期',
         method:'time',
         disabledonly:'no',
     },
@@ -40,23 +40,23 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'yes',
         input:'停车场编号',
         method:'show',
-        disabledonly:'no',
+        disabledonly:'update',
     },
     pkg_floor:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'no',
         input:'车库楼层',
-        method:'select',
+        method:'show',
         ajax:{},
-        disabledonly:'no',
+        disabledonly:'update',
 
     },
     pkg_parklot_code:{
@@ -64,44 +64,111 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'no',
         input:'车位编号',
-        method:'select',
+        method:'show',
         ajax:{101:"地面",102:"地下一层"},
-        disabledonly:'no'
+        disabledonly:'update'
     },
-   pkg_biz_Reason:{
+   pkg_biz_reason:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         input:'占用类型',
-        method:'select',
+        method:'show',
         ajax:{},
-        disabledonly:'no'
+        disabledonly:'update'
     },
     pkg_fee_person:{
         search:'no',
         show:'yes',
         detail:'yes',
-        insert:'yes',
+        insert:'no',
         update:'yes',
+        must:'no',
         input:'账单对象',
         method:'select',
-        ajax:{},
-        disabledonly:'no'
+        disabledonly:'update'
+    },
+    pkg_change_date:{
+        search:'no',
+        show:'yes',
+        detail:'no',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'更新日期',
+        method:'show',
+        disabledonly:'no',
     },
     pkg_fee_per_month:{
         search:'no',
+        show:'no',
+        detail:'no',
+        insert:'no',
+        update:'no',
+        must:'yes',
+        input:'每月车位服务费',
+        method:'input',
+        disabledonly:'no'
+    },
+    pkg_fee_per_month_name:{
+        search:'no',
         show:'yes',
         detail:'yes',
+        insert:'no',
+        update:'no',
+        must:'yes',
+        input:'每月车位服务费',
+        method:'input',
+        disabledonly:'no'
+    },
+    pkg_biz_type:{
+        search:'no',
+        show:'no',
+        detail:'no',
         insert:'yes',
-        update:'yes',
-        input:'应缴纳每月车位服务费',
+        update:'no',
+        must:'yes',
+        input:'车位区域',
         method:'select',
-        ajax:{},
+        ajax:{'101':'住宅区停车位',102:'商业区停车位'},
+        disabledonly:'no'
+    },
+    pkg_fee_standard_name_1:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        insert:'yes',
+        update:'no',
+        must:'yes',
+        input:'当前生效服务费',
+        method:'show',
+        disabledonly:'no'
+    },
+    pkg_change_date_insert:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        update:'no',
+        insert:'yes',
+        must:'no',
+        input:'更新日期',
+        method:'show',
+        disabledonly:'no',
+    },
+    pkg_fee_standard_insert:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        insert:'yes',
+        update:'no',
+        must:'yes',
+        input:'更新服务费标准',
+        method:'input',
         disabledonly:'no'
     },
     keyword:{
@@ -123,10 +190,12 @@ var platform_index={
     pagechange:{urlparam:{route:'',page:''}, pagesize:'', total:'',page:''},
     router:{
         root:getRootPath()+'/index.php/Moneypay/pkg_fee',
-        get:'getList',
-        insert:'insert',
+        get:'getList_pkg_fee',
+        insert:'insert_pkg_fee',
         getfloor:'getfloor',
-        update:'update',
+        update:'update_pkg_fee',
+        change_history:'change_history_pkg_fee',
+        getbiz_type:'getbiz_type',
         getparking_lot_code:'getparking_lot_code',
         getparkingcode:'getparkingcode',
         getperson_code:'getperson_code',
@@ -151,7 +220,7 @@ $('#add_Item .add_item').append(render.insert_html)
 render.initial_all(platform_index)
 showdata(platform_index)
 pageChange(platform_index)
-information(platform_index)
+//information(platform_index)
 update_data('.rewrite',platform_index)
 insert_data('.add_item',platform_index)
 
@@ -189,6 +258,7 @@ insert_data('.add_item',platform_index)
 })(platform_index)*/
 
 
+
 function operateFormatter(value, row, index) {
     return [
         '<a class="detail" href="javascript:void(0)" title="详情" >',
@@ -199,6 +269,7 @@ function operateFormatter(value, row, index) {
         '</a>  ',
     ].join('');
 }
+
 
 
 
@@ -313,19 +384,61 @@ function getrewrite(location,rowkeys){
 
 
 ////////////////////////////////车位编号///////////////////////////
-$('.add_btn').click(function(){
+$('#add_Item .pkg_biz_type li').click(function(e){
+    var type=$(e.target).data('ajax')
+
     $.ajax({
-        url:platform_index.router.getLatestCode,
-        success:function(data){
-            if(parseInt(data)){
-                var code = parseInt(data) + 1;
-            }else{
-                var code = 1000001;
-            }
-            $('.add_item .rent_id').html(code);
+        type:"POST",
+        url:platform_index.router.getbiz_type,
+        data:{
+            biz_type:type
+        },
+        dataType:"text",
+        success:function(message){
+            var data=JSON.parse(message);
+            console.log(data)
+            var date=new Date;
+            var year=date.getFullYear();
+            var month=date.getMonth()+1;
+            var nextmonth=month+1
+            if(month==12){nextmonth=1}
+            var now=year+'-'+nextmonth+'-'+'1'
+            console.log(now)
+            $('#add_Item .pkg_fee_standard_name_1').addClass('col_37A')
+            $('#add_Item .pkg_change_date_insert').addClass('col_37A')
+            $('#add_Item .pkg_fee_standard_name_1').html(data['0'].fee_standard+'元/平米')
+            $('#add_Item .pkg_change_date_insert').html(now)
+            $("#getauz").bootstrapTable('destroy');
+            $('#getauz').bootstrapTable({
+                method: "get",
+                undefinedText: '/',
+                cache: false,
+                url: platform_index.router.change_history,
+                queryParams:{
+                    biz_type:type
+                },
+                contentType : "application/x-www-form-urlencoded",
+                responseHandler: function (res) {
+                    //用于处理后端返回数据
+                    console.log('1');
+                    console.log(res);
+                    return res;
+                },
+                onLoadSuccess: function (data) {  //加载成功时执行
+                    console.log('2');
+                    console.log(data);
+                },
+                onLoadError: function () {  //加载失败时执行
+                    console.info("加载数据失败");
+                }
+            })
+        },
+        error:function(jqXHR,textStatus,errorThrown){
         }
     })
 })
+
+
 
 
 ////////////////////////////////停车场///////////////////////////
@@ -441,13 +554,22 @@ $('#add_Item .rent_parking_lot_code').click(function() {
 function insert_data(element,render){
     //点击保存新增
     $('#add_Item .confirm').click(function(){
-        var index=getdata(element,render)
+        var date=new Date;
+        var nowdate=date.getDate();
+        nowdate=date.getDate();
+        if(nowdate==1 || nowdate==2|| nowdate==3){openLayer('每月的1日~3日不可更新物业费标准');return;}
+        var biz_type=$('#add_Item').find('input[name=pkg_biz_type]').data('ajax')
+        var change_date=$('#add_Item .pkg_change_date_insert').html()
+        var fee_standard=$('#add_Item').find('input[name=pkg_fee_standard_insert]').val()
 
-        console.log(index)
         $.ajax({
             url:render.router.insert,
             method:'post',
-            data:index,
+            data:{
+                biz_type:biz_type,
+                change_date:change_date,
+                fee_standard:fee_standard
+            },
             success:function(data){
                 //var data = JSON.parse(data);
                 //成功之后自动刷新页面
@@ -459,7 +581,7 @@ function insert_data(element,render){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: '新增租赁',
+                    content: '在更新日期后，系统将按新标准生成车位服务费！',
                     cancel: function(){
                         window.location.href=render.router.root;
                     }
@@ -674,7 +796,7 @@ function html_render(index){
                 '               <div class="fl">' +
                 +must_html+index.input+
                 '               </div>' +
-                '               <div class="fl search_person_text "style="margin-left:18px;">\n' +
+                '               <div class="fl search_person_text "style="margin-left:18px;">' +
                 '                    <input type="text" class="fl search_person_name" placeholder="请输入姓名查找" style="width:300px;font-size:inherit;" name="'+n+'">' +
                 '           <a class="fr search_person_btn"><i class="fa fa-search"></i></a>' +
                 '              </div>' +
@@ -1180,6 +1302,7 @@ function showdata(render){
 ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////信息管理//////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
 function information(render) {
     /*  for (var n in render.info_manage){
           window.operateEvents['click' + ' .'+n]=render.info_manage[n]['content']()

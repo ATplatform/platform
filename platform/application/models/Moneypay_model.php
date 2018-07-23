@@ -449,13 +449,13 @@ FROM
     }
 
 
-    public function sqlTogetList_property_fee($effective_date,$building_code, $parent_code,$keyword, $page, $rows)
+    public function sqlTogetList_property_fee($if_standard,$building_code, $parent_code,$keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
         $now   =  date("Y-m-d",time());
 
         /////////////////判断为普通查询或搜索查询////////////////////////////
-        if (empty($effective_date) && empty($building_code) &&  empty($keyword))
+        if (empty($if_standard) && empty($building_code) &&  empty($keyword))
 
             /////////////////////////普通查询sql语句/////////////////////////
         {
@@ -464,6 +464,7 @@ FROM
   property.standard as property_standard,
   property.ppe_payable as property_fee_standard_per_month,
   property.if_standard as property_if_standard,
+  property.if_standard_date as property_if_standard_date,
   property.change_reason as property_change_reason,
   b.code as property_building_code,
   b.name as property_building_name,
@@ -486,6 +487,7 @@ FROM
   property.standard as property_standard,
   property.ppe_payable as property_fee_standard_per_month,
   property.if_standard as property_if_standard,
+  property.if_standard_date as property_if_standard_date,
   property.change_reason as property_change_reason,
   b.code as property_building_code,
   b.name as property_building_name,
@@ -503,6 +505,9 @@ FROM
             $sql .= " and rent.end_date >= '$now' ";
         }*/
 
+        if(!empty($if_standard)){
+            $sql .= " and   property.if_standard='$if_standard' ";
+        }
 
          if(!empty($building_code)){
                $sql .= " and (b.code=$building_code or b.parent_code=$parent_code) ";
@@ -572,7 +577,7 @@ FROM
                         if ($value2 == "t") {
                             $arr[$key]['property_if_standard_name'] = '是';
                         }
-                        if ($value2 == "102") {
+                        if ($value2 == "f") {
                             $arr[$key]['property_if_standard_name'] = '否';
                         }
                     }
@@ -651,12 +656,14 @@ FROM
         return $result;
     }
 
-    public function update_property($building_code,$ppe_payable,$change_reason)
+    public function update_property($building_code,$ppe_payable,$change_reason,$if_standard_date,$if_standard)
     {
         $sql = " update village_dtl_ppe_fee
          set 
             ppe_payable=".$this->db->escape($ppe_payable).",".
-            "change_reason=".$this->db->escape($change_reason)." ".
+            "change_reason=".$this->db->escape($change_reason).",".
+            "if_standard_date=".$this->db->escape($if_standard_date).",".
+            "if_standard=".$this->db->escape($if_standard)." ".
             "where building_code=$building_code";
 
         $this->db->query($sql);
@@ -674,6 +681,33 @@ FROM
         $row = $query->result_array();
         return $row;
     }
+
+    public function getbiz_type($biz_type)
+    {
+        $sql = " 
+        select * from village_pkg_s_fee where biz_type=$biz_type
+        and change_date=(select max(change_date) from village_pkg_s_fee where biz_type=$biz_type and change_date<now())
+        
+        ";
+
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+        return $row;
+    }
+
+    public function getwater()
+    {
+        $sql = " 
+        select * from village_water_fee 
+        where change_date=(select max(change_date) from village_water_fee where change_date<now())
+        
+        ";
+
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+        return $row;
+    }
+
     public function change_history($building_type)
     {
         $sql = " 
@@ -693,10 +727,63 @@ FROM
         return $row;
     }
 
+
+    public function change_history_pkg_fee($biz_type)
+    {
+        $sql = " 
+        select change_date,fee_standard from village_pkg_s_fee where biz_type=$biz_type
+        
+        ";
+
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+        foreach ($row as $key => $value) {
+            foreach ($value as $key2 => $value2) {
+                if ($key2 == "fee_standard") {
+                    $row[$key][$key2] = $value2 . "元/月";
+                }
+            }
+        }
+        return $row;
+    }
+
+    public function change_history_water_fee()
+    {
+        $sql = " 
+        select change_date,fee_standard from village_water_fee
+        
+        ";
+
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+        foreach ($row as $key => $value) {
+            foreach ($value as $key2 => $value2) {
+                if ($key2 == "fee_standard") {
+                    $row[$key][$key2] = $value2 . "元/吨";
+                }
+            }
+        }
+        return $row;
+    }
+
+
+
     public function insert_property($code,$building_type,$change_date,$fee_standard)
     {
+        $sql = " select 
+      change_date
+      from  village_type_ppe_fee where change_date='$change_date'
+     ";
+        $query = $this->db->query($sql);
+          if ($query->num_rows() > 0) {
+          $sql = " update village_type_ppe_fee
+         set fee_standard=".$this->db->escape($fee_standard)." ".
+         "where change_date='$change_date'";
 
+              $this->db->query($sql);
 
+          }
+else{
         $sql=" INSERT INTO village_type_ppe_fee (code,building_type,change_date,fee_standard) values (".
             $this->db->escape($code).", ".
             $this->db->escape($building_type).", ".
@@ -704,7 +791,7 @@ FROM
             $this->db->escape($fee_standard).")";
         $this->db->query($sql);
 
-        $sql = " select 
+ /*       $sql = " select
         property.building_code,
         b.floor_area,
         b.building_type
@@ -719,34 +806,350 @@ FROM
                    if( $row[$key][$key2]==$building_type && $row[$key]['building_type']==$building_type){
                        $floor=$row[$key]['floor_area'];
                        $building_code=$row[$key]['building_code'];
-                       $this->change_standard_fee($building_code,$floor,$building_type,$fee_standard);
+                       $this->change_standard_fee($change_date,$building_code,$floor,$building_type,$fee_standard);
                    }
                 }
             }
-        }
-
+        }*/
+}
     }
 
-    public function change_standard_fee($building_code,$floor,$building_type,$fee_standard)
+    public function insert_pkg_fee($code,$biz_type,$change_date,$fee_standard)
+    {
+
+        $sql = " select 
+      change_date
+      from  village_pkg_s_fee where change_date='$change_date'
+     ";
+        $query = $this->db->query($sql);
+        if ($query->num_rows() > 0) {
+            $sql = " update village_pkg_s_fee
+         set fee_standard=" . $this->db->escape($fee_standard) . " " .
+                "where change_date='$change_date'";
+
+            $this->db->query($sql);
+
+        }
+        else {
+            $sql = " INSERT INTO village_pkg_s_fee (code,biz_type,change_date,fee_standard) values (" .
+                $this->db->escape($code) . ", " .
+                $this->db->escape($biz_type) . ", " .
+                $this->db->escape($change_date) . ", " .
+                $this->db->escape($fee_standard) . ")";
+            $this->db->query($sql);
+        }
+    }
+
+    public function insert_water_fee($code,$change_date,$fee_standard)
+    {
+
+        $sql = " select 
+      change_date
+      from  village_water_fee where change_date='$change_date'
+     ";
+        $query = $this->db->query($sql);
+        if ($query->num_rows() > 0) {
+            $sql = " update village_water_fee
+         set fee_standard=" . $this->db->escape($fee_standard) . " " .
+                "where change_date='$change_date'";
+
+            $this->db->query($sql);
+
+        }
+        else {
+            $sql = " INSERT INTO village_water_fee (code,change_date,fee_standard) values (" .
+                $this->db->escape($code) . ", " .
+                $this->db->escape($change_date) . ", " .
+                $this->db->escape($fee_standard) . ")";
+            $this->db->query($sql);
+        }
+    }
+
+    public function change_standard_fee($change_date,$building_code,$floor,$building_type,$fee_standard)
     {
         $floor=intval($floor, 10);
         $fee_standard=intval($fee_standard, 10);
         $update_standard=$floor*$fee_standard;
-        $sql = " update village_dtl_ppe_fee
+   /*     $sql = " update village_dtl_ppe_fee
          set  standard=".$this->db->escape($fee_standard).",".
             "ppe_payable=".$this->db->escape($update_standard)." ".
-            "where building_code=$building_code";
+            "where building_code=$building_code";*/
+        $sql=" INSERT INTO village_dtl_ppe_fee (change_date,standard,ppe_payable,building_code) values (".
+            $this->db->escape($change_date).", ".
+            $this->db->escape($fee_standard).", ".
+            $this->db->escape($update_standard).",".
+            $this->db->escape($building_code).")";
+        $this->db->query($sql);
 
-         $this->db->query($sql);
     }
 
 
-    public function getLatestCode()
+    public function getLatestCode($database)
     {
-        $sql = "select code from village_type_ppe_fee order by code desc limit 1";
+        $sql = "select code from $database order by code desc limit 1";
         $query = $this->db->query($sql);
         $row = $query->row_array();
         return $row['code'];
+    }
+
+
+    public function sqlTogetList_pkg_fee($effective_date,$keyword, $page, $rows)
+    {
+        $start = ($page - 1) * $rows;
+        $now   =  date("Y-m-d",time());
+
+        /////////////////判断为普通查询或搜索查询////////////////////////////
+        if (empty($effective_date)  &&  empty($keyword))
+
+            /////////////////////////普通查询sql语句/////////////////////////
+        {
+
+            $sql = "  select 
+  parking_lot.effective_date as pkg_effective_date,
+  parking_lot.effective_status as pkg_effective_status,
+  parking_lot.parkcode as pkg_park_code,
+  parking_lot.floor as pkg_floor,
+  parking_lot.code as pkg_parklot_code,
+  parking_lot.biz_reason as pkg_biz_reason,
+  parking_lot.owner as pkg_fee_person,
+  pkg.fee_standard as pkg_fee_per_month,
+  pkg.change_date as  pkg_change_date,
+  pkg.biz_type as  pkg_biz_type,
+  p.first_name ,
+  p.last_name
+   from village_parking_lot as parking_lot
+     left join village_pkg_s_fee as pkg on pkg.biz_type= parking_lot.biz_type
+     left join village_person as p on p.code=parking_lot.owner
+ where parking_lot.biz_status=101 and (parking_lot.biz_reason=101 or parking_lot.biz_reason=102)
+    and (pkg.change_date=(select max(change_date) from village_pkg_s_fee where change_date<now() and biz_type=101) or pkg.change_date=(select max(change_date) from village_pkg_s_fee where change_date<now() and biz_type=102))
+";}
+
+
+
+        /////////////////////////搜索查询sql语句/////////////////////////
+        else {
+            $sql = "
+ select 
+  parking_lot.effective_date as pkg_effective_date,
+  parking_lot.parkcode as pkg_park_code,
+  parking_lot.floor as pkg_floor,
+  parking_lot.code as pkg_parklot_code,
+  parking_lot.biz_reason as pkg_biz_reason,
+  parking_lot.owner as pkg_fee_person,
+  pkg.fee_standard as pkg_fee_per_month,
+  pkg.change_date as  pkg_change_date,
+  pkg.biz_type as  pkg_biz_type,
+  p.first_name ,
+  p.last_name
+   from village_parking_lot as parking_lot
+    left join village_pkg_s_fee as pkg on pkg.biz_type= parking_lot.biz_type
+    left join village_person as p on p.code=parking_lot.owner
+ where parking_lot.biz_status=101 and (parking_lot.biz_reason=101 or parking_lot.biz_reason=102)
+ and (pkg.change_date=(select max(change_date) from village_pkg_s_fee where change_date<now() and pkg.biz_type=101) or pkg.change_date=(select max(change_date) from village_pkg_s_fee where change_date<now() and pkg.biz_type=102))
+";
+        }
+         if(empty($pkg_effective_date)){
+               $sql .= " and parking_lot.effective_date <= '$now' and  parking_lot.effective_status =true ";
+          }
+
+
+        if(!empty($pkg_effective_date)){
+            $sql .= " and  parking_lot.effective_date <= '$pkg_effective_date' and  parking_lot.effective_status =true ";
+        }
+
+
+        if (!empty($keyword)) {
+            if (preg_match('/^\d*\w*[\x7f-\xff]*$/', $keyword)) {
+                $sql .= " and concat (parking_lot.code,p.last_name,p.first_name) like '%$keyword%'";
+            }
+
+        }
+
+        $sqlshow = $sql . " ORDER BY parking_lot.code ASC limit ".$rows." offset ".$start;
+        $arrayres=array($sql,$sqlshow);
+        return $arrayres;
+    }
+
+    //////////////// 根据输入的sql语句参数，得到数据////////////////
+    public function getList_pkg_fee( $sql){
+
+        $brand_arr = $this->brand_arr;
+        $q = $this->db->query($sql); //自动转义
+        if ($q->num_rows() > 0) {
+            $arr = $q->result_array();
+
+            foreach ($arr as $key => $value) {
+                foreach ($value as $key2 => $value2) {
+                    if ($key2 == "pkg_floor") {
+                        if ($value2 == "101") {
+                            $arr[$key]['pkg_floor'] = '地面';
+                        }
+                        if ($value2 == "102") {
+                            $arr[$key]['pkg_floor'] = '地下一层';
+                          }
+                    }
+
+                    if ($key2 == "pkg_biz_reason") {
+                        if ($value2 == "101") {
+                            $arr[$key]['pkg_biz_reason'] = '已出售';
+                        }
+                        if ($value2 == "102") {
+                            $arr[$key]['pkg_biz_reason'] = '租赁中';
+                        }
+                        if ($value2 == "103") {
+                            $arr[$key]['pkg_biz_reason'] = '被占用';
+                        }
+                    }
+
+                    if ($key2 == "pkg_fee_per_month") {
+                        $arr[$key]['pkg_fee_per_month_name'] =$value2.'元/月';
+                        $arr[$key]['pkg_fee_per_month_name_1'] =$value2.'元/月';
+                    }
+                    if($key2 == 'pkg_fee_person'){
+                        if(!empty($value['pkg_fee_person']) ) {
+
+                            $arr[$key]['pkg_fee_person_name'] = "";
+
+                            $person = $this->getPersonByCode($value2);
+                            $name = $person['full_name'];
+                            $arr[$key]['pkg_fee_person_name'] = $name;
+                        }
+
+                    }
+
+                }
+                $arr[$key]["property_building_fullname"] = $this->getHouseholdInfo($value);
+
+            }
+            $json = json_encode($arr);
+            return $json;
+        }
+        return false;
+    }
+
+
+    public function sqlTogetList_water_fee($effective_date,$keyword, $page, $rows)
+    {
+        $start = ($page - 1) * $rows;
+        $now   =  date("Y-m-d",time());
+
+        /////////////////判断为普通查询或搜索查询////////////////////////////
+        if (empty($effective_date)  &&  empty($keyword))
+
+            /////////////////////////普通查询sql语句/////////////////////////
+        {
+
+            $sql = "select 
+water.code as water_code,
+water.building_code as water_building_code,
+water.building_name as water_building_name,
+water.rank as water_building_rank,
+water.Water_csp as water_thismonth_usage,
+tmp.*,
+water_fee.change_date as water_fee_change_date,
+water_fee.fee_standard as water_fee_standard
+ from village_water_list as water  left join village_tmp_building as tmp on tmp.code=water.building_code, 
+ village_water_fee as water_fee
+ 
+";}
+
+
+
+        /////////////////////////搜索查询sql语句/////////////////////////
+        else {
+            $sql = "
+select 
+water.code as water_code,
+water.building_code as water_building_code,
+water.building_name as water_building_name,
+water.rank as water_building_rank,
+water.water_csp as water_thismonth_usage,
+tmp.*,
+water_fee.change_date as water_fee_change_date,
+water_fee.fee_standard as water_fee_standard
+ from village_water_list as water  left join village_tmp_building as tmp on tmp.code=water.building_code, 
+ village_water_fee as water_fee
+
+";
+        }
+      /*  if(empty($pkg_effective_date)){
+            $sql .= " and parking_lot.effective_date <= '$now' and  parking_lot.effective_status =true ";
+        }
+
+
+        if(!empty($pkg_effective_date)){
+            $sql .= " and  parking_lot.effective_date <= '$pkg_effective_date' and  parking_lot.effective_status =true ";
+        }
+
+
+        if (!empty($keyword)) {
+            if (preg_match('/^\d*\w*[\x7f-\xff]*$/', $keyword)) {
+                $sql .= " and concat (parking_lot.code,p.last_name,p.first_name) like '%$keyword%'";
+            }
+
+        }*/
+
+        $sqlshow = $sql . " ORDER BY water.code ASC limit ".$rows." offset ".$start;
+        $arrayres=array($sql,$sqlshow);
+        return $arrayres;
+    }
+
+    //////////////// 根据输入的sql语句参数，得到数据////////////////
+    public function getList_water_fee( $sql){
+
+        $brand_arr = $this->brand_arr;
+        $q = $this->db->query($sql); //自动转义
+        if ($q->num_rows() > 0) {
+            $arr = $q->result_array();
+
+            foreach ($arr as $key => $value) {
+                foreach ($value as $key2 => $value2) {
+                    if ($key2 == "pkg_floor") {
+                        if ($value2 == "101") {
+                            $arr[$key]['pkg_floor'] = '地面';
+                        }
+                        if ($value2 == "102") {
+                            $arr[$key]['pkg_floor'] = '地下一层';
+                        }
+                    }
+
+                    if ($key2 == "pkg_biz_reason") {
+                        if ($value2 == "101") {
+                            $arr[$key]['pkg_biz_reason'] = '已出售';
+                        }
+                        if ($value2 == "102") {
+                            $arr[$key]['pkg_biz_reason'] = '租赁中';
+                        }
+                        if ($value2 == "103") {
+                            $arr[$key]['pkg_biz_reason'] = '被占用';
+                        }
+                    }
+
+                    if ($key2 == "water_fee_standard") {
+                        $arr[$key]['water_fee_standard_name']= $value2.'元/吨';
+                        $arr[$key]['water_fee_per_month'] =intval($value2, 10)*intval($arr[$key]['water_thismonth_usage'], 10) ;
+                        $arr[$key]['water_fee_per_month_name']= $arr[$key]['water_fee_per_month'].'元/吨';
+                    }
+                    if($key2 == 'pkg_fee_person'){
+                        if(!empty($value['pkg_fee_person']) ) {
+
+                            $arr[$key]['pkg_fee_person_name'] = "";
+
+                            $person = $this->getPersonByCode($value2);
+                            $name = $person['full_name'];
+                            $arr[$key]['pkg_fee_person_name'] = $name;
+                        }
+
+                    }
+
+                }
+                $arr[$key]["water_building_fullname"] = $this->getHouseholdInfo($value);
+
+            }
+            $json = json_encode($arr);
+            return $json;
+        }
+        return false;
     }
 }
 
