@@ -240,37 +240,35 @@ class Equipment_model extends CI_model {
 	    $result="";
 	    if(!empty($row['stage_name']))
 	    {
-	        $result=$result.$row['stage_name']."(期)";
+	        $result=$result.$row['stage_name'];
 	    }
 	    if(!empty($row['area_name']))
 	    {
-	        $result=$result.$row['area_name']."(区)";
+	        $result=$result.$row['area_name'];
 	    }       
 	    if(!empty($row['immeuble_name']))
 	    {
-	        $result=$result.$row['immeuble_name']."(栋)";
+	        $result=$result.$row['immeuble_name'];
 	    }
 	    if(!empty($row['unit_name']))
 	    {
-	        $result=$result.$row['unit_name']."(单元)";
+	        $result=$result.$row['unit_name'];
 	    }       
 	    if(!empty($row['floor_name']))
 	    {
-	        $result=$result.$row['floor_name']."(层)";
+	        $result=$result.$row['floor_name'];
 	    }       
 	    if(!empty($row['room_name']))
 	    {
-	        $result=$result.$row['room_name']."(室)";
+	        $result=$result.$row['room_name'];
 	    }
 	    if(!empty($row['public_name']))
 	    {
-	        $result=$result.$row['public_name']."(公共设施)";
+	        $result=$result.$row['public_name'];
 	    }
-	    if(!empty($row['level'])){
-	    	if($row['level']==100){
-	    		$result=$result.$row['name'];
-	    	} 
-	    }
+	    if(!empty($row['level'])&&$row['level']==100){
+	        $result=$result.$row['name'];
+	    }              
 	    return $result;
 	}
 
@@ -453,7 +451,11 @@ class Equipment_model extends CI_model {
 		return $row;
 	}
 
-	public function getPersoneEquipmentList($village_id,$person_code,$building_code,$page,$keyword,$effective_date,$equipment_type,$building_code_single,$rows){
+	public function getPersoneEquipmentList($village_id,$person_code,$has_search_person,$building_code,$page,$keyword,$effective_date,$equipment_type,$building_code_single,$rows){
+		//如果搜索了人名,并且搜索人名结果为空,表示没有这个人,应该退出
+		if($has_search_person == true && empty($person_code)){
+			return false;
+		}
 		$start=($page-1) * $rows;
 		$equipment_type_arr=$this->equipment_type_arr;
 		$sql = "select pe.equipment_code,pe.building_code,pe.person_code,pe.begin_date,pe.end_date,pe.remark as pe_remark, e.name,e.equipment_type,e.initial_no,e.pcs,e.building_code as equipment_building_code,pe.code as code from village_person_equipment as pe left join village_equipment as e on pe.equipment_code = e.code  and pe.village_id = e.village_id where	e.effective_status = true and pe.begin_date <= '$effective_date' and pe.end_date >= '$effective_date' ";
@@ -579,7 +581,11 @@ class Equipment_model extends CI_model {
 		return false;
 	}
 
-	public function getPrivilegeEquipmentList($village_id,$person_code,$building_code,$page,$keyword,$effective_date,$equipment_type,$building_code_single,$rows){
+	public function getPrivilegeEquipmentList($village_id,$person_code,$has_search_person,$building_code,$page,$keyword,$effective_date,$equipment_type,$building_code_single,$rows){
+		//如果搜索了人名,并且搜索人名结果为空,表示没有这个人,应该退出
+		if($has_search_person == true && empty($person_code)){
+			return false;
+		}
 		$start=($page-1) * $rows;
 		$equipment_type_arr=$this->equipment_type_arr;
 		$sql = "select pe.equipment_code,pe.building_code,pe.person_code,pe.begin_date,pe.end_date,pe.remark as pe_remark, e.name,e.equipment_type,e.initial_no,e.pcs,e.building_code as equipment_building_code,pe.code as code from village_person_equipment as pe left join village_equipment as e on pe.equipment_code = e.code  and pe.village_id = e.village_id where	e.effective_status = true and pe.begin_date <= '$effective_date' and pe.end_date >= '$effective_date' ";
@@ -724,7 +730,11 @@ class Equipment_model extends CI_model {
 		return $res;
 	}
 
-	public function getPersoneEquipmentListTotal($village_id,$person_code_arr,$building_code_arr,$keyword,$effective_date,$equipment_type,$building_code_single,$rows){
+	public function getPersoneEquipmentListTotal($village_id,$person_code_arr,$has_search_person,$building_code_arr,$keyword,$effective_date,$equipment_type,$building_code_single,$rows){
+		//如果搜索了人名,并且搜索人名结果为空,表示没有这个人,应该退出
+		if($has_search_person == true && empty($person_code)){
+			return 0;
+		}
 		$sql = "select count(pe.code) as count from village_person_equipment as pe left join village_equipment as e on pe.equipment_code = e.code and pe.village_id = e.village_id where e.effective_status = true and pe.begin_date <= '$effective_date' and pe.end_date >= '$effective_date' ";
 		if(!empty($equipment_type)){
 			$sql .= " and e.equipment_type = '$equipment_type' ";
@@ -766,7 +776,11 @@ class Equipment_model extends CI_model {
 		return 0;
 	}
 
-	public function getPrivilegeEquipmentListTotal($village_id,$person_code_arr,$building_code_arr,$keyword,$effective_date,$equipment_type,$building_code_single,$rows){
+	public function getPrivilegeEquipmentListTotal($village_id,$person_code_arr,$has_search_person,$building_code_arr,$keyword,$effective_date,$equipment_type,$building_code_single,$rows){
+		//如果搜索了人名,并且搜索人名结果为空,表示没有这个人,应该退出
+		if($has_search_person == true && empty($person_code)){
+			return 0;
+		}
 		$sql = "select count(pe.code) as count from village_person_equipment as pe left join village_equipment as e on pe.equipment_code = e.code and pe.village_id = e.village_id where e.effective_status = true and pe.begin_date <= '$effective_date' and pe.end_date >= '$effective_date' ";
 		if(!empty($equipment_type)){
 			$sql .= " and e.equipment_type = '$equipment_type' ";
@@ -831,18 +845,17 @@ class Equipment_model extends CI_model {
 		return false;
 	}
 
-	public function getEquipmentConfig($village_id,$page,$keyword,$effective_date,$equipment_type,$building_code,$rows){
+	public function getEquipmentConfig($village_id,$level,$page,$keyword,$effective_date,$equipment_type,$building_code,$rows){
 		$start=($page-1) * $rows;
 		$equipment_type_arr=$this->equipment_type_arr;
 		$regular_check_arr=$this->regular_check_arr;
 		$if_se_arr=$this->if_se_arr;
 		$effective_status_arr=$this->effective_status_arr;
 		$annual_check_arr=$this->annual_check_arr;
-		$sql = "select b.stage_name,b.area_name,b.immeuble_name,b.unit_name,b.floor_name,b.room_name,b.public_name,bd.parent_code as building_parent_code,e.name as e_name,e.parent_code as e_parent_code,e.code as code,e.village_id,e.building_code,e.server_ip,e.lan_ip,e.ip,e.gateway,e.netmask,e.dns1,e.dns2,e.sip,e.tdcode_url,b.level from village_equipment as e LEFT JOIN village_tmp_building as b on e.building_code = b.code and e.village_id = b.village_id  left join village_building as bd on e.building_code = bd.code  and e.village_id = bd.village_id ";
-		$sql=$sql." where bd.effective_date = (select max(effective_date) from village_building b_i where bd.name = b_i.name and bd.parent_code = b_i.parent_code and b_i.effective_status = true  and b_i.effective_date <= now() ) ";
-		$sql=$sql." and e.effective_status = true ";
+		$sql = "select b.stage_name,b.area_name,b.immeuble_name,b.unit_name,b.floor_name,b.room_name,b.public_name,b.name,e.name as e_name,e.code,e.village_id,e.building_code,e.server_ip,e.lan_ip,e.ip,e.gateway,e.netmask,e.dns1,e.dns2,e.sip,e.tdcode_url,b.level from village_equipment as e LEFT JOIN village_tmp_building as b on e.building_code = b.code and e.village_id = b.village_id  ";
+		$sql=$sql." where e.effective_status = true ";
 		$sql=$sql." and e.equipment_type in (301,302,303,304,305,306,307) ";
-		$sql=$sql." and e.server_ip !='' ";
+		// $sql=$sql." and e.server_ip !='' ";
 		if(!empty($effective_date)){
 			$sql=$sql." and e.effective_date <= '$effective_date' ";
 		}
@@ -856,10 +869,40 @@ class Equipment_model extends CI_model {
 			$sql=$sql." and concat(e.name,e.lan_ip) like '%$keyword%' ";
 		}
 
-		//树形菜单点击筛选
+		//树形图筛选楼宇
 		if(!empty($building_code)){
-			$sql .= " and bd.parent_code = $building_code or bd.code = $building_code ";
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
 		}
+
 		$sql .= " and e.village_id = $village_id";
 		$sql=$sql." order by e.code asc limit ".$rows." offset ".$start;
 		// echo $sql;exit;
@@ -870,11 +913,11 @@ class Equipment_model extends CI_model {
 				//赋值中文名称
 				foreach($row as $k1 => $value){
 					//url转换
-					if($k1=="tdcode_url"){
+					/*if($k1=="tdcode_url"){
 						if(!empty($value)){
 							$arr[$key]["tdcode_url"] = urlencode($value);
 						}
-					}
+					}*/
 				}
 				//得到安装地点名称
 				$arr[$key]["building_name"] = $this->getHouseholdInfo($row);
@@ -885,17 +928,16 @@ class Equipment_model extends CI_model {
 		return false;
 	}
 
-	public function getEquipmentConfigTotal($village_id,$page,$keyword,$effective_date,$equipment_type,$building_code,$rows){
+	public function getEquipmentConfigTotal($village_id,$level,$page,$keyword,$effective_date,$equipment_type,$building_code,$rows){
 		$equipment_type_arr=$this->equipment_type_arr;
 		$regular_check_arr=$this->regular_check_arr;
 		$if_se_arr=$this->if_se_arr;
 		$effective_status_arr=$this->effective_status_arr;
 		$annual_check_arr=$this->annual_check_arr;
-		$sql = "select count(e.code) as count from village_equipment as e LEFT JOIN village_tmp_building as b on e.building_code = b.code and e.village_id = b.village_id left join village_building as bd on e.building_code = bd.code AND e.village_id = bd.village_id ";
-		$sql=$sql." where bd.effective_date = (select max(effective_date) from village_building b_i where bd.name = b_i.name and bd.parent_code = b_i.parent_code and b_i.effective_status = true  and b_i.effective_date <= now() ) ";
-		$sql=$sql." and e.effective_status = true ";
+		$sql = "select count(e.code) as count from village_equipment as e LEFT JOIN village_tmp_building as b on e.building_code = b.code and e.village_id = b.village_id  ";
+		$sql=$sql." where e.effective_status = true ";
 		$sql=$sql." and e.equipment_type in (301,302,303,304,305,306,307) ";
-		$sql=$sql." and e.server_ip !='' ";
+		// $sql=$sql." and e.server_ip !='' ";
 		if(!empty($effective_date)){
 			$sql=$sql." and e.effective_date <= '$effective_date' ";
 		}
@@ -909,9 +951,38 @@ class Equipment_model extends CI_model {
 			$sql=$sql." and concat(e.name,e.lan_ip) like '%$keyword%' ";
 		}
 
-		//树形菜单点击筛选
+		//树形图筛选楼宇
 		if(!empty($building_code)){
-			$sql .= " and bd.parent_code = $building_code or bd.code = $building_code ";
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
 		}
 		$sql .= " and e.village_id = $village_id";
 		// echo $sql;exit;
@@ -944,16 +1015,16 @@ class Equipment_model extends CI_model {
 		return false;
 	}
 
-	public function getConfigData($code,$severip,$pnetworkip,$ip,$gatewayip,$netmask,$dns1,$dns2,$sip){
+	public function getConfigData($severip,$pnetworkip,$ip,$gatewayip,$netmask,$dns1,$dns2,$sip){
 	    $data=array();
-	    $data['code']=$code;
-	    $data['severip']=$severip;
-	    $data['pnetworkip']=$pnetworkip;
-	    $data['ip']=$ip;
+	    //注意这里,之前ip和pnetworkip的写反了
+	    $data['serverip']=$severip;
+	    $data['pnetworkip']=$ip;
+	    $data['ip']=$pnetworkip;
 	    $data['gatewayip']=$gatewayip;
 	    $data['netmask']=$netmask;
-	    $data['dns1']=$dns1;
-	    $data['dns2']=$dns2;
+	    // $data['dns1']=$dns1;
+	    // $data['dns2']=$dns2;
 	    $data['sip']=$sip;
 	    $json=json_encode($data);
 	    return $json;
@@ -1053,7 +1124,7 @@ class Equipment_model extends CI_model {
 			}
 		}
 		$sql=$sql." order by e.code asc limit ".$rows." offset ".$start;
-		// echo $sql;exit;
+		// echo $sql;exit；
 		$q = $this->db->query($sql); //自动转义
 		if ( $q->num_rows() > 0 ) {
 			$arr=$q->result_array();

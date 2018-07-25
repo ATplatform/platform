@@ -34,7 +34,7 @@
 		</a>
 		<ul id="systemSetting" 
 			<?php 
-				if($nav=="residentlist"||$nav=="managementlist"||$nav=="businesslist"){
+				if($nav=="residentlist"||$nav=="managementlist"||$nav=="businesslist"||$nav=="visitorlist"){
 					echo 'class="collapse secondmenu in"';
 				} 
 				else{
@@ -45,12 +45,13 @@
 			<li <?php if($nav=="residentlist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/People/residentlist'?>"><i class="glyphicon"></i>住户信息管理</a></li>
 			<li <?php if($nav=="managementlist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/People/managementlist'?>"><i class="glyphicon"></i>物业人员管理</a></li>
 			<li <?php if($nav=="businesslist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/People/businesslist'?>"><i class="glyphicon"></i>商户人员管理</a></li>
+			<li <?php if($nav=="visitorlist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/People/visitorlist'?>"><i class="glyphicon"></i>访客管理</a></li>
 		</ul>
 	</li>
 
 	<li>
 		<a href="#EquipmentSetting" class="nav-header " data-toggle="collapse"
-			<?php if($nav=="equipmentlist"||$nav=="personequipmentlist"||$nav=="equipmentconfig"||$nav=="equipmentstatus"||$nav=="equipmentservice") {echo 'aria-expanded="true"';} ?> 
+			<?php if($nav=="equipmentlist"||$nav=="personequipmentlist"||$nav=="equipmentstatus"||$nav=="equipmentservice") {echo 'aria-expanded="true"';} ?> 
 		>
 		<i class="icon fa fa-archive"></i>
 			设备管理
@@ -58,7 +59,7 @@
 		</a>
 		<ul id="EquipmentSetting" 
 			<?php 
-				if($nav=="equipmentlist"||$nav=="personequipmentlist"||$nav=="equipmentconfig"||$nav=="equipmentstatus"||$nav=="equipmentservice"){
+				if($nav=="equipmentlist"||$nav=="personequipmentlist"||$nav=="equipmentstatus"||$nav=="equipmentservice"){
 					echo 'class="collapse secondmenu in"';
 				} 
 				else{
@@ -71,7 +72,6 @@
 			<li <?php if($nav=="personequipmentlist") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Equipment/personequipmentlist'?>"><i class="glyphicon"></i>设备授权管理</a></li>
 			<li <?php if($nav=="equipmentstatus") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Equipment/equipmentstatus'?>"><i class="glyphicon"></i>设备工作状态</a></li>
 			<li <?php if($nav=="equipmentservice") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Equipment/equipmentservice'?>"><i class="glyphicon"></i>设备维保管理</a></li>
-			<li <?php if($nav=="equipmentconfig") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Equipment/equipmentconfig'?>"><i class="glyphicon"></i>设备通讯配置</a></li>
 		</ul>
 	</li>
 
@@ -124,7 +124,7 @@
 
 	<li>
 	    <a href="#PrivilegeSetting" class="nav-header " data-toggle="collapse"
-	        <?php if($nav=="equipmentprivilegelist"||$nav=="accesscard"||$nav=="permissionfacelist"||$nav=="dooropenlist"||$nav=="videoitclist") {echo 'aria-expanded="true"';} ?>
+	        <?php if($nav=="equipmentprivilegelist"||$nav=="accesscard"||$nav=="permissionfacelist"||$nav=="dooropenlist"||$nav=="videoitclist"||$nav=="equipmentconfig") {echo 'aria-expanded="true"';} ?>
 	    >
 
 	        <i class="icon fa fa-address-card"></i>
@@ -133,7 +133,7 @@
 	    </a>
 	    <ul id="PrivilegeSetting"
 	        <?php
-	        if($nav=="equipmentprivilegelist"||$nav=="accesscard"||$nav=="permissionfacelist"||$nav=="dooropenlist"||$nav=="videoitclist"){
+	        if($nav=="equipmentprivilegelist"||$nav=="accesscard"||$nav=="permissionfacelist"||$nav=="dooropenlist"||$nav=="videoitclist"||$nav=="equipmentconfig"){
 	            echo 'class="collapse secondmenu in"';
 	        }
 	        else{
@@ -141,6 +141,7 @@
 	        }
 	        ?>
 	        aria-expanded="true" >
+	        <li <?php if($nav=="equipmentconfig") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Equipment/equipmentconfig'?>"><i class="glyphicon"></i>对讲通讯配置</a></li>
 	        <li <?php if($nav=="equipmentprivilegelist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Equipment/equipmentprivilegelist'?>"><i class="glyphicon"></i>门禁对讲授权</a></li>
 	        <li <?php if($nav=="accesscard") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Permission/accesscard'?>"><i class="glyphicon"></i>一卡通授权</a></li>
 	        <li <?php if($nav=="permissionfacelist") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Permission/permissionfacelist'?>"><i class="glyphicon"></i>人脸识别授权</a></li>
@@ -184,7 +185,7 @@
 		</a>
 		<ul id="FinanceSetting" 
 			<?php 
-				if($nav=="Parkrent"  || $nav=="property_fee" || $nav=="pkg_fee" || $nav=="water_fee" || $nav=="service_fee"){
+				if($nav=="Parkrent"  || $nav=="property_fee" || $nav=="pkg_fee" || $nav=="water_fee" || $nav=="service_fee"||$nav=="order_fee"){
 					echo 'class="collapse secondmenu in"';
 				} 
 				else{
@@ -196,7 +197,7 @@
 			<li <?php if($nav=="property_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/property_fee'?>"><i class="glyphicon"></i>物业费管理</a></li>
             <li <?php if($nav=="pkg_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/pkg_fee'?>"><i class="glyphicon"></i>车位服务费管理</a></li>
             <li <?php if($nav=="water_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/water_fee'?>"><i class="glyphicon"></i>供水加压费管理</a></li>
-            <li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>物业增值服务管理</a></li>
+            <li <?php if($nav=="order_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/order_fee'?>"><i class="glyphicon"></i>物业增值服务管理</a></li>
             <li <?php if($nav=="service_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/service_fee'?>"><i class="glyphicon"></i>服务收费标准管理</a></li>
             <li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>账单管理页面</a></li>
 		</ul>
@@ -275,7 +276,7 @@
 
 	<li>
 	    <a href="#FunctionSetting" class="nav-header " data-toggle="collapse"
-	        <?php if($nav=="tdcodepath") {echo 'aria-expanded="true"';} ?>
+	        <?php if($nav=="tdcodepath"||$nav=="import_data") {echo 'aria-expanded="true"';} ?>
 	    >
 
 	        <i class="icon fa fa-shopping-cart"></i>
@@ -284,7 +285,7 @@
 	    </a>
 	    <ul id="FunctionSetting"
 	        <?php
-	        if($nav=="tdcodepath"){
+	        if($nav=="tdcodepath"||$nav=="import_data"){
 	            echo 'class="collapse secondmenu in"';
 	        }
 	        else{
@@ -293,6 +294,7 @@
 	        ?>
 	        aria-expanded="true" >
 	        <li <?php if($nav=="tdcodepath") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Main/tdcodepath'?>"><i class="glyphicon"></i>二维码打印</a></li>
+	        <li <?php if($nav=="import_data") {echo 'class="active"';} ?> ><a href="<?=base_url().'index.php/Import/importData'?>"><i class="glyphicon"></i>数据导入与生成</a></li>
 	    </ul>
 	</li>
 

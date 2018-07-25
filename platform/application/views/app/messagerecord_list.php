@@ -150,7 +150,7 @@
 					</p>
 					<p style="line-height: 30px;">是否为缴费通知：
 						<span class="if_bill_name col_37A"></span>
-						<span class="bill_amount col_37A" style="margin-left: 20px;">缴费金额：<span class="col_37A"></span></span>
+						<span class="bill_amount" style="margin-left: 20px;">缴费金额：<span class="col_37A"></span></span>
 					</p>
 					<p style="line-height: 30px;">循环类型：
 						<span class="cycle_type_name col_37A" style="margin-left: 36px;"></span>
@@ -178,6 +178,15 @@
 					</p>
 					<p style="line-height: 30px;">消息标题：
 						<span class="msg_title col_37A" style="margin-left: 36px;"></span>
+					</p>
+					<p style="line-height: 30px;">首次阅读时间：
+						<span class="first_read_time col_37A" style="margin-left: 14px;"></span>
+					</p>
+					<p style="line-height: 30px;">上次阅读时间：
+						<span class="last_read_time col_37A" style="margin-left: 14px;"></span>
+					</p>
+					<p style="line-height: 30px;">阅读次数：
+						<span class="read_times col_37A" style="margin-left: 36px;"></span>
 					</p>
 					<div class="tac">
 						<iframe  class="msg_html" src="" width="320" height="568" scrolling="auto" align="center">   

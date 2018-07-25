@@ -106,6 +106,7 @@ a:hover { color:#37ACFF; }
 }
 .header a {
 	color: #fff;
+	vertical-align: middle;
 }
 .header .logo {
 	font-size: 18px;
@@ -952,6 +953,7 @@ input:-ms-input-placeholder,.form-control:-ms-input-placeholder{ /* Internet Exp
 	font-style: normal;
 	display: block;
 	width: 210px;
+	/*width: 260px;*/
 	height: 30px;
 }
 i.fa-close{
@@ -1087,8 +1089,8 @@ th{
 }
 .qr_code img {
 	display: block;
-	width: 120px;
-	height: 120px;
+	width: 220px;
+	height: 220px;
 }
 .down_code_wrap {
 	width: 300px;

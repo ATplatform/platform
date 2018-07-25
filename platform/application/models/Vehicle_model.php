@@ -1459,7 +1459,7 @@ public function updateParkinglot($code,$effective_date,$effective_status,$linked
         "biz_reason=".$this->db->escape($biz_reason).",".
         "owner=".$this->db->escape($owner).",".
         "remark=".$this->db->escape($remark)." ".
-        "where code=".$this->db->escape($code);
+        "where code=$code";
 
     $this->db->query($sql);
 }

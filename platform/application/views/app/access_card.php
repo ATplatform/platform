@@ -63,7 +63,7 @@
 					<th data-field="card_no" data-title="一卡通卡号" data-align="center"></th>
 					<th data-field="full_name" data-title="授权用户" data-align="center"></th>
 					<th data-field="person_type_name" data-title="用户类型" data-align="center"></th>
-					<th data-field="building_name" data-title="授权地址" data-align="center" data-formatter="viewAll"></th>
+					<th data-field="building_name" data-title="授权地址" data-align="center" data-formatter="viewMore"></th>
 					<th data-field="begin_date" data-title="开始日期" data-align="center"></th>
 					<th data-field="end_date" data-title="结束日期" data-align="center"></th>
 					<th  data-title="信息管理" data-align="center" data-formatter="operateFormatter" data-events="operateEvents"></th>

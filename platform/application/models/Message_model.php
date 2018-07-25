@@ -355,6 +355,24 @@ class Message_model extends CI_Model {
 						}
 						$arr[$key]["push_time"] = $push_time;
 					}
+					//分割出首次阅读时间
+					if($k1=="first_read_time"){
+						$first_read_time = $value;
+						if(!empty($value)){
+							$first_read_time = explode('.',$value);
+							$first_read_time = $first_read_time[0];
+						}
+						$arr[$key]["first_read_time"] = $first_read_time;
+					}
+					//分割出上次阅读时间
+					if($k1=="last_read_time"){
+						$last_read_time = $value;
+						if(!empty($value)){
+							$last_read_time = explode('.',$last_read_time);
+							$last_read_time = $last_read_time[0];
+						}
+						$arr[$key]["last_read_time"] = $last_read_time;
+					}
 					//消息循环类型
 					if($k1=="if_cycle"){
 						foreach($if_cycle_arr as $k2 => $v2){
@@ -458,37 +476,35 @@ class Message_model extends CI_Model {
 	    $result="";
 	    if(!empty($row['stage_name']))
 	    {
-	        $result=$result.$row['stage_name']."(期)";
+	        $result=$result.$row['stage_name'];
 	    }
 	    if(!empty($row['area_name']))
 	    {
-	        $result=$result.$row['area_name']."(区)";
+	        $result=$result.$row['area_name'];
 	    }       
 	    if(!empty($row['immeuble_name']))
 	    {
-	        $result=$result.$row['immeuble_name']."(栋)";
+	        $result=$result.$row['immeuble_name'];
 	    }
 	    if(!empty($row['unit_name']))
 	    {
-	        $result=$result.$row['unit_name']."(单元)";
+	        $result=$result.$row['unit_name'];
 	    }       
 	    if(!empty($row['floor_name']))
 	    {
-	        $result=$result.$row['floor_name']."(层)";
+	        $result=$result.$row['floor_name'];
 	    }       
 	    if(!empty($row['room_name']))
 	    {
-	        $result=$result.$row['room_name']."(室)";
+	        $result=$result.$row['room_name'];
 	    }
 	    if(!empty($row['public_name']))
 	    {
-	        $result=$result.$row['public_name']."(公共设施)";
+	        $result=$result.$row['public_name'];
 	    }
-	    if(!empty($row['level'])){
-	    	if($row['level']==100){
-	    		$result=$result.$row['name'];
-	    	} 
-	    }
+	    if($row['level']==100){
+	        $result=$result.$row['name'];
+	    }              
 	    return $result;
 	}
 

@@ -37,7 +37,7 @@
 						<li><a href="javascript:;" data-ajax="303">单元门口机</a></li>
 						<li><a href="javascript:;" data-ajax="304">别墅门口机</a></li>
 						<li><a href="javascript:;" data-ajax="305">室内机</a></li>
-						<li><a href="javascript:;" data-ajax="306">独立指纹机</a></li>
+						<!-- <li><a href="javascript:;" data-ajax="306">独立指纹机</a></li> -->
 						<li><a href="javascript:;" data-ajax="307">魔镜</a></li>
 					</ul>
 					</div>
@@ -197,9 +197,9 @@ $(function(){
 		case '305':
 			$('.search_wrap .equipment_type').val('室内机');
 			break;
-		case '306':
+		/*case '306':
 			$('.search_wrap .equipment_type').val('独立指纹机');
-			break;
+			break;*/
 		case '307':
 			$('.search_wrap .equipment_type').val('魔镜');
 			break;

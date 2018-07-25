@@ -44,7 +44,7 @@
 								<li><a href="javascript:;" data-ajax="303">单元门口机</a></li>
 								<li><a href="javascript:;" data-ajax="304">别墅门口机</a></li>
 								<li><a href="javascript:;" data-ajax="305">室内机</a></li>
-								<li><a href="javascript:;" data-ajax="306">独立指纹机</a></li>
+								<!-- <li><a href="javascript:;" data-ajax="306">独立指纹机</a></li> -->
 								<li><a href="javascript:;" data-ajax="307">魔镜</a></li>
 							</ul>
 						</li>
@@ -80,7 +80,7 @@
 					<th data-field="equipment_code" data-title="设备编号" data-align="center"></th>
 					<th data-field="name" data-title="设备名称" data-align="center"></th>
 					<th data-field="pcs" data-title="数量" data-align="center"></th>
-					<th data-field="building_name" data-title="授权楼宇" data-align="center" data-formatter="viewAll"></th>
+					<th data-field="building_name" data-title="授权楼宇" data-align="center" data-formatter="viewMore"></th>
 					<th data-field="person_name" data-title="授权住户" data-align="center" data-formatter="viewAll"></th>
 					<th data-field="begin_date" data-title="开始日期" data-align="center"></th>
 					<th data-field="end_date" data-title="结束日期" data-align="center"></th>
@@ -337,7 +337,7 @@ $(function(){
 	var search_building_code = getUrlParam('building_code');
 
 	search_effective_date = search_effective_date?search_effective_date:now;
-	var equipment_type_arr = [{'code':'101','name':'供配电系统'},{'code':'102','name':'电梯系统'},{'code':'103','name':'空调系统'},{'code':'104','name':'给排水系统'},{'code':'105','name':'消防系统'},{'code':'106','name':'停车场系统'},{'code':'107','name':'综合布线系统'},{'code':'108','name':'门禁对讲系统'},{'code':'109','name':'视频监控系统'},{'code':'110','name':'安防系统'},{'code':'301','name':'中心机'},{'code':'301','name':'中心机'},{'code':'302','name':'围墙机'},{'code':'303','name':'单元门口机'},{'code':'304','name':'别墅门口机'},{'code':'305','name':'室内机'},{'code':'306','name':'独立指纹机'},{'code':'307','name':'魔镜'}];
+	var equipment_type_arr = [{'code':'101','name':'供配电系统'},{'code':'102','name':'电梯系统'},{'code':'103','name':'空调系统'},{'code':'104','name':'给排水系统'},{'code':'105','name':'消防系统'},{'code':'106','name':'停车场系统'},{'code':'107','name':'综合布线系统'},{'code':'108','name':'门禁对讲系统'},{'code':'109','name':'视频监控系统'},{'code':'110','name':'安防系统'},{'code':'301','name':'中心机'},{'code':'301','name':'中心机'},{'code':'302','name':'围墙机'},{'code':'303','name':'单元门口机'},{'code':'304','name':'别墅门口机'},{'code':'305','name':'室内机'},{'code':'307','name':'魔镜'}];
 	//根据搜索内容给搜索框和筛选条件赋值
 	$('.effective_date').val(search_effective_date);
 	$('.search_room .searc_room_text').val(search_keyword);
@@ -476,7 +476,7 @@ $('#treeNavAdd>span').on("select_node.jstree", function (e, node) {
   	}
   }
   //选择楼宇赋值时,就要清空授权住户
-  that.closest('.model_content').find('.person_building_data ul').empty();
+  that.closest('.model_content').find('.search_person_only .person_building_data ul').empty();
 })
 
 $(function(){

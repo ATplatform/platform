@@ -111,14 +111,51 @@ class People extends CI_Controller{
 		if ( !isset($_SESSION['username']) ) {
 		   redirect('Login');
 		}
+		$village_id = $_SESSION['village_id'];
 		$id_card = $this->input->post('id_card');
 		$this->load->model('People_model');
-		$res = $this->People_model->verifyIdcard($id_card);
+		$res = $this->People_model->verifyIdcard($id_card,$village_id);
 		if(!empty($res)){
 			echo "证件号码已存在";
 		}
 		else {
 			echo '证件号码不存在';
+		}
+	}
+
+	//验证身份证号是否跟别人的重复
+	public function verifyPersonIdCard(){
+		if ( !isset($_SESSION['username']) ) {
+		   redirect('Login');
+		}
+		$village_id = $_SESSION['village_id'];
+		$id_number = $this->input->post('id_number');
+		$code = $this->input->post('code');
+		$this->load->model('People_model');
+		$res = $this->People_model->verifyPersonIdCard($code,$id_number,$village_id);
+		if(!empty($res)){
+			echo "证件号码与别人重复";
+		}
+		else {
+			echo '证件号码没有与别人重复';
+		}
+	}
+
+	//验证手机号是否跟别人的重复
+	public function verifyPersonMobile(){
+		if ( !isset($_SESSION['username']) ) {
+		   redirect('Login');
+		}
+		$village_id = $_SESSION['village_id'];
+		$code = $this->input->post('code');
+		$mobile_number = $this->input->post('mobile_number');
+		$this->load->model('People_model');
+		$res = $this->People_model->verifyPersonMobile($code,$mobile_number,$village_id);
+		if(!empty($res)){
+			echo "手机号码与别人重复";
+		}
+		else {
+			echo '手机号码没有与别人重复';
 		}
 	}
 
@@ -155,7 +192,17 @@ class People extends CI_Controller{
 	public function updatePeople(){
 		$now = date('Y-m-d h:i:s',time());
 		$code = $this->input->post('code');
+		$last_name = $this->input->post('last_name');
+		$first_name = $this->input->post('first_name');
+		$id_type = $this->input->post('id_type');
+		$id_number = $this->input->post('id_number');
+		$nationality = $this->input->post('nationality');
+		$gender = $this->input->post('gender');
+		$birth_date = $this->input->post('birth_date');
 		$if_disabled = $this->input->post('if_disabled');
+		$bloodtype = $this->input->post('bloodtype');
+		$ethnicity = $this->input->post('ethnicity');
+		$tel_country = $this->input->post('tel_country');
 		$mobile_number = $this->input->post('mobile_number');
 		$oth_mob_no = $this->input->post('oth_mob_no');
 		$remark = $this->input->post('remark');
@@ -169,7 +216,7 @@ class People extends CI_Controller{
 		$village_id = $_SESSION['village_id'];
 		$this->load->model('People_model');
 		$village_id = $_SESSION['village_id'];
-		$res = $this->People_model->updatePeople($code,$if_disabled,$oth_mob_no,$remark,$village_id);
+		$res = $this->People_model->updatePeople($code,$last_name,$first_name,$id_type,$id_number,$nationality,$gender,$birth_date,$if_disabled,$bloodtype,$ethnicity,$tel_country,$mobile_number,$oth_mob_no,$remark,$village_id);
 		if($res==true){
 			$data['message'] = '编辑人员成功';
 		}
@@ -383,7 +430,7 @@ class People extends CI_Controller{
 		//根据住户编号,得到住户的名字等信息
 		$k = 0;
 		foreach($pcodes as $key => $row){
-			$p = $this->People_model->getPersonByCode($row);
+			$p = $this->People_model->getPersonByCode($row,$village_id);
 			if(!empty($p)){
 				$res[$k]= $p;
 				$k++;
@@ -753,6 +800,7 @@ class People extends CI_Controller{
 		$now = date('Y-m-d H:i:s',time());
 		$person_code = $this->input->post('person_code');
 		$building_code = $this->input->post('building_code');
+		$village_id = $_SESSION['village_id'];
 		$this->load->model('People_model');
 		$res = array();
 		$personcodes = array();
@@ -775,7 +823,7 @@ class People extends CI_Controller{
 		array_unique($personcodes);
 		//根据人员编号,得到人员的名字等信息
 		foreach($personcodes as $key => $row){
-			$res[$key]= $this->People_model->getPersonByCode($row);
+			$res[$key]= $this->People_model->getPersonByCode($row,$village_id);
 		}
 		print_r(json_encode($res));
 	}
@@ -790,6 +838,120 @@ class People extends CI_Controller{
 			$res[$key]["household"]=$this->Building_model->getHouseholdInfo($res[$key]['buildings']);
 		}
 		print_r(json_encode($res));
+	}
+
+	public function visitorlist(){
+		if ( !isset($_SESSION['username']) ) {
+		   redirect('Login');
+		}
+		$page = $this->input->get('page');
+		$keyword = $this->input->get('keyword');
+		$equipment_type = $this->input->get('equipment_type');
+		$building_code = $this->input->get('building_code');
+		$push_start_date = $this->input->get('push_start_date');
+		$push_end_date = $this->input->get('push_end_date');
+		$village_id = $_SESSION['village_id'];
+		$now = date("Y-m-d",time());
+		if(is_null($page)||empty($page))
+		{
+			$page=1;
+		}
+		if(is_null($push_start_date)||empty($push_start_date))
+		{	
+			//初始查询开始日期为上个月的今天
+			$push_start_date = date("Y-m-d", strtotime("-1 month"))." 00:00";
+		}
+		if(is_null($push_end_date)||empty($push_end_date))
+		{
+			$push_end_date = date('Y-m-d',time())." 23:59";
+		}
+		$level = "";
+		$this->load->model('People_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->People_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
+		//得到总条数
+		$total = $this->People_model->getVisitorListTotal($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$this->user_per_page);
+
+		$data['page']=$page>=$total?$total:$page;
+		$data['total']=$total;
+		$data['keyword']=$keyword;
+		$data['push_start_date']=$push_start_date;
+		$data['push_end_date']=$push_end_date;
+		$data['equipment_type']=$equipment_type;
+		$data['building_code'] = $building_code;
+		$data['pagesize']=$this->user_per_page;
+		$data['nav']='visitorlist';
+		$data['username'] = $_SESSION['username'];
+		$data['at_url']= $this->at_url;
+		//树形菜单
+		$this->load->model('Building_model');
+		$treeNav_data = $this->Building_model->getBuildingTreeData($village_id);
+		$data['treeNav_data']=$treeNav_data;
+		$this->load->view('app/visitor_list',$data);
+	}
+
+	public function getVisitorList(){
+		$page = $this->input->get('page');
+		$keyword = $this->input->get('keyword');
+		$equipment_type = $this->input->get('equipment_type');
+		$building_code = $this->input->get('building_code');
+		$push_start_date = $this->input->get('push_start_date');
+		$push_end_date = $this->input->get('push_end_date');
+		$page = $page?$page:'1';
+		$now=date('Y-m-d',time());
+		$village_id = $_SESSION['village_id'];
+		$level = "";
+		$this->load->model('People_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->People_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
+		$res = $this->People_model->getVisitorList($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$page,$this->user_per_page);
+		echo $res;
+	}
+
+	public function invalidPersonBuilding(){
+		$person_code=$this->input->post('person_code');
+		$end_date=$this->input->post('end_date');
+		$this->load->model('People_model');
+		$village_id = $_SESSION['village_id'];
+		$haslimit = false;
+		$message = "该人员已经在此日期前已经";
+
+		$equip = $this->People_model->getPersonEquipment($person_code,$village_id,$end_date);
+		if(!empty($equip)){
+			$message .= "有被授权的设备/";
+			$haslimit = true;
+		}
+
+		$equip = $this->People_model->getPersonCard($person_code,$village_id,$end_date);
+		if(!empty($equip)){
+			$message .= "有绑定的一卡通/";
+			$haslimit = true;
+		}
+
+		$material = $this->People_model->getPersonMaterial($person_code,$village_id,$end_date);
+		if(!empty($material)){
+			$message .= "有借用的物资/";
+			$haslimit = true;
+		}
+
+		if($haslimit==true){
+			$message = substr($message, 0, -1);
+			$message .= ',必须完成解绑才能失效';
+		}
+		else{
+			$message = "可以修改结束日期";
+
+		}
+		$res['haslimit'] = $haslimit;
+		$res['message'] = $message;
+		print_r(json_encode($res));
+
 	}
 
 }

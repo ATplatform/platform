@@ -200,8 +200,6 @@
                             <h4 class="modal-title tac">活动圈详情</h4>
                         </div>
                         <div class="modal-body building oh">
-                            <div class=" person_wrap person_detail" style="width:600px;">
-
                                 <p><span class="des">活动编号:</span>
                                     <span class="a_code col_37A"></span>
                                 </p>
@@ -223,9 +221,12 @@
                                 <p><span class="des">物业负责人:</span>
                                     <span class="service_name col_37A"></span>
                                 </p>
-                                <img src="" alt="#" class="a_qr_code">
-                            </div>
-
+                                <p style="line-height: 30px;" class="oh">
+                                    <span class="des fl">二&nbsp;&nbsp;维&nbsp;&nbsp;码：</span>
+                                    <span class="qr_code fl">
+                                            <img src="" />
+                                    </span>
+                                </p>
                         </div>
                     </div>
                     <div class="modal_footer bg_eee">

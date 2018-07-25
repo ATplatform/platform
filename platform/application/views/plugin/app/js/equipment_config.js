@@ -25,7 +25,7 @@ $('.date').datetimepicker({
 });
 
 //获取所有设备的编号+名称,并填入页面
-$.ajax({
+/*$.ajax({
 	url : getRootPath()+'/index.php/Equipment/getConfigEquipmentNameCode',
 	success:function(message){
 		var data=JSON.parse(message);
@@ -41,10 +41,10 @@ $.ajax({
 	error:function(jqXHR,textStatus,errorThrown){
 		// console.log(jqXHR);
 	}	
-})
+})*/
 
 //新增保存操作
-$('#add_content .save').click(function(){
+/*$('#add_content .save').click(function(){
 	var that = $(this);
 	//必填项
 	var content_wrap = $(this).closest('#add_content');
@@ -102,19 +102,10 @@ $('#add_content .save').click(function(){
 		openLayer('输入掩码不正确!');
 		return;
 	}
-	
-	/*if(!dns1){
-		openLayer('请输入dns1!');
-		return;
-	}*/
 	if(dns1&&!(regIp.test($.trim(dns1)))){
 		openLayer('输入dns1不正确!');
 		return;
 	}
-	/*if(!dns2){
-		openLayer('请输入dns2!');
-		return;
-	}*/
 	if(dns2&&!(regIp.test($.trim(dns2)))){
 		openLayer('输入dns2不正确!');
 		return;
@@ -179,10 +170,7 @@ $('#add_content .save').click(function(){
 			console.log('查询局域网ip出错');
 		}
 	})
-
-	
-
-})
+})*/
 
 //编辑保存
 $('#content_write .save').click(function(){
@@ -354,9 +342,21 @@ window.operateEvents = {
 		content_wrap.find('.dns1').html(dns1);
 		content_wrap.find('.dns2').html(dns2);
 
-		img_url = getRootPath() +"/"+ tdcode_url;
-		console.log(img_url);
-		content_wrap.find('.qr_code').find('img').attr('src',img_url);
+		if(tdcode_url){
+			img_url = getRootPath() +"/"+ tdcode_url;
+			console.log(img_url);
+			//先移除img标签
+			if(content_wrap.find('.qr_code img').length>0){
+				content_wrap.find('.qr_code img').remove();
+			}
+			content_wrap.find('.qr_code').append('<img />');
+			content_wrap.find('.qr_code').find('img').attr('src',img_url);
+		}
+		else{
+			if(content_wrap.find('.qr_code img').length>0){
+				content_wrap.find('.qr_code img').remove();
+			}
+		}
 	},
 
 	//点击编辑时,弹出信息编辑框

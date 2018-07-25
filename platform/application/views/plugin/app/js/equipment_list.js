@@ -208,6 +208,10 @@ $('#add_content .save').click(function(){
 		openLayer('设备号请输入正整数');
 		return;
 	}
+	if(sign<1||sign>5){
+		openLayer('设备号只能在1-5之间');
+		return;
+	}
 	if(!equipment_type){
 		openLayer('请选择设备类型!');
 		return;
@@ -312,15 +316,15 @@ $('#content_write .save').click(function(){
 	var code = content_wrap.find('.code').html();
 	var name = content_wrap.find('input[name="name"]').val();
 	var pcs = content_wrap.find('input[name="pcs"]').val();
-	var sign = content_wrap.find('input[name="sign"]').val();
-	var equipment_type = content_wrap.find('input[name="equipment_type"]').data('ajax');
+	var sign = content_wrap.find('.sign').html();
+	var equipment_type = content_wrap.find('.equipment_type').data('ajax');
 	var regular_check  = content_wrap.find('input[name="regular_check"]').data('ajax');
 	var regular_date   = content_wrap.find('input[name="regular_date"]').val();
 	var position_code  = content_wrap.find('input[name="position_code"]').data('ajax');
 	var if_se = content_wrap.find('input[name="if_se"]').data('ajax');
 	var annual_check  = content_wrap.find('input[name="annual_check"]').data('ajax');
 	var annual_date = content_wrap.find('input[name="annual_date"]').val();
-	var building_code = content_wrap.find('input[name="building_code"]').data('ajax');
+	var building_code = content_wrap.find('.building_code').data('ajax');
 
 	//非必填项
 	var function_name = content_wrap.find('input[name="function"]').val();
@@ -350,6 +354,10 @@ $('#content_write .save').click(function(){
 	}
 	if(!/^[0-9]+$/.test(sign)){
 		openLayer('设备号请输入正整数');
+		return;
+	}
+	if(sign<1||sign>5){
+		openLayer('设备号只能在1-5之间');
 		return;
 	}
 	if(!equipment_type){
@@ -566,10 +574,10 @@ window.operateEvents = {
 		content_wrap.find('.effective_status_name').html(effective_status_name);
 		content_wrap.find('.name').val(name);
 		content_wrap.find('.pcs').val(pcs);
-		content_wrap.find('.sign').val(sign);
-		content_wrap.find('.equipment_type').val(equipment_type_name);
+		content_wrap.find('.sign').html(sign);
+		content_wrap.find('.equipment_type').html(equipment_type_name);
 		content_wrap.find('.equipment_type').data('ajax',equipment_type);
-		content_wrap.find('.building_code').val(building_name);
+		content_wrap.find('.building_code').html(building_name);
 		content_wrap.find('.building_code').data('ajax',building_code);
 		content_wrap.find('.function').val(function_name);
 		content_wrap.find('.internal_no').val(internal_no);

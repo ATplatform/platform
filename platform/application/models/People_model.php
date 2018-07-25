@@ -13,6 +13,7 @@ class People_model extends CI_model {
 	    $this->household_type_arr=$this->config->item('household_type_arr');
 	    $this->if_disabled_arr=$this->config->item('if_disabled_arr');
 	    $this->business_type_arr=$this->config->item('business_type_arr');
+	    $this->nationality_name_arr=$this->config->item('nationality_name_arr');
 	}
 
 	public function getPeopleCode($village_id){
@@ -22,8 +23,8 @@ class People_model extends CI_model {
 		return $row['code'];
 	}
 
-	public function verifyIdcard($id_card){
-		$sql = "select id_number from village_person where id_number = '$id_card' limit 1";
+	public function verifyIdcard($id_card,$village_id){
+		$sql = "select id_number from village_person where id_number = '$id_card' and village_id = '$village_id' limit 1";
 		$query = $this->db->query($sql);
 		if($query->num_rows() > 0 ){
 			$res=$query->row_array();
@@ -32,7 +33,30 @@ class People_model extends CI_model {
 		return false;
 	}
 
+	public function verifyPersonIdCard($code,$id_number,$village_id){
+		$sql = "select id_number from village_person where id_number = '$id_number' and code != '$code' and village_id = '$village_id' limit 1";
+		$query = $this->db->query($sql);
+		if($query->num_rows() > 0 ){
+			$res=$query->row_array();
+			return $res['id_number'];
+		}
+		return false;
+	}
+
+	public function verifyPersonMobile($code,$mobile_number,$village_id){
+		$sql = "select mobile_number from village_person where mobile_number = '$mobile_number' and code != '$code' and village_id = '$village_id' limit 1";
+		$query = $this->db->query($sql);
+		if($query->num_rows() > 0 ){
+			$res=$query->row_array();
+			return $res['mobile_number'];
+		}
+		return false;
+	}
+
 	public function insertPeople($code,$last_name,$first_name,$id_type,$id_number,$nationality,$gender,$birth_date,$if_disabled,$bloodtype,$ethnicity,$tel_country,$mobile_number,$oth_mob_no,$remark,$create_time,$village_id){
+		if(is_null($if_disabled)||empty($if_disabled)){
+			$if_disabled = 'false';
+		}
 		if(is_null($oth_mob_no)||empty($oth_mob_no)){
 			$oth_mob_no = 'null';
 		}
@@ -41,11 +65,14 @@ class People_model extends CI_model {
 		return $this->db->affected_rows();
 	}
 
-	public function updatePeople($code,$if_disabled,$oth_mob_no,$remark,$village_id){
-		if(is_null($oth_mob_no)||empty($oth_mob_no)){
-			$oth_mob_no = 'null';
+	public function updatePeople($code,$last_name,$first_name,$id_type,$id_number,$nationality,$gender,$birth_date,$if_disabled,$bloodtype,$ethnicity,$tel_country,$mobile_number,$oth_mob_no,$remark,$village_id){
+		if(is_null($if_disabled)||empty($if_disabled)){
+			$if_disabled = 'false';
 		}
-		$sql = "UPDATE village_person SET if_disabled = '$if_disabled',oth_mob_no = '$oth_mob_no',remark = '$remark'  WHERE code = '$code' and village_id = '$village_id' ";
+		if(is_null($oth_mob_no)||empty($oth_mob_no)){
+			$oth_mob_no = ' ';
+		}
+		$sql = "UPDATE village_person SET last_name = '$last_name',first_name = '$first_name',id_type = '$id_type',id_number = '$id_number',nationality = '$nationality',gender = '$gender',birth_date = '$birth_date',if_disabled = '$if_disabled',blood_type = '$bloodtype', ethnicity = '$ethnicity',tel_country = '$tel_country',mobile_number = '$mobile_number',oth_mob_no = '$oth_mob_no',remark = '$remark'  WHERE code = '$code' and village_id = '$village_id' ";
 		$query = $this->db->query($sql);
 		return $this->db->affected_rows();
 	}
@@ -64,6 +91,7 @@ class People_model extends CI_model {
 		$ethnicity_name_arr=$this->ethnicity_name_arr;
 		$if_disabled_arr=$this->if_disabled_arr;
 		$household_type_arr=$this->household_type_arr;
+		$nationality_name_arr=$this->nationality_name_arr;
 		$start=($page-1) * $rows;
 		//关联person_building\person\tmp_building表查出所有住户\楼栋信息
 		$sql = "select *,concat(p.last_name,p.first_name) as full_name,pb.remark as pb_remark,bs.code as room_code from village_person_building as pb LEFT JOIN village_person as p on pb.person_code = p.code and pb.village_id = p.village_id LEFT JOIN village_tmp_building as bs on pb.building_code = bs.code and bs.village_id = pb.village_id  where pb.begin_date = (select max(begin_date) from village_person_building as b where  pb.building_code = b.building_code and pb.person_code = b.person_code  and b.begin_date <= now() ) ";
@@ -190,6 +218,15 @@ class People_model extends CI_model {
 						    }
 						}
 					}
+					//国家
+					if($k1=="nationality"){
+						foreach($nationality_name_arr as $k2 => $v2){
+						    if($value == $v2['code']){
+						        $arr[$key]["nationality_name"] = $v2['name'];
+						        break;
+						    }
+						}
+					}
 					//是否残疾
 					if($k1=="if_disabled"){
 						foreach($if_disabled_arr as $k2 => $v2){
@@ -213,37 +250,35 @@ class People_model extends CI_model {
 	    $result="";
 	    if(!empty($row['stage_name']))
 	    {
-	        $result=$result.$row['stage_name']."(期)";
+	        $result=$result.$row['stage_name'];
 	    }
 	    if(!empty($row['area_name']))
 	    {
-	        $result=$result.$row['area_name']."(区)";
+	        $result=$result.$row['area_name'];
 	    }       
 	    if(!empty($row['immeuble_name']))
 	    {
-	        $result=$result.$row['immeuble_name']."(栋)";
+	        $result=$result.$row['immeuble_name'];
 	    }
 	    if(!empty($row['unit_name']))
 	    {
-	        $result=$result.$row['unit_name']."(单元)";
+	        $result=$result.$row['unit_name'];
 	    }       
 	    if(!empty($row['floor_name']))
 	    {
-	        $result=$result.$row['floor_name']."(层)";
+	        $result=$result.$row['floor_name'];
 	    }       
 	    if(!empty($row['room_name']))
 	    {
-	        $result=$result.$row['room_name']."(室)";
+	        $result=$result.$row['room_name'];
 	    }
 	    if(!empty($row['public_name']))
 	    {
-	        $result=$result.$row['public_name']."(公共设施)";
+	        $result=$result.$row['public_name'];
 	    }
-	    if(!empty($row['level'])){
-	    	if($row['level']==100){
-	    		$result=$result.$row['name'];
-	    	} 
-	    }
+	    if($row['level']==100){
+	        $result=$result.$row['name'];
+	    }              
 	    return $result;
 	}
 
@@ -524,6 +559,7 @@ class People_model extends CI_model {
 	}
 
 	public function insertPersonBuilding($village_id,$building_code,$begin_date,$end_date,$remark,$person_code,$household_type,$create_time){
+		$today = date('Y-m-d',time());
 		//先查出最新的code;
 		$sql = " select code from village_person_building where village_id = $village_id order by code desc";
 		$query = $this->db->query($sql);
@@ -534,7 +570,12 @@ class People_model extends CI_model {
 		else {
 			$code = $row['code'] +1;
 		}
-		$insert_sql = "INSERT INTO village_person_building (village_id,code,building_code,person_code,begin_date,end_date,household_type,remark,create_time) values ($village_id,$code,$building_code,$person_code,'$begin_date','$end_date',$household_type,'$remark','$create_time')";
+		if($end_date<=$today){
+			$insert_sql = "INSERT INTO village_person_building_bak (village_id,code,building_code,person_code,begin_date,end_date,household_type,remark,create_time) values ($village_id,$code,$building_code,$person_code,'$begin_date','$end_date',$household_type,'$remark','$create_time')";
+		}
+		else{
+			$insert_sql = "INSERT INTO village_person_building (village_id,code,building_code,person_code,begin_date,end_date,household_type,remark,create_time) values ($village_id,$code,$building_code,$person_code,'$begin_date','$end_date',$household_type,'$remark','$create_time')";
+		}
 		$this->db->query($insert_sql);
 		return $this->db->affected_rows();
 	}
@@ -577,8 +618,8 @@ class People_model extends CI_model {
 		return $result;
 	}
 
-	public function getPersonByCode($code){
-		$sql = "select concat(last_name,first_name) as full_name,first_name,last_name,code from village_person where code = $code limit 1";
+	public function getPersonByCode($code,$village_id){
+		$sql = "select concat(last_name,first_name) as full_name,first_name,last_name,code from village_person where code = $code and village_id = $village_id limit 1";
 		$query = $this->db->query($sql);
 		$row = $query->row_array();
 		if (isset($row)){
@@ -606,7 +647,14 @@ class People_model extends CI_model {
 		else {
 			$code = $row['code'] +1;
 		}
-		$insert_sql = "INSERT INTO village_person_position (code,position_code,village_id,person_code,begin_date,end_date,employee_no,hire_date,territory,remark,create_time) values (".
+		$today = date('Y-m-d',time());
+		if($end_date<=$today){
+			$table_name = "village_person_position_bak"; 
+		}
+		else{
+			$table_name = "village_person_position"; 
+		}
+		$insert_sql = "INSERT INTO $table_name (code,position_code,village_id,person_code,begin_date,end_date,employee_no,hire_date,territory,remark,create_time) values (".
 			$this->db->escape($code).", ".
 			$this->db->escape($position_code).", ".
 			$this->db->escape($village_id).", ".
@@ -633,6 +681,7 @@ class People_model extends CI_model {
 		$blood_type_arr=$this->blood_type_arr;
 		$ethnicity_name_arr=$this->ethnicity_name_arr;
 		$if_disabled_arr=$this->if_disabled_arr;
+		$nationality_name_arr=$this->nationality_name_arr;
 		//关联village_person_position和village_person两表,查出物业人员相关
 		$sql = "select pp.code as pp_code,pp.position_code,pp.person_code,pp.hire_date,pp.employee_no,pp.territory,pp.begin_date,pp.end_date,pp.remark as position_remark,p.last_name,p.first_name,concat(p.last_name,p.first_name) as full_name,p.id_type,p.id_number,p.nationality,p.gender,P.birth_date,P.mobile_number,p.blood_type,p.oth_mob_no,p.if_disabled,p.ethnicity,p.remark as person_remark,ps.name,ps.effective_date,ps.position_type,ps.position_grade,ps.parent_code from village_person_position pp left join village_person p on pp.person_code = p.code and pp.village_id = p.village_id";
 		$sql .= " LEFT JOIN village_position ps on pp.position_code = ps.code and pp.village_id = ps.village_id";
@@ -719,6 +768,15 @@ class People_model extends CI_model {
 						foreach($ethnicity_name_arr as $k2 => $v2){
 						    if($value == $v2['code']){
 						        $arr[$key]["ethnicity_name"] = $v2['name'];
+						        break;
+						    }
+						}
+					}
+					//国家
+					if($k1=="nationality"){
+						foreach($nationality_name_arr as $k2 => $v2){
+						    if($value == $v2['code']){
+						        $arr[$key]["nationality_name"] = $v2['name'];
 						        break;
 						    }
 						}
@@ -860,6 +918,7 @@ class People_model extends CI_model {
 	}
 
 	public function insertPersonBiz($village_id,$building_code,$begin_date,$end_date,$biz_info,$remark,$person_code,$household_type,$create_time){
+		$today = date('Y-m-d',time());
 		//先查出最新的code;
 		$sql = " select code from village_person_biz order by code desc";
 		$query = $this->db->query($sql);
@@ -870,7 +929,12 @@ class People_model extends CI_model {
 		else {
 			$code = $row['code'] +1;
 		}
-		$insert_sql = "INSERT INTO village_person_biz (village_id,code,building_code,person_code,begin_date,end_date,biz_type,biz_info,remark,create_time) values ($village_id,$code,$building_code,$person_code,'$begin_date','$end_date',$household_type,'$biz_info','$remark','$create_time')";
+		if($end_date<=$today){
+			$insert_sql = "INSERT INTO village_person_biz_bak (village_id,code,building_code,person_code,begin_date,end_date,biz_type,biz_info,remark,create_time) values ($village_id,$code,$building_code,$person_code,'$begin_date','$end_date',$household_type,'$biz_info','$remark','$create_time')";
+		}
+		else{
+			$insert_sql = "INSERT INTO village_person_biz (village_id,code,building_code,person_code,begin_date,end_date,biz_type,biz_info,remark,create_time) values ($village_id,$code,$building_code,$person_code,'$begin_date','$end_date',$household_type,'$biz_info','$remark','$create_time')";
+		}
 		// echo $insert_sql;exit;
 		$this->db->query($insert_sql);
 		return $this->db->affected_rows();
@@ -884,6 +948,7 @@ class People_model extends CI_model {
 		$if_disabled_arr=$this->if_disabled_arr;
 		$household_type_arr=$this->household_type_arr;
 		$business_type_arr=$this->business_type_arr;
+		$nationality_name_arr=$this->nationality_name_arr;
 		$start=($page-1) * $rows;
 		//关联person_biz\person\building_stage表查出所有商户\楼栋信息
 		$sql = "SELECT *, concat (P .last_name, P .first_name) AS full_name,pb.remark AS pb_remark,p.remark as p_remark,pb.code as biz_code FROM village_person_biz AS pb LEFT JOIN village_person AS P ON pb.person_code = P .code and pb.village_id = p.village_id LEFT JOIN village_tmp_building AS bs ON pb.building_code = bs.code and pb.village_id = bs.village_id  WHERE ";
@@ -996,6 +1061,15 @@ class People_model extends CI_model {
 						foreach($ethnicity_name_arr as $k2 => $v2){
 						    if($value == $v2['code']){
 						        $arr[$key]["ethnicity_name"] = $v2['name'];
+						        break;
+						    }
+						}
+					}
+					//国家
+					if($k1=="nationality"){
+						foreach($nationality_name_arr as $k2 => $v2){
+						    if($value == $v2['code']){
+						        $arr[$key]["nationality_name"] = $v2['name'];
 						        break;
 						    }
 						}
@@ -1140,4 +1214,188 @@ class People_model extends CI_model {
 	    $row = $query->row_array();
 	    return $row;
 	}
+
+	public function getVisitorList($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$page,$rows){
+		$start=($page-1) * $rows;
+		$sql = " select b.stage_name,b.area_name,b.immeuble_name,b.unit_name,b.floor_name,b.room_name,b.public_name,v.name,v.mobile_number,v.person_code,v.apply_time,v.begin_date,v.end_date,v.licence,v.park_code,v.paid_by_inviter,concat(p.last_name,p.first_name) as full_name from village_visitor as v LEFT JOIN village_tmp_building as b on v.building_code = b.code and v.village_id = b.village_id left join village_person as p on v.person_code = p.code and v.village_id = p.village_id ";
+		$sql .= " where v.village_id = '$village_id' and v.begin_date >= '$push_start_date' and end_date < '$push_end_date' ";
+		//树形图筛选楼宇
+		if(!empty($building_code)){
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
+		}
+		//设备类型
+		/*if(!empty($equipment_type)){
+			$sql .= " and e.equipment_type = '$equipment_type' ";
+		}*/
+		if(!empty($keyword)){
+			$sql .= " and concat(p.last_name,p.first_name,v.name) like '%$keyword%' ";
+		}
+		$sql=$sql." order by v.apply_time asc limit ".$rows." offset ".$start;
+		// echo $sql;exit;
+    	$q = $this->db->query($sql); //自动转义
+		if ( $q->num_rows() > 0 ) {
+			$arr=$q->result_array();
+			foreach($arr as $key => $row){
+				//赋值中文名称
+				foreach($row as $k1 => $value){
+					//得到邀约人姓名
+					if($k1=="full_name"){
+						if(!empty($value)){
+							$arr[$key]["invite_person"] = $value;
+						}
+						else{
+							$arr[$key]["invite_person"] = '';
+						}
+					}
+					//得到停车场名称
+					if($k1=="park_code"){
+						$park = $this->getParkByCode($value,$village_id);
+						if(!empty($park)){
+							$arr[$key]["park_name"] = $park['parkname'];
+						}
+						else{
+							$arr[$key]["park_name"] = '';
+						}
+					}
+					//是否代缴车费
+					if($k1=="paid_by_inviter"){
+						if($value=='t'){
+							$arr[$key]["paid_by_inviter_name"] = "是";
+						}
+						else{
+							$arr[$key]["paid_by_inviter_name"] = "否";
+						}
+					}
+				}
+				//得到地点名称
+				$arr[$key]["building_name"] = $this->getHouseholdInfo($row);
+			}
+			$json=json_encode($arr);
+			return $json;
+		}
+		return false;
+	}
+
+	public function getVisitorListTotal($village_id,$level,$push_start_date,$push_end_date,$equipment_type,$building_code,$keyword,$rows){
+		$sql = " select count(v.code) as count from village_visitor as v LEFT JOIN village_tmp_building as b on v.building_code = b.code and v.village_id = b.village_id left join village_person as p on v.person_code = p.code and v.village_id = p.village_id ";
+		$sql .= " where v.village_id = '$village_id' and v.begin_date >= '$push_start_date' and end_date < '$push_end_date' ";
+		//树形图筛选楼宇
+		if(!empty($building_code)){
+			if($level=='106'){
+				$sql .= "  and b.code = $building_code ";
+			}
+			// else if($level = '100') {
+			// 	$sql .= " and b.code = $building_code ";
+			// }
+			//期
+			else if($level == '101'){
+				$sql .= " and b.stage = $building_code ";
+			}
+			//区
+			else if($level == '102'){
+				$sql .= " and b.area = $building_code ";
+			}
+			//栋
+			else if($level == '103'){
+				$sql .= " and b.immeuble = $building_code ";
+			}
+			//单元
+			else if($level == '104'){
+				$sql .= " and b.unit = $building_code ";
+			}
+			//层
+			else if($level == '105'){
+				$sql .= " and b.floor = $building_code ";
+			}
+			//公共设施
+			else if($level == '107'){
+				$sql .= " and b.public = $building_code ";
+			}
+		}
+		//设备类型
+		/*if(!empty($equipment_type)){
+			$sql .= " and e.equipment_type = '$equipment_type' ";
+		}*/
+		if(!empty($keyword)){
+			$sql .= " and concat(p.last_name,p.first_name,v.name) like '%$keyword%' ";
+		}
+		// echo $sql;exit;
+    	$q = $this->db->query($sql); //自动转义
+    	if ( $q->num_rows() > 0 ) {
+    	    $row = $q->row_array();
+    	    $items=$row["count"];
+    	    if($items%$rows!=0)
+    	    {
+    	        $total=(int)((int)$items/$rows)+1;
+    	    }
+    	    else {
+    	        $total=$items/$rows;
+    	    }
+    	    return $total;
+    	} 
+    	return 0;
+	}
+
+	public function getParkByCode($code,$village_id){
+		$sql = "select * from village_park where parkcode = $code and village_code = $village_id limit 1";
+		$query = $this->db->query($sql);
+		$row = $query->row_array();
+		if (isset($row)){
+			return $row;
+		}
+		return false;
+	}
+
+	public function getPersonEquipment($person_code,$village_id,$end_date){
+	    $sql = "select * from village_person_equipment where $person_code = any(person_code) and village_id = '$village_id' and end_date <= '$end_date' limit 1 ";
+	    $query = $this->db->query($sql);
+	    $row = $query->row_array();
+	    return $row;
+	}
+
+	public function getPersonCard($person_code,$village_id,$end_date){
+	    $sql = "select * from village_card_auz where person_code = '$person_code' and village_id = '$village_id' and end_date <= '$end_date' limit 1 ";
+	    $query = $this->db->query($sql);
+	    $row = $query->row_array();
+	    return $row;
+	}
+
+	public function getPersonMaterial($person_code,$village_id,$end_date){
+	    $sql = "select * from village_mtr_mgt where person_code = '$person_code' and mgt_status in (102,103) and village_id = '$village_id' and effective_date >= '$end_date' limit 1 ";
+	    // echo $sql;exit;
+	    $query = $this->db->query($sql);
+	    $row = $query->row_array();
+	    return $row;
+	}
+
+
 }

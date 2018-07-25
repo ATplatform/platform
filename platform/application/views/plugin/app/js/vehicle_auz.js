@@ -631,7 +631,7 @@ $('#auz_rewrite .confirm').click(function(){
                 success:function(data){
                     //var data = JSON.parse(data);
                     //成功之后自动刷新页面
-                    $('#auz_rewrite').modal('hide');
+                    $('#vehicle_rewrite').modal('hide');
                     layer.open({
                         type: 1,
                         title: false,
@@ -641,7 +641,6 @@ $('#auz_rewrite .confirm').click(function(){
                         skin: 'tanhcuang',
                         content: '更新授权信息成功',
                         cancel: function(){
-
                             window.location.href=href(List);
                         }
                     });

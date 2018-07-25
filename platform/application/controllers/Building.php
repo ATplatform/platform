@@ -1,5 +1,4 @@
 <?php
-include(APPPATH.'/libraries/include/phpqrcode/qrlib.php');
 error_reporting(E_ERROR);
 date_default_timezone_set('Asia/ShangHai');
 class Building extends CI_Controller{
@@ -13,57 +12,24 @@ class Building extends CI_Controller{
 		$this->at_url=$this->config->item('at_url');
 	}
 
-    public function txtToImg(){
-        $file_name = "test";
-        $type = 101;
-        $village_id = '100001';
-        $code = '100001';
-        $sip = 'zg_jsnixwq_neiwangxiaoqu_s0a0b5u0f0r0';
-        $text = "11111期22222区3333栋44444单元6666层11室11号";
+	//更新所有楼宇的sip地址
+	public function updateAllBuildingSip(){
+		$this->load->model('UpdateBuildingSip_model');
+		$this->UpdateBuildingSip_model->updateAllBuildingSip();
+	}
 
-        //先生成一张二维码图片
-        $temp_path='qrcode/'.$village_id.'_QRCODE_'.$file_name;
-        // $temp_path = '';
-        $fileName = $sip.'.png';
-        //生成的二维码图片地址
-        $pngAbsoluteFilePath = $temp_path.'/'.$fileName;
-        // $qrcodeData = '';
-        $this->load->model('Building_model');
-        $qrcodeData = $this->Building_model->getQrcodeData($type,$village_id,$code,$pngAbsoluteFilePath);
+	//批量生成楼宇二维码
+	public function setAllBuildingQRcode(){
+		$this->load->model('Building_model');
+		$buildings = $this->Building_model->getAllBuilding($_SESSION['village_id']);
+		//对每个building循环,生成二维码
+		foreach($buildings as $row){
+			$this->Building_model->setBuildingQRcode($row['code']);
+		}
+		$data['message'] = "生成二维码成功";
+		print_r(json_encode($data));
+	}
 
-        if (!file_exists($temp_path)){
-            mkdir($temp_path, 0777, true);
-        }
-        //有图片的情况下,先删除原来的图片
-        if(file_exists($pngAbsoluteFilePath)){
-            unlink($pngAbsoluteFilePath);
-        }
-        QRcode::png($qrcodeData, $pngAbsoluteFilePath,H,5,10);
-
-        //下面是生成文字
-        //text为要显示的文字
-        $size = 10;
-        //字体路径，微软雅黑
-        $font =APPPATH.'libraries/include/font/msyh.ttf';
-        //打开已经生成好的二维码图片
-        $im = imagecreatefrompng($pngAbsoluteFilePath);
-        //设置字体颜色
-        $black = imagecolorallocate($im, 0, 0, 0);
-        //将ttf文字写到图片中
-        imagettftext($im, $size, 0, 10, 20, $black, $font, $text);
-        //先删除原来的二维码图片
-        if(file_exists($pngAbsoluteFilePath)){
-            unlink($pngAbsoluteFilePath);
-        }
-        //重新生成增加了文字的二维码图片
-        ob_start();
-          imagejpeg($im);
-        $img = ob_get_contents();
-        ob_end_clean();
-        $fp2=@fopen($pngAbsoluteFilePath, "a");
-        fwrite($fp2,$img);
-        fclose($fp2);
-    }
 	//模拟生成tmp_building表
 	public function setTmpBuilding(){
 		$this->load->model('TmpBuilding_model');
@@ -162,13 +128,16 @@ class Building extends CI_Controller{
 		$level = $this->input->post('level');
 		$rank = $this->input->post('rank');
 		$parent_code = $this->input->post('parent_code');
+		$building_type = $this->input->post('building_type');
+		$floor_area = $this->input->post('floor_area');
+		$inside_area = $this->input->post('inside_area');
 		$remark = $this->input->post('remark');
 		$this->load->model('Building_model');
 		$village_id = $_SESSION['village_id'];
 		// echo $village_id;exit;
 
 		//先插入一条数据
-		$res = $this->Building_model->insertBuilding($village_id,$code,$effective_date,$effective_status,$name,$level,$rank,$parent_code,$remark,$now);
+		$res = $this->Building_model->insertBuilding($village_id,$code,$effective_date,$effective_status,$name,$level,$rank,$parent_code,$building_type,$floor_area,$inside_area,$remark,$now);
 
 		if($res==true){
 			$data['message'] = '新增楼宇成功';
@@ -181,34 +150,12 @@ class Building extends CI_Controller{
 			$p_sip = $parent_building['sip'];
 			$this->updateBuildingSip($code,$level,$rank,$p_sip,$village_id);
 			//更新这条数据的qr_code,然后生成一张二维码图片
-			$this->setQRcode($code);
+			$this->Building_model->setBuildingQRcode($code);
 		}
 		else {
 			$data['message'] = '新增楼宇失败';
 		}
 		print_r(json_encode($data));
-	}
-
-	public function setQRcode($code){
-		$village_id = $_SESSION['village_id'];
-		//生成二维码的信息
-		//得到楼宇信息
-		$this->load->model('Building_model');
-		$building = $this->Building_model->getBuilding($code,$village_id);
-		$householdInfo = $this->Building_model->getHouseholdInfo($building);
-		//二维码名称
-		$fileName = $householdInfo.'.png';
-		//二维码图片地址
-		$pngAbsoluteFilePath='';
-		$village_name = $_SESSION['village_name'];
-		$temp_path='qrcode/'.$village_id.$village_name.'楼宇地点二维码/';
-		//二维码内容,楼宇的二维码type为102,village暂时写为100001
-		//生成的二维码图片地址
-		$pngAbsoluteFilePath = $temp_path.$fileName;
-		$qrcodeData = $this->Building_model->getQrcodeData(102,$village_id,$code,$pngAbsoluteFilePath);
-		//更新这栋楼宇的二维码信息,生成二维码图片
-		$this->Building_model->updateBuildingQrcode($code,$qrcodeData);
-		$this->Building_model->setQRcode($qrcodeData,$temp_path,$fileName);
 	}
 
 	public function updateBuildingSip($code,$level,$rank,$p_sip,$village_id){
@@ -365,14 +312,14 @@ class Building extends CI_Controller{
 			$this->TmpBuilding_model->getTmpBuilding();
 			//楼宇名称改变了,那么二维码内容和图片都要改变
 			if($name!=$old_name){
-				//先删除原来的二维码图片
+				/*//先删除原来的二维码图片
 				$img_url = iconv('utf-8', 'gbk', $img_url);
 				//有图片的情况下,先删除原来的图片 
 				if(file_exists($img_url)){
 				    unlink($img_url);
-				}
+				}*/
 				//更新这条数据的qr_code,然后生成一张二维码图片
-				$this->setQRcode($code);
+				$this->Building_model->setBuildingQRcode($code);
 			}
 		}
 		else {
@@ -455,18 +402,14 @@ class Building extends CI_Controller{
         if ( !isset($_SESSION['username']) ) {
             redirect('Login');
         }
-
         $data['nav']='villageInfo';
         $data['username']=$_SESSION['username'];
+        $data['at_url']= $this->at_url;
         $this->load->view('app/villageInfo_list',$data);
     }
 
     public function getvillageInfo(){
-
-
         $this->load->model('Building_model');
-
-
         $res = $this->Building_model->getvillageInfo();
         echo $res;
     }
@@ -474,25 +417,58 @@ class Building extends CI_Controller{
     public function updatevillageInfo(){
         $id=$this->input->post('id');
         $brief=$this->input->post('brief');
-        $full_name=$this->input->post('full_name');
-        $name=$this->input->post('name');
-        $city=$this->input->post('city');
-        $location=$this->input->post('location');
-        $longitude=$this->input->post('longitude');
-        $latitude=$this->input->post('latitude');
-        $households=$this->input->post('households');
-        $parking_lots=$this->input->post('parking_lots');
-
         $this->load->model('Building_model');
-
-
-
-
-
-        $res = $this->Building_model->updatevillageInfo($id,$brief,$full_name,$name,$city,$location,$longitude,$latitude,$households,$parking_lots);
+        $res = $this->Building_model->updatevillageInfo($id,$brief);
         echo $res;
     }
 
-
+    public function invalidBuilding(){
+    	$code=$this->input->post('code');
+    	$this->load->model('Building_model');
+    	$village_id = $_SESSION['village_id'];
+    	$haslimit = false;
+    	$message = "该楼宇已经绑定";
+    	$person_building = $this->Building_model->getPersonBuilding($code,$village_id);
+    	if(!empty($person_building)){
+    		$message .= "住户/";
+    		$haslimit = true;
+    	}
+    	$person_biz = $this->Building_model->getPersonBiz($code,$village_id);
+    	if(!empty($person_biz)){
+    		$message .= "商户/";
+    		$haslimit = true;
+    	}
+    	$person_position = $this->Building_model->getPersonPosition($code,$village_id);
+    	if(!empty($person_position)){
+    		$message .= "物业管理人员/";
+    		$haslimit = true;
+    	}
+    	$equip = $this->Building_model->getEquipment($code,$village_id);
+    	if(!empty($equip)){
+    		$message .= "设备/";
+    		$haslimit = true;
+    	}
+    	$material = $this->Building_model->getMaterial($code,$village_id);
+    	if(!empty($material)){
+    		$message .= "物资/";
+    		$haslimit = true;
+    	}
+    	if($haslimit==true){
+    		$message = substr($message, 0, -1);
+    		$message .= ',必须完成解绑才能失效';
+    	}
+    	else{
+    		//失效楼宇
+    		$invalidBuilding = $this->Building_model->invalidBuilding($code,$village_id);
+    		if($invalidBuilding==true){
+    			$message = "楼宇失效成功";
+    			//失效成功后重新生成中间表
+    			$this->setTmpBuilding();
+    		}
+    	}
+    	$res['haslimit'] = $haslimit;
+    	$res['message'] = $message;
+    	print_r(json_encode($res));
+    }
 
 }

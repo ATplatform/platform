@@ -52,6 +52,9 @@ window.operateEvents = {
 		var push_household = row.push_household;
 		var if_cycle = row.if_cycle;
 		var target = row.target;
+		var first_read_time = row.first_read_time;
+		var last_read_time = row.last_read_time;
+		var read_times = row.read_times;
 		var target_arr = [];
 		//传给后端数组,方便查找
 		target = target.substr(1);
@@ -94,6 +97,9 @@ window.operateEvents = {
 		$('#message_detail').find('.msg_html').attr('src',link);
 		$('#message_detail').find('.target_wrap').html(equipment_name);
 		$('#message_detail').find('.push_household').html(push_household);
+		$('#message_detail').find('.first_read_time').html(first_read_time);
+		$('#message_detail').find('.last_read_time').html(last_read_time);
+		$('#message_detail').find('.read_times').html(read_times);
 		//得到所有的推送对象
 		/*$.ajax({
 			url:getRootPath()+'/index.php/Message/getMessageTarget',

@@ -43,7 +43,7 @@
 								<li><a href="javascript:;" data-ajax="303">单元门口机</a></li>
 								<li><a href="javascript:;" data-ajax="304">别墅门口机</a></li>
 								<li><a href="javascript:;" data-ajax="305">室内机</a></li>
-								<li><a href="javascript:;" data-ajax="306">独立指纹机</a></li>
+								<!-- <li><a href="javascript:;" data-ajax="306">独立指纹机</a></li> -->
 								<li><a href="javascript:;" data-ajax="307">魔镜</a></li>
 							</ul>
 						</li>
@@ -78,7 +78,7 @@
 			
 			<div class="search_room msg_search_room">
 				<p>
-					<input type="text" class="searc_room_text" name="keyword" placeholder="可输入设备名称、设备编码" value="">
+					<input type="text" class="searc_room_text" name="keyword" placeholder="可输入设备名称、设备编号" value="">
 					<a id="clear" href="javascript:;">X</a>
 				</p>
 				<button type="submit"><i class="fa fa-search"></i></button>
@@ -202,7 +202,7 @@ $(function(){
 	var search_building_code = getUrlParam('building_code');
 
 	search_effective_date = search_effective_date?search_effective_date:now;
-	var equipment_type_arr = [{'code':'101','name':'供配电系统'},{'code':'102','name':'电梯系统'},{'code':'103','name':'空调系统'},{'code':'104','name':'给排水系统'},{'code':'105','name':'消防系统'},{'code':'106','name':'停车场系统'},{'code':'107','name':'综合布线系统'},{'code':'108','name':'门禁对讲系统'},{'code':'109','name':'视频监控系统'},{'code':'110','name':'安防系统'},{'code':'301','name':'中心机'},{'code':'301','name':'中心机'},{'code':'302','name':'围墙机'},{'code':'303','name':'单元门口机'},{'code':'304','name':'别墅门口机'},{'code':'305','name':'室内机'},{'code':'306','name':'独立指纹机'},{'code':'307','name':'魔镜'}];
+	var equipment_type_arr = [{'code':'101','name':'供配电系统'},{'code':'102','name':'电梯系统'},{'code':'103','name':'空调系统'},{'code':'104','name':'给排水系统'},{'code':'105','name':'消防系统'},{'code':'106','name':'停车场系统'},{'code':'107','name':'综合布线系统'},{'code':'108','name':'门禁对讲系统'},{'code':'109','name':'视频监控系统'},{'code':'110','name':'安防系统'},{'code':'301','name':'中心机'},{'code':'301','name':'中心机'},{'code':'302','name':'围墙机'},{'code':'303','name':'单元门口机'},{'code':'304','name':'别墅门口机'},{'code':'305','name':'室内机'},{'code':'307','name':'魔镜'}];
 	var regular_check_arr = [{'code':'101','name':'不需要巡检'},{'code':'102','name':'每年一次'},{'code':'103','name':'每三个月一次'},{'code':'104','name':'每月一次'},{'code':'105','name':'每两周一次'},{'code':'106','name':'每周一次'},{'code':'107','name':'每三天一次'},{'code':'108','name':'每天一次'},{'code':'109','name':'每12小时一次'}];
 	//根据搜索内容给搜索框和筛选条件赋值
 	$('.search_wrap .effective_date').val(search_effective_date);

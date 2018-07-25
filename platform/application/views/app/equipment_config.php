@@ -27,29 +27,16 @@
 				<div>
 					<input type="text" class="model_input equipment_type ka_input3" placeholder="设备类型" name="equipment_type" data-ajax="" readonly>
 				</div>
-				<div class="sub_ka_drop">
+				<div class="ka_drop">
 					<div class="ka_drop_list">
 					<ul>
-						<li class="first_nav"><a href="javascript:;" data-ajax="101">供配电系统</a></li>
-						<li class="first_nav"><a href="javascript:;" data-ajax="102">电梯系统</a></li>
-						<li class="first_nav"><a href="javascript:;" data-ajax="103">空调系统</a></li>
-						<li class="first_nav"><a href="javascript:;" data-ajax="104">给排水系统</a></li>
-						<li class="first_nav"><a href="javascript:;" data-ajax="105">消防系统</a></li>
-						<li class="first_nav"><a href="javascript:;" data-ajax="106">停车场系统</a></li>
-						<li class="first_nav"><a href="javascript:;" data-ajax="107">综合布线系统</a></li>
-						<li class="subNavWrap"><a href="javascript:;" data-ajax="108">门禁对讲系统</a>
-							<ul class="subNav">
-								<li><a href="javascript:;" data-ajax="301">中心机</a></li>
-								<li><a href="javascript:;" data-ajax="302">围墙机</a></li>
-								<li><a href="javascript:;" data-ajax="303">单元门口机</a></li>
-								<li><a href="javascript:;" data-ajax="304">别墅门口机</a></li>
-								<li><a href="javascript:;" data-ajax="305">室内机</a></li>
-								<li><a href="javascript:;" data-ajax="306">独立指纹机</a></li>
-								<li><a href="javascript:;" data-ajax="307">魔镜</a></li>
-							</ul>
-						</li>
-						<li class="first_nav"><a href="javascript:;" data-ajax="109">视频监控系统</a></li>
-						<li class="first_nav"><a href="javascript:;" data-ajax="110">安防系统</a></li>
+						<li><a href="javascript:;" data-ajax="301">中心机</a></li>
+						<li><a href="javascript:;" data-ajax="302">围墙机</a></li>
+						<li><a href="javascript:;" data-ajax="303">单元门口机</a></li>
+						<li><a href="javascript:;" data-ajax="304">别墅门口机</a></li>
+						<li><a href="javascript:;" data-ajax="305">室内机</a></li>
+						<!-- <li><a href="javascript:;" data-ajax="306">独立指纹机</a></li> -->
+						<li><a href="javascript:;" data-ajax="307">魔镜</a></li>
 					</ul>
 					</div>
 				</div>
@@ -66,7 +53,7 @@
 		
 		<div class="table_wrap">
 			<div class="oh pt10">
-				<span class="fr add_btn" data-target="#add_content" data-toggle="modal">新增设备通讯配置</span>
+				<!-- <span class="fr add_btn" data-target="#add_content" data-toggle="modal">新增设备通讯配置</span> -->
 				<a class="fr add_btn" href="<?=base_url().'index.php/Equipment/equipmentconfig'?>">清除筛选</a>
 			</div>
 			
@@ -198,7 +185,7 @@
 	            	</p>
 		            <p class="oh"><span class="des fl">二&nbsp;&nbsp;维&nbsp;&nbsp;码：</span>
 		            	<span class="qr_code fl" style="margin-left: 8px;">
-							<img src="" />
+							
 		            	</span>
 		            </p>
 	            </div>
@@ -268,7 +255,7 @@ $(function(){
 	var search_building_code = getUrlParam('building_code');
 
 	search_effective_date = search_effective_date?search_effective_date:now;
-	var equipment_type_arr = [{'code':'101','name':'供配电系统'},{'code':'102','name':'电梯系统'},{'code':'103','name':'空调系统'},{'code':'104','name':'给排水系统'},{'code':'105','name':'消防系统'},{'code':'106','name':'停车场系统'},{'code':'107','name':'综合布线系统'},{'code':'108','name':'门禁对讲系统'},{'code':'109','name':'视频监控系统'},{'code':'110','name':'安防系统'},{'code':'301','name':'中心机'},{'code':'301','name':'中心机'},{'code':'302','name':'围墙机'},{'code':'303','name':'单元门口机'},{'code':'304','name':'别墅门口机'},{'code':'305','name':'室内机'},{'code':'306','name':'独立指纹机'},{'code':'307','name':'魔镜'}];
+	var equipment_type_arr = [{'code':'301','name':'中心机'},{'code':'302','name':'围墙机'},{'code':'303','name':'单元门口机'},{'code':'304','name':'别墅门口机'},{'code':'305','name':'室内机'},{'code':'307','name':'魔镜'}];
 	//根据搜索内容给搜索框和筛选条件赋值
 	$('.effective_date').val(search_effective_date);
 	$('.search_room .searc_room_text').val(search_keyword);
@@ -341,7 +328,7 @@ $(function(){
     })
 
 	//设备类型筛选
-	$('.equipment_type_wrap .first_nav,.equipment_type_wrap .subNav li').click(function(){
+	$('.search_wrap .equipment_type_wrap .ka_drop_list li').click(function(){
 		var equipment_type = $(this).find('a').data('ajax');
 		window.location.href="equipmentconfig?keyword="+search_keyword+"&page=1"+"&effective_date="+search_effective_date+'&equipment_type='+equipment_type+'&building_code='+search_building_code;
 	})

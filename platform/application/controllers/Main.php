@@ -47,15 +47,11 @@ class Main extends CI_Controller {
 			}
 		}
 		//拼接文件夹地址
-		$data_dir = './qrcode/'.$session['village_id'].$session['village_name'].$qr_code_type_name.'二维码/';
+		$data_dir = './qrcode/'.$_SESSION['village_id'].'_QRCODE_'.$qr_code_type_name.'/';
 		// $data_dir = './qrcode/100001/';
-		//转成中文
-		$data_dir = iconv('utf-8', 'gbk', $data_dir);
-		$data_dir = urlencode($data_dir);
 		// print_r($data_dir);exit;
 		$datalist=$this->list_dir($data_dir);
 
-		// echo $data_dir;exit;
 		$filename = "./qrcode.zip"; //最终生成的文件名（含路径）
 		if(file_exists($filename))
 		{

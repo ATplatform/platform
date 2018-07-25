@@ -88,6 +88,7 @@ where a.service_code=p.code
 
     //////////////// 根据输入的sql语句参数，得到数据////////////////
     public function getList( $sql){
+        // echo $sql;exit;
         $q = $this->db->query($sql); //自动转义
         if ($q->num_rows() > 0) {
             $arr = $q->result_array();

@@ -1,5 +1,4 @@
 <?php
-include(APPPATH.'/libraries/include/phpqrcode/qrlib.php');
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Material extends CI_Controller
@@ -107,9 +106,11 @@ class Material extends CI_Controller
         $this->load->model('Material_model');
         $this->load->model('Building_model');
 
-        $building = $this->Building_model->getBuilding($building_code,$village_id);
 
-        $householdInfo = $this->Building_model->getHouseholdInfo($building);
+        $building = $this->Building_model->getBuildingFromBuilding($building_code,$village_id);
+        $building_sip = $building['sip'];
+        $building_info = $this->Building_model->getBuilding($building_code,$village_id);
+        $householdInfo = $this->Building_model->getHouseholdInfo($building_info);
         // echo $householdInfo;exit;
         //根据设备类型得到设备类型名称
         $material_type_arr=$this->material_type_arr;
@@ -119,29 +120,25 @@ class Material extends CI_Controller
             }
         }
 
-        $url = $_SERVER['SERVER_ADDR'];
-        $base_url = 'http://'.$url;
-        //二维码名称
-        $fileName =$url.'_'.$code.'.png';
+        //二维码名称,以物资code命名
+        $fileName = $code.'.png';
+        //根据当前绑定的sip地址来确定生成文件夹的名字
+        $final_folder = $this->Building_model->sipChange($building_sip);
         //二维码图片地址
-        $village_id = $_SESSION['village_id'];
+        $pngAbsoluteFilePath='';
+        $temp_path='qrcode/'.$village_id.'_QRCODE_'.'MATERIAL/'.$final_folder;
+        //生成的二维码图片地址
+        $pngAbsoluteFilePath = $temp_path.'/'.$fileName;
 
-        $village_name= $this->Building_model->getvillagename($village_id);
+        //二维码内容,物资的二维码type为104
+        $qrcodeData = $this->Building_model->getQrcodeData(104,$village_id,$code,$pngAbsoluteFilePath);
 
-        $temp_path='qrcode/'.$village_id.'_QRCODE_MATERIAL';
+        //生成二维码图片
+        $this->Building_model->txtToImg($qrcodeData,$pngAbsoluteFilePath,$temp_path,$householdInfo,$name);
 
-        //二维码内容,设备的二维码type为101,village暂时写为100001
-        $this->load->model('Building_model');
-
-        $pushserver_address=$base_url;
-        $qr_code=$pushserver_address.'/platform/'.$temp_path.'/'.$fileName;
-        $qrcodeData = $this->Building_model->getQrcodeData(104,$village_id,$code,$qr_code);
-        $this->Building_model->setQRcode($qrcodeData,$temp_path,$fileName);
-
-        $res = $this->Material_model->insertMaterial($village_id,$code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark, $qr_code,$create_time);
+        $res = $this->Material_model->insertMaterial($village_id,$code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark,$qrcodeData,$create_time);
         if ($res) {
             $data['message'] = '新增物资成功';
-            //新增成功后,生成一张二维码图片
             //得到楼宇信息
 
         } else {
@@ -151,7 +148,6 @@ class Material extends CI_Controller
         //$data['total'] = $total;
         print_r(json_encode($data));
     }
-
 
     //////////////////////普通查询数据///////////////
     public function getMaterialListbyNormal()

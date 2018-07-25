@@ -1,4 +1,6 @@
 <?php
+include(APPPATH.'/libraries/include/phpqrcode/qrlib.php'); 
+
 class Building_model extends CI_Model {
 
     public function __construct()
@@ -7,14 +9,18 @@ class Building_model extends CI_Model {
         $this->load->database();
     }
 
-    public function insertBuilding($village_id,$code,$effective_date,$effective_status,$name,$level,$rank,$parent_code,$remark,$create_time){
-        // echo $code;exit;
-        if(is_null($rank)||empty($rank)){
-            $sql = "INSERT INTO village_building (village_id,code,effective_date,effective_status,name,level,rank,parent_code,remark,create_time) values ($village_id,$code,'$effective_date',$effective_status,'$name',$level,null,$parent_code,'$remark','$create_time')";
+    public function insertBuilding($village_id,$code,$effective_date,$effective_status,$name,$level,$rank,$parent_code,$building_type,$floor_area,$inside_area,$remark,$now){
+        $create_person = $_SESSION['person_code'];
+        $update_person = $_SESSION['person_code'];
+        $create_time = $now;
+        $update_time = $now;
+        if($level!=='106'){
+            $building_type = 'null';
+            $floor_area = 'null';
+            $inside_area = 'null';
         }
-        else{
-            $sql = "INSERT INTO village_building (village_id,code,effective_date,effective_status,name,level,rank,parent_code,remark,create_time) values ($village_id,$code,'$effective_date',$effective_status,'$name',$level,$rank,$parent_code,'$remark','$create_time')";
-        }
+        $sql = "INSERT INTO village_building (village_id,code,effective_date,effective_status,name,level,rank,parent_code,building_type,floor_area,inside_area,remark,create_time,update_time,create_person,update_person) values ($village_id,$code,'$effective_date',$effective_status,'$name',$level,$rank,$parent_code,$building_type,$floor_area,$inside_area,'$remark','$create_time','$update_time','$create_person','$update_person')";
+        // echo $sql;exit;
         $query = $this->db->query($sql);
         return $this->db->affected_rows();
     }
@@ -54,7 +60,7 @@ class Building_model extends CI_Model {
 
     public function getBuildingsList($level,$keyword,$id,$parent_code,$page,$rows,$village_id){
         $start=($page-1) * $rows;
-    	$sql = "select b.id,b.code,b.effective_date,b.effective_status,b.name,b.level,b.rank,b.parent_code,b.remark,b.village_id,b.qr_code from village_building as b left join village_tmp_building tb on b.code = tb.code and b.village_id = tb.village_id  ";
+    	$sql = "select b.id,b.code,b.effective_date,b.effective_status,b.name,b.level,b.rank,b.parent_code,b.remark,b.village_id,b.qr_code,b.building_type,b.floor_area,b.inside_area from village_building as b left join village_tmp_building tb on b.code = tb.code and b.village_id = tb.village_id  ";
         $limit = false;
         if(isset($keyword)&&$keyword!=''){
             if($limit){
@@ -205,6 +211,33 @@ class Building_model extends CI_Model {
                 {
                     $item["level_type"]=intval($value,10);
                 }
+                elseif($key=='floor_area')
+                {
+                    $item["floor_area"]=$value;
+                }
+                elseif($key=='inside_area')
+                {
+                    $item["inside_area"]=$value;
+                }
+                elseif($key=='building_type'&&!empty($value))
+                {
+                    if($value==101){
+                        $item["building_type_name"]='住宅';
+                    }
+                    if($value==102){
+                        $item["building_type_name"]='商铺';
+                    }
+                    if($value==103){
+                        $item["building_type_name"]='公寓';
+                    }
+                    if($value==104){
+                        $item["building_type_name"]='写字楼';
+                    }
+                    if($value==105){
+                        $item["building_type_name"]='别墅';
+                    }
+                }
+
                 $item["household"]=$this->getHouseholdInfo($row);
     		}
     		$arr[]=$item;
@@ -216,31 +249,31 @@ class Building_model extends CI_Model {
         $result="";
         if(!empty($row['stage_name']))
         {
-            $result=$result.$row['stage_name']."(期)";
+            $result=$result.$row['stage_name'];
         }
         if(!empty($row['area_name']))
         {
-            $result=$result.$row['area_name']."(区)";
+            $result=$result.$row['area_name'];
         }       
         if(!empty($row['immeuble_name']))
         {
-            $result=$result.$row['immeuble_name']."(栋)";
+            $result=$result.$row['immeuble_name'];
         }
         if(!empty($row['unit_name']))
         {
-            $result=$result.$row['unit_name']."(单元)";
+            $result=$result.$row['unit_name'];
         }       
         if(!empty($row['floor_name']))
         {
-            $result=$result.$row['floor_name']."(层)";
+            $result=$result.$row['floor_name'];
         }       
         if(!empty($row['room_name']))
         {
-            $result=$result.$row['room_name']."(室)";
+            $result=$result.$row['room_name'];
         }
         if(!empty($row['public_name']))
         {
-            $result=$result.$row['public_name']."(公共设施)";
+            $result=$result.$row['public_name'];
         }
         if($row['level']==100){
             $result=$result.$row['name'];
@@ -457,72 +490,7 @@ class Building_model extends CI_Model {
         return $json;
     }
 
-    public function setQRcode($qrcodeData,$temp_path,$fileName){
-        if (!file_exists($temp_path))
-        {
-            mkdir($temp_path, 0777, true);
-        }
-        $pngAbsoluteFilePath = $temp_path.$fileName;
-        //有图片的情况下,先删除原来的图片 
-        if(file_exists($pngAbsoluteFilePath)){
-            unlink($pngAbsoluteFilePath);
-        }
-        QRcode::png($qrcodeData, $pngAbsoluteFilePath);
-    }
-
-    public function txtToImg($village_id,$type,$code,$file_name,$sip,$text){
-        /*$file_name = "test";
-        $type = 101;
-        $village_id = '100001';
-        $code = '100001';
-        $sip = 'zg_jsnixwq_neiwangxiaoqu_s0a0b5u0f0r0';
-        $text = "11111期22222区3333栋44444单元6666层11室11号";*/
-        
-        //先生成一张二维码图片
-        $temp_path='qrcode/'.$village_id.'_QRCODE_'.$file_name;
-        // $temp_path = '';
-        $fileName = $sip.'.png';
-        //生成的二维码图片地址
-        $pngAbsoluteFilePath = $temp_path.'/'.$fileName;
-        // $qrcodeData = '';
-        $this->load->model('Building_model');
-        $qrcodeData = $this->Building_model->getQrcodeData($type,$village_id,$code,$pngAbsoluteFilePath);
-
-        if (!file_exists($temp_path)){
-            mkdir($temp_path, 0777, true);
-        }
-        //有图片的情况下,先删除原来的图片 
-        if(file_exists($pngAbsoluteFilePath)){
-            unlink($pngAbsoluteFilePath);
-        }
-        QRcode::png($qrcodeData, $pngAbsoluteFilePath,H,5,10);
-
-        //下面是生成文字
-        //txt为要显示的文字
-        $size = 10;
-        //字体路径，微软雅黑
-        $font =APPPATH.'/libraries/include/font/msyh.ttf';
-        //打开已经生成好的二维码图片
-        $im = imagecreatefrompng($pngAbsoluteFilePath);
-        //设置字体颜色
-        $black = imagecolorallocate($im, 0, 0, 0);
-        //将ttf文字写到图片中
-        imagettftext($im, $size, 0, 10, 20, $black, $font, $text);
-        //先删除原来的二维码图片 
-        if(file_exists($pngAbsoluteFilePath)){
-            unlink($pngAbsoluteFilePath);
-        }
-        //重新生成增加了文字的二维码图片
-        ob_start();  
-          imagejpeg($im); 
-        $img = ob_get_contents();  
-        ob_end_clean();  
-        $fp2=@fopen($pngAbsoluteFilePath, "a");  
-        fwrite($fp2,$img);  
-        fclose($fp2);
-    }
-    
-        public function getBuildingbyTree($code){
+    public function getBuildingbyTree($code){
         $sql = "select * from village_building where code = $code limit 1";
         // echo $sql;exit;
         $query = $this->db->query($sql);
@@ -554,19 +522,9 @@ class Building_model extends CI_Model {
         return $json;
     }
 
-    public function updatevillageInfo($id,$brief,$full_name,$name,$city,$location,$longitude,$latitude,$households,$parking_lots)
+    public function updatevillageInfo($id,$brief)
     {
-        $sql = "update village_village set 
-                  brief='$brief' ,  
-                  full_name='$full_name',
-                      name='$name',
-                          city='$city',
-                              location='$location',
-                                  longitude='$longitude',
-                                      latitude='$latitude',
-                                          households='$households',
-                                              parking_lots='$parking_lots'
-                  where id=$id";
+        $sql = "update village_village set brief='$brief'  where id=$id";
         $query = $this->db->query($sql);
 
     }
@@ -578,7 +536,138 @@ class Building_model extends CI_Model {
         $query=$query->result_array();
         return  $query['0']['name'];
     }
-    
-    
-    
+
+    public function getPersonBuilding($building_code,$village_id){
+        $sql = "select * from village_person_building where building_code = '$building_code' and village_id = '$village_id' limit 1 ";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function getPersonBiz($building_code,$village_id){
+        $sql = "select * from village_person_biz where building_code = '$building_code' and village_id = '$village_id' limit 1 ";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function getPersonPosition($building_code,$village_id){
+        $sql = "select * from village_person_position where $building_code = any(territory) and village_id = '$village_id' limit 1 ";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function getEquipment($building_code,$village_id){
+        $sql = "select * from village_equipment where building_code = '$building_code' and village_id = '$village_id' limit 1 ";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function getPersonEquipment($building_code,$village_id){
+        $sql = "select * from village_person_equipment where $building_code = any(building_code) and village_id = '$village_id' limit 1 ";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function getMaterial($building_code,$village_id){
+        $sql = "select * from village_material where building_code = '$building_code' and village_id = '$village_id' limit 1 ";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function invalidBuilding($code,$village_id){
+        $sql = "update village_building set effective_status = false where code = '$code' and village_id = $village_id ";
+        $query = $this->db->query($sql);
+        return $this->db->affected_rows();
+    }
+
+    public function getAllBuilding($village_id){
+        $sql = "select * from village_building where village_id = $village_id ORDER BY code";
+        // echo $sql;exit;
+        $q = $this->db->query($sql);
+        if ( $q->num_rows() > 0 ) {
+            $arr=$q->result_array();
+            return $arr;
+        }
+        return false;
+    }
+
+    public function setBuildingQRcode($code){
+        $village_id = $_SESSION['village_id'];
+        //生成二维码的信息
+        //得到楼宇信息
+        $building = $this->getBuildingFromBuilding($code,$village_id);
+        // print_r($building);exit;
+        //二维码名称,以code命名
+        $fileName = $code.'.png';
+
+        //根据当前绑定的sip地址来确定生成文件夹的名字
+        $final_folder = $this->sipChange($building['sip']);
+        // echo $fileName;exit;
+        //二维码图片地址
+        $pngAbsoluteFilePath='';
+        $temp_path='qrcode/'.$village_id.'_QRCODE_BUILDING/'.$final_folder;
+        //生成的二维码图片地址
+        $pngAbsoluteFilePath = $temp_path.'/'.$fileName;
+        $qrcodeData = $this->getQrcodeData(102,$village_id,$code,$pngAbsoluteFilePath);
+        //更新这栋楼宇的二维码信息
+        $this->updateBuildingQrcode($code,$qrcodeData);
+        //生成一张二维码图片
+        $building_info = $this->getBuilding($code,$village_id);
+        $text = $this->getHouseholdInfo($building_info);
+        $this->txtToImg($qrcodeData,$pngAbsoluteFilePath,$temp_path,$text,'');
+    }
+
+    public function sipChange($sip){
+        $folder = substr($sip,strrpos($sip,'_')+1);
+        $new_folder = substr($folder,0,strrpos($folder,'f'));
+        //替换字符
+        $new_folder1 = str_replace('s','QI_',$new_folder);
+        $new_folder2 = str_replace('a','-QU_',$new_folder1);
+        $new_folder3 = str_replace('b','-DONG_',$new_folder2);
+        $final_folder = str_replace('u','-DANYUAN_',$new_folder3);
+        return $final_folder;
+    }
+
+    public function txtToImg($qrcodeData,$pngAbsoluteFilePath,$temp_path,$text,$equipment_name){
+        if (!file_exists($temp_path)){
+            mkdir($temp_path, 0777, true);
+        }
+        //有图片的情况下,先删除原来的图片 
+        if(file_exists($pngAbsoluteFilePath)){
+            unlink($pngAbsoluteFilePath);
+        }
+        QRcode::png($qrcodeData, $pngAbsoluteFilePath,"L",5,13);
+
+        //下面是生成文字
+        //txt为要显示的文字
+        $size = 16;
+        //字体路径，微软雅黑
+        $font =APPPATH.'/libraries/include/font/msyh.ttf';
+        //打开已经生成好的二维码图片
+        $im = imagecreatefrompng($pngAbsoluteFilePath);
+        //设置字体颜色
+        $black = imagecolorallocate($im, 0, 0, 0);
+        //加入楼宇地址文字
+        imagettftext($im, $size, 0, 10, 20, $black, $font, $text);
+        //加入设备类型文字
+        imagettftext($im, $size, 0, 10, 50, $black, $font, $equipment_name);
+        //先删除原来的二维码图片 
+        if(file_exists($pngAbsoluteFilePath)){
+            unlink($pngAbsoluteFilePath);
+        }
+        //重新生成增加了文字的二维码图片
+        ob_start();  
+          imagejpeg($im); 
+        $img = ob_get_contents();  
+        ob_end_clean();  
+        $fp2=@fopen($pngAbsoluteFilePath, "a");  
+        fwrite($fp2,$img);  
+        fclose($fp2);
+    }
+
 }

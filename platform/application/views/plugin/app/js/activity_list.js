@@ -311,7 +311,13 @@ function information(router,rowkeys) {
                 $('#person_detail').find('.' + n).html(rowkeys[n]);
             }
 ////////////////////////////////////////附件处理//////////////////////////////////////////////////
-            $('#person_detail').find('.a_qr_code').attr("src", rowkeys.a_qr_code)
+            var qr_code = row.a_qr_code;
+            if(qr_code){
+                var qr_code = JSON.parse(qr_code);
+                var img_url = qr_code.img_url;
+                img_url = getRootPath() +"/"+ img_url;
+                $('#person_detail').find('.qr_code').find('img').attr('src',img_url);
+            }
         }
 
     }

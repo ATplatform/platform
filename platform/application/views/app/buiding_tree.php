@@ -33,12 +33,12 @@ path.link {
   stroke: #ccc;
   stroke-width: 1.5px;
 }
-.icon {
+/* .icon {
     width: 1em; height: 1em;
     vertical-align: -0.15em;
     fill: currentColor;
     overflow: hidden;
-}
+} */
 
 </style>
 
@@ -80,7 +80,7 @@ path.link {
                         </div>
                         <div class="modal-body building add_building">
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;楼宇编号：
-                                <span class="code" style="margin-left:26px;"></span>
+                                <span class="code col_37A" style="margin-left:26px;"></span>
                             </p>
                             <p><span class="red_star">*</span>生效日期：
                                 <input type="text" class="effective_date date" name="effective_date" />
@@ -137,10 +137,10 @@ path.link {
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark" /></p>
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee">
-                        <p class="tac pb17">
-                            <span class="col_37A confirm">保存</span>
-                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee oh">
+                        <p class="fr pt17">
+                            <span class="col_37A fl confirm">保存</span>
+                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div><!-- /.modal-content -->
@@ -158,7 +158,7 @@ path.link {
                         </div>
                         <div class="modal-body building write_building">
                             <p><span class="des" style="margin-left:20px;">楼宇编号：</span>
-                                <span class="code" style="margin-left:22px;"></span>
+                                <span class="code col_37A" style="margin-left:22px;"></span>
                             </p>
                             <p>
                                 <span class="des" style="margin-left:20px;">生效日期：</span>
@@ -180,17 +180,17 @@ path.link {
                             </p>
 
                             <p><span class="red_star">*</span><span class="des">&nbsp;&nbsp;顺&nbsp;序&nbsp;号：</span>
-                                <input type="text" class="model_input rank" placeholder="请输入顺序号" name="rank" /></p>
+                                <span class="rank col_37A" style="margin-left:24px;"></span>
                             <p>
                                 <span class="des" style="margin-left:20px;">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</span>
                                 <input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark" /></p>
                             <input type="hidden" name="data_id" />
                         </div>
                     </div>
-                    <div class="modal_footer bg_eee">
-                        <p class="tac pb17">
-                            <span class="col_37A confirm">保存</span>
-                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
+                    <div class="modal_footer bg_eee oh">
+                        <p class="fr pt17">
+                            <span class="col_37A fl confirm">保存</span>
+                            <span class="col_C45 fl"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div><!-- /.modal-content -->
@@ -283,16 +283,16 @@ function update(source) {
       .style("position", "relative")
       .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
       .on('mouseover', function(d) {
-          if(d.depth<6){
+          /*if(d.depth<6){
           $(this).children('.option1_svg').show()
           $(this).children('.option2_svg').show()
           }else{
           $(this).children('.option3_svg').show()
               $(this).children('.option1_svg').hide()
               $(this).children('.option2_svg').hide()
-          }
+          }*/
       })
-      .on('mouseout', function (d) {$(this).children('.option1_svg').hide(); $(this).children('.option2_svg').hide();$(this).children('.option3_svg').hide();})
+      // .on('mouseout', function (d) {$(this).children('.option1_svg').hide(); $(this).children('.option2_svg').hide();$(this).children('.option3_svg').hide();})
 
 
     nodeEnter.append("svg:rect")
@@ -315,7 +315,7 @@ function update(source) {
         .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
       .on("click", function(d) {  togglefornode(d);update(d);});//
 
-/*
+
 
     nodeEnter.append("svg")
         .attr("class", "option1_svg")
@@ -412,7 +412,7 @@ function update(source) {
             if(d.depth<6) {
                 updatebuilding(d);
             }
-        })*/
+        })
 
 
 
@@ -640,7 +640,7 @@ $('#add_building .confirm').click(function(){
     var parent_code_data = $('.add_building').find('input[name="parent_code"]').data('ajax');
     console.log(parent_code_data)
     remark = remark?remark:'';
-    rank = trim(rank);
+    rank = trim(rank); 
     if(!effective_date){
         openLayer('请输入生效日期');
         return;
@@ -661,13 +661,14 @@ $('#add_building .confirm').click(function(){
         openLayer('请输入顺序号');
         return;
     }
-
     //如果填了顺序号,则要验证是否是数字
-    if(rank){
-        if(!/^[0-9]*$/.test(rank)){
-            openLayer('顺序号请输入数字');
-            return;
-        }
+    if(!/^(\-?)\d+$/.test(rank)){
+        openLayer('顺序号请输入整数');
+        return;
+    }
+    if(rank<0 || rank >255){
+        openLayer('顺序号只能在0-255之间');
+        return;
     }
     //判断有效无效
     if($('.add_building .effective_status input[type="radio"]').eq(0).is(':checked')){
@@ -745,7 +746,7 @@ function updatebuilding(d){
             $('.write_building .parent_code_name').html(parent_code_name);
 
             $('.write_building').find('input[name="name"]').val(name);
-            $('.write_building').find('input[name="rank"]').val(rank);
+            $('.write_building').find('.rank').html(rank);
             $('.write_building').find('input[name="remark"]').val(remark);
             $('.write_building').find('input[name="data_id"]').val(data_id);
             $('#write_building').modal('show');

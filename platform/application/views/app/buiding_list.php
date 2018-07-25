@@ -115,7 +115,7 @@
 					<p><span class="red_star">*</span>楼宇名称：
 						<input type="text" class="model_input name" placeholder="请输入楼宇名称"  name="name" />
 					</p>
-					<div class="select_wrap select_pull_down">
+					<div class="select_wrap select_pull_down select_building_level">
 						<div>
 							<span class="red_star">*</span>楼宇层级：
 							<input type="text" class="model_input level ka_input3" placeholder="请选择楼宇层级"  name="level" data-ajax="" readonly />
@@ -147,6 +147,30 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="select_wrap select_pull_down select_building_type" style="display: none;">
+						<div><span class="red_star">*</span>产权类型：
+							<input type="text" class="model_input building_type ka_input3" placeholder="请选择产权类型"  name="building_type"  data-ajax="" readonly />
+						</div>
+						<div class="ka_drop">
+							<div class="ka_drop_list buildings">
+							<ul>
+								<li><a href="javascript:;" data-ajax="101">住宅</a></li>
+								<li><a href="javascript:;" data-ajax="102">商铺</a></li>
+								<li><a href="javascript:;" data-ajax="103">公寓</a></li>
+								<li><a href="javascript:;" data-ajax="104">写字楼</a></li>
+								<li><a href="javascript:;" data-ajax="105">别墅</a></li>
+							</ul>
+							</div>
+						</div>
+					</div>
+					<p class="floor_area_wrap" style="display: none;"><span class="red_star">*</span>建筑面积：
+						<input type="text" class="model_input floor_area" placeholder="请输入楼宇建筑面积"  name="floor_area" />
+					</p>
+					<p class="inside_area_wrap" style="display: none;"><span class="red_star">*</span>套内面积：
+						<input type="text" class="model_input inside_area" placeholder="请输入楼宇套内面积"  name="inside_area" />
+					</p>
+
 					<p><span class="red_star">*</span>顺序号：<input type="text" class="model_input rank" placeholder="请输入顺序号" name="rank" /></p>
 					<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark" /></p>
 	            </div>
@@ -162,7 +186,7 @@
 </div>
 
 <!--编辑楼宇-->
-<div  class="modal fade"  id="write_building" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="write_building" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog"  style="width: 630px;">
         <div class="modal-content model_wrap">
         	<div class="model_content">
@@ -171,7 +195,7 @@
 	            </div>
 	            <div class="modal-body building write_building">
 					<p><span class="des" style="margin-left:20px;">楼宇编号：</span>
-						<span class="code" style="margin-left:36px;"></span>
+						<span class="code col_37A" style="margin-left:36px;"></span>
 					</p>
 					<p>
 						<span class="des" style="margin-left:20px;">生效日期：</span>
@@ -192,9 +216,20 @@
 						<span class="des" style="margin-left:20px;">上级楼宇：</span>
 						<span class="parent_code_name col_37A"  style="margin-left:36px;"></span>
 					</p>
-					
+					<p style="display: none;" class="building_type_name_wrap">
+						<span class="des" style="margin-left:20px;">产权类型：</span>
+						<span class="building_type_name col_37A"  style="margin-left:36px;"></span>
+					</p>
+					<p style="display: none;" class="floor_area_wrap">
+						<span class="des" style="margin-left:20px;">建筑面积：</span>
+						<span class="floor_area col_37A"  style="margin-left:36px;"></span>
+					</p>
+					<p style="display: none;" class="inside_area_wrap">
+						<span class="des" style="margin-left:20px;">套内面积：</span>
+						<span class="inside_area col_37A"  style="margin-left:36px;"></span>
+					</p>
 					<p><span class="des" style="margin-left:20px;">顺&nbsp;&nbsp;序&nbsp;&nbsp;号：</span>
-						<span class="rank" style="margin-left:36px;"></span>
+						<span class="rank col_37A" style="margin-left:36px;"></span>
 					<p>
 					<span class="des" style="margin-left:20px;">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</span>
 					<input type="text" class="model_input remark" placeholder="请输入备注内容" name="remark" /></p>
@@ -213,7 +248,7 @@
     </div><!-- /.modal -->
 </div>
 <!--详情-->
-<div  class="modal fade"  id="detail_building" tabindex="-1" role="dialog" aria-hidden="true">
+<div  class="modal fade" id="detail_building" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog"  style="width: 550px;">
         <div class="modal-content model_wrap">
         	<div class="model_content">
@@ -222,7 +257,7 @@
 	            </div>
 	            <div class="modal-body building">
 					<p style="line-height: 30px;"><span class="des">楼宇编号：</span>
-						<span class="code" style="margin-left:22px;"></span>
+						<span class="code col_37A" style="margin-left:22px;"></span>
 					</p>
 					<p style="line-height: 30px;">
 						<span class="des">生效日期：</span>
@@ -243,7 +278,18 @@
 						<span class="des">上级楼宇：</span>
 						<span class="parent_code_name col_37A"  style="margin-left:22px;"></span>
 					</p>
-					
+					<p style="line-height: 30px;display: none;" class="building_type_name_wrap">
+						<span class="des">产权类型：</span>
+						<span class="building_type_name col_37A"  style="margin-left:22px;"></span>
+					</p>
+					<p style="line-height: 30px;display: none;" class="floor_area_wrap">
+						<span class="des">建筑面积：</span>
+						<span class="floor_area col_37A"  style="margin-left:22px;"></span>
+					</p>
+					<p style="line-height: 30px;display: none;" class="inside_area_wrap">
+						<span class="des">套内面积：</span>
+						<span class="inside_area col_37A"  style="margin-left:22px;"></span>
+					</p>
 					<p style="line-height: 30px;"><span class="des">顺&nbsp;&nbsp;序&nbsp;&nbsp;号：</span>
 						<span class="rank col_37A"  style="margin-left:22px;"></span>
 					<p style="line-height: 30px;">

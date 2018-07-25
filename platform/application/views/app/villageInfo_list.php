@@ -5,50 +5,41 @@
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css'?>'/>
 <link rel="stylesheet" href='<?=base_url().'application/views/plugin/jstree/dist/themes/default/style.min.css'?>'/>
 <!--<script src='<?/*=base_url().'application/views/plugin/jquery-bdmap/js/jquery.baiduMap.min'*/?>'></script>-->
-<script src='<?='http://api.map.baidu.com/getscript?v=2.0&ak=aRMXU5OVYpSZCqXlS0zL1K3OepYKZhr4&services=&t=20180529182003,'?>'></script>
+<!-- <script src='http://api.map.baidu.com/getscript?v=2.0&ak=aRMXU5OVYpSZCqXlS0zL1K3OepYKZhr4&services=&t=20180529182003'></script> -->
 <style>
-
-    .show  p{
-        margin:20px;
-    }
-    .title{
-        position:relative;
-        font-size:16px;
-        margin-left:10px;
-    }
-    .content{
-        font-size:14px;
-
-    }
-.show{
-  margin-left:auto;
-margin-right:auto;
-    font-size: 18px;
-    width:1000px;
-    margin-bottom:20px;
-    height:100%;
+p{
+    margin:10px;
 }
+.title{
+    position:relative;
+    font-size:16px;
+    margin-left:10px;
+}
+.content{
+    font-size:14px;
+}
+.show{
+    float:left;
+    font-size: 14px;
+    width:50%;
 
+}
 .brief{
-    width:40%;
+    width:70%;
     height:200px;
     resize:none;
     margin-left:8px;
-
-    word-break:break-all
-
 }
-    #container{
-        margin-top:10px;
-        width: 520px;
-        height:350px;
-    }
+#container{
+    margin-top:10px;
+    width: 520px;
+    height:350px;
+}
 
-    .imgwrap{
-
-        width: 600px;
-        height:100%;
-    }
+.imgwrap{
+    width: 600px;
+    height:100%;
+}
 
 .villageimg{
     width: 100%;
@@ -56,31 +47,31 @@ margin-right:auto;
 }
 
 
-    .right-content{
-       margin-left:100px;
-    }
+.right{
+    float:left;
+}
 
-    .icon_circle {
-        display: inline-block;
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        background-color: #37ACFF;
-        margin-right:10px;
-        vertical-align: middle;
-        position: absolute;
-        left: -10px;
-        top: 6px;
-    }
-    .add_btn{
-        width:10%;
-        float:right;
-        font-size: 14px;
-    }
-    .update{
-        position:absolute;
-        right:380px;
-    }
+.icon_circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #37ACFF;
+    margin-right:10px;
+    vertical-align: middle;
+    position: absolute;
+    left: -10px;
+    top: 6px;
+}
+.add_btn{
+    width:10%;
+    float:right;
+    font-size: 14px;
+}
+.update{
+    position:absolute;
+    right:20px;
+}
 /*
 
     @media screen and (max-width: 768px) {
@@ -102,150 +93,106 @@ margin-right:auto;
 
 </style>
 <div class="oh pt10">
-
-
 <?php
 	require 'menus.php'
 ?>
-
-
-
-    <div class=" col-sm-12 main_wrap">
-<!--<?php echo 'x'; ?>-->
-        <div class="show" style="overflow:hidden;zoom:1;">
-
+    <div class="col-sm-12 main_wrap">
+        <div class="left show" >
             <div class="title">
-                <p class="col_37A " ><i class="icon_circle" ></i>社区基本信息</p>
-            </div>
-            <button class="update add_btn" data-target="#village_rewrite" data-toggle="modal" style="z-index:999">编辑</button>
-            <div class=" fl" style="width:30%;  ">
-                <div class="content">
-                     <p> 当前所在社区:</p>
-                     <p>社区编号:</p>
-                     <p>社区全称:</p>
-                     <p>社区简称:</p>
-                     <p>所在城市:</p>
-                     <p>社区位置:</p>
-                     <p>经度:</p>
-                     <p> 纬度: <p>
-                     <p>社区户数:</p>
-                     <p>总车位数:</p>
-                     <p>社区简介:</p>
-
+                <p class="col_37A"><i class="icon_circle" ></i>社区基本信息</p>
+              <!-- <button class=" add_btn update"  >编辑</button>-->
+                <div class=" fl" style="width:30%;">
+                    <div class="content">
+                         <p>当前所在社区:</p>
+                         <p>社区编号:</p>
+                         <p>社区全称:</p>
+                         <p>社区简称:</p>
+                         <p>所在城市:</p>
+                         <p>社区位置:</p>
+                         <p>经度:</p>
+                         <p> 纬度: <p>
+                         <p>社区户数:</p>
+                         <p>总车位数:</p>
+                         <p>社区简介:</p>
+                    </div>
                 </div>
-            </div>
-            <div class=" fl content" style="width:70%; position:relative;">
-                <div class="  right-content">
-    <p  class="name "></p>
-    <p  class="id"></p>
-    <p  class="full_name "></p>
-    <p  class="name "></p>
-    <p  class="city "></p>
-    <p  class="location "></p>
-    <p  class="longitude "></p>
-    <p  class="latitude "><p>
-    <p  class="households "></p>
-    <p  class="parking_lots "></p>
-                <textarea class="brief" id="brief" title="可修改社区简介" readonly >
-</textarea>
-   <!-- <p class=" brief " style=" white-space:normal; word-break:break-all;"></p>-->
-   <!-- <i class="fa  fa-pencil-square-o fa-lg update"></i>-->
+                <div class=" fl content" style="width:70%; position:relative;">
+                    <p  class="name "></p>
+                    <p  class="id"></p>
+                    <p  class="full_name "></p>
+                    <p  class="name "></p>
+                    <p  class="city "></p>
+                    <p  class="location "></p>
+                    <p  class="longitude "></p>
+                    <p  class="latitude "><p>
+                    <p  class="households "></p>
+                    <p  class="parking_lots "></p>
+                    <textarea class="brief" id="brief" title="可修改社区简介" readonly></textarea>
+                    <!-- <i class="fa  fa-pencil-square-o fa-lg update"></i> -->
                 </div>
+                <div class="clear"></div>
             </div>
-
+            <div class="tac"><span><i class="icon fa fa-pencil-square-o" data-target="#update" data-toggle="modal"></i></span></div>
         </div>
-   </div>
-    <!-- <div class="right"  >
-
-       <div class="title">
-           <div>
-           <p class="col_37A" ><i class="icon_circle"></i>社区平面图</p>
-       </div>
-       <div class="imgwrap" >
-           <img   class="villageimg" src="" alt="#" >
-       </div>
-
-       <!--<div class="title">
-           <p class="col_37A" ><i class="icon_circle" ></i>社区地图位置</p>
-           <div id="container"  >
-           </div>
-       </div>
-
-   </div>-->
-
-    <!--修改 -->
-    <div class="modal fade" id="village_rewrite" tabindex="-1" role="dialog" aria-hidden="true" >
-        <div class="modal-dialog"  style="width:630px;">
-            <div class="modal-content model_wrap" style="width:630px;">
-                <div class="model_content" style="width:630px;">
+    </div>
+    <div class="modal fade" id="update"  tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog"  style="width: 630px;">
+            <div class="modal-content model_wrap">
+                <div class="model_content">
                     <div class="building_header">
-                        <h4 class="modal-title tac">编辑</h4>
+                        <h4 class="modal-title tac">编辑社区信息</h4>
                     </div>
-                    <div class=" modal-body building  oh">
-
-
-                        <div class=" rewrite  ">
-
-
-
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区编号：<span class="id" style="margin-left:25px;"></span></p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区全称：
-                                <input type="text" class="model_input full_name" placeholder="请输入备注"  name="auz_remark" />
-                            </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区简称：
-                                <input type="text" class="model_input name" placeholder="请输入备注"  name="auz_remark" />
-                            </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;所在城市：
-                                <input type="text" class="model_input city" placeholder="请输入备注"  name="auz_remark" />
-                            </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区位置：
-                                <input type="text" class="model_input location" placeholder="请输入备注"  name="auz_remark" />
-                            </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;经度：
-                                <input type="text" class="model_input longitude" placeholder="请输入备注"  name="auz_remark" />
-                            </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;纬度：
-                                <input type="text" class="model_input latitude" placeholder="请输入备注"  name="auz_remark" />
-                            </p>
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区户数：
-                                <input type="text" class="model_input households" placeholder="请输入备注"  name="auz_remark" />
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;社区户数：
-                                <input type="text" class="model_input parking_lots" placeholder="请输入备注"  name="auz_remark" />
-                            </p>
-                            <div>
-                            <p class="fl">&nbsp;&nbsp;&nbsp;&nbsp;社区简介：</p>
-                            <textarea class="brief fl col_37A" id="brief" title="可修改社区简介" style="width:70%;   margin-top:10px;margin-left:42px;">
-</textarea></div>
-
-
-                        </div>
+                    <div class="modal-body building write_building">
+                        <p style="line-height: 24px;"><span class="des" style="margin-left:20px;">当前所在社区：</span>
+                            <span class="code col_37A name"></span>
+                        </p>
+                        <p style="line-height: 24px;">
+                            <span class="des" style="margin-left:20px;">社区编号：</span>
+                            <span class="effective_date col_37A id" style="margin-left:23px;"></span>
+                        </p>
+                        <p style="line-height: 24px;">
+                            <span class="des" style="margin-left:20px;">社区全称：</span>
+                            <span class="effective_status col_37A full_name"  style="margin-left:23px;"></span>
+                        </p>
+                        <p style="line-height: 24px;"><span class="des" style="margin-left: 20px;">社区简称：</span>
+                            <span class="code col_37A name" style="margin-left:23px;"></span>
+                        </p>
+                        <p style="line-height: 24px;">
+                            <span class="des" style="margin-left:20px;">所在城市：</span>
+                            <span class="level_name col_37A city"  style="margin-left:23px;"></span>
+                        </p>
+                        <p style="line-height: 24px;">
+                            <span class="des" style="margin-left:20px;">社区位置：</span>
+                            <span class="parent_code_name col_37A location" style="margin-left:23px;"></span>
+                        </p>
+                        <p style="line-height: 24px;"><span class="des" style="margin-left:20px;">经度：</span>
+                            <span class="rank col_37A location" style="margin-left:46px;"></span>
+                        </p>
+                        <p style="line-height: 24px;"><span class="des" style="margin-left:20px;">纬度：</span>
+                            <span class="rank col_37A latitude" style="margin-left:46px;"></span>
+                        </p>
+                        <p  style="line-height: 24px;"><span class="des" style="margin-left:20px;">社区户数：</span>
+                            <span class="rank col_37A households" style="margin-left:23px;"></span>
+                        </p>
+                        <p style="line-height: 24px;"><span class="des" style="margin-left:20px;">总车位数：</span>
+                            <span class="rank col_37A parking_lots" style="margin-left:23px;"></span>
+                        </p>
+                        <p style="line-height: 24px;"><span class="des" style="margin-left:20px;">社区简介：</span>
+                            <textarea class="brief" title="可修改社区简介" style="vertical-align: top;border:1px solid #999;"></textarea>
+                        </p>
+                        
                     </div>
                 </div>
-                <div class="modal_footer bg_eee">
-                    <p class="tac pb17">
-                        <span class="col_37A confirm">保存</span>
-                        <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
+                <div class="modal_footer bg_eee oh">
+                    <p class="fr pt17" style="margin:0">
+                        <span class="col_37A fl confirm">保存</span>
+                        <span class="col_C45 fl"  data-dismiss="modal">取消</span>
                     </p>
                 </div>
-            </div>
-
-        </div>
-    </div><!-- /.modal-content -->
-    <!-- /.modal -->
-
-
-
-
-
-
-
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 </div>
-
-
-
-
-
-
 <input type="hidden" value='<?php echo $username;?>' name="username" />
 <script>
 
@@ -287,5 +234,28 @@ margin-right:auto;
 </script>
 
 <script src='<?=base_url().'application/views/plugin/app/js/villageInfo_list.js'?>'></script>
+<script>
+//修改社区简介
+$('#update .confirm').click(function(){
+    var id = $('#update .id').html();
+    var brief = $('#update .brief').val();
+    console.log(id);
+    console.log(brief);
+    $.ajax({
+        url: getRootPath() + '/index.php/Building/updatevillageInfo',
+        method: 'post',
+        data: {
+            id:id,
+            brief: brief
+        },
+        success:function(data){
+            window.location.href=getRootPath() + '/index.php/Building/villageInfo'
+        },
+        error:function () {
+            console.log('编辑出错了');
+        }
+    })
+})
+</script>
 </body>
 </html>

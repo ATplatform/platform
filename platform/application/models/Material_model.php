@@ -462,10 +462,10 @@ where M.code=A.code
             $result=$result.$row['public_name']."(公共设施)";
         }
         if(!empty($row['level'])){
-            if($row['level']==100){
-                $result=$result.$row['name'];
+        if($row['level']==100){
+            $result=$result.$row['name'];
             }
-        }
+        }              
         return $result;
     }
 

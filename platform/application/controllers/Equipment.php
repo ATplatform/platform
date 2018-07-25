@@ -1,5 +1,4 @@
 <?php
-include(APPPATH.'/libraries/include/phpqrcode/qrlib.php');
 date_default_timezone_set('Asia/ShangHai');
 
 class Equipment extends CI_Controller{
@@ -112,9 +111,10 @@ class Equipment extends CI_Controller{
 		$village_id = $_SESSION['village_id'];
 		//生成二维码图片
 		$qrcodeData = $this->setEquipmentQRcodeImg($code,$building_code,$equipment_type,$sign,$name);
-
 		$this->load->model('Equipment_model');
 		$res = $this->Equipment_model->insertEquipment($village_id,$qrcodeData,$code,$effective_date,$effective_status,$name,$pcs,$sign,$equipment_type,$building_code,$function_name,$internal_no,$initial_no,$initial_model,$tech_spec,$supplier,$production_date,$parent_code,$regular_check,$regular_date,$position_code,$if_se,$annual_check,$annual_date);
+		//更新设备的sip地址
+		$this->updateEquipmentSip($building_code,$code,$equipment_type,$sign);
 		if($res==true){
 			$data['message'] = '新增成功';
 		}
@@ -124,25 +124,49 @@ class Equipment extends CI_Controller{
 		print_r(json_encode($data));
 	}
 
-	//生成二维码图片方法
+	//生成设备二维码图片方法
 	public function setEquipmentQRcodeImg($code,$building_code,$equipment_type,$sign,$name){
 		$village_id = $_SESSION['village_id'];
-		$village_name = $_SESSION['village_name'];
+		$equipment_type_arr=$this->equipment_type_arr;
+		$equipment_type_sip_arr=$this->equipment_type_sip_arr;
+
 		//得到楼宇信息
 		$this->load->model('Building_model');
-		$building = $this->Building_model->getBuilding($building_code,$village_id);
-		$householdInfo = $this->Building_model->getHouseholdInfo($building);
-		//二维码名称
-		$fileName = $householdInfo.$name.'.png';
+		$building = $this->Building_model->getBuildingFromBuilding($building_code,$village_id);
+		$building_info = $this->Building_model->getBuilding($building_code,$village_id);
+		$text = $this->Building_model->getHouseholdInfo($building_info);
+		foreach($equipment_type_arr as $k2 => $v2){
+		    if($equipment_type == $v2['code']){
+		        $equipment_name = $v2['name'];
+		        break;
+		    }
+		}
+		$building_sip = $building['sip'];
+		//根据building_sip和设备型号来拼接设备的sip地址
+		foreach($equipment_type_sip_arr as $k2 => $v2){
+		    if($equipment_type == $v2['code']){
+		        $equipment_sip = $building_sip.'n'.$sign.'_'.$v2['name'];
+		        break;
+		    }
+		    //其他非门禁对讲设备,使用楼宇sip和设备号来命名
+		    else {
+		    	$equipment_sip = $building_sip.'n'.$sign;
+		    }
+		}
+		//二维码名称,以设备code命名
+		$fileName = $code.'.png';
+		//根据当前绑定的sip地址来确定生成文件夹的名字
+		$final_folder = $this->Building_model->sipChange($building['sip']);
 		//二维码图片地址
 		$pngAbsoluteFilePath='';
-		$temp_path='qrcode/'.$village_id.$village_name.'设备二维码/';
-		//二维码内容,设备的二维码type为101,village暂时写为100001
-		$this->load->model('Building_model');
+		$temp_path='qrcode/'.$village_id.'_QRCODE_'.'EQUIPMENT/'.$final_folder;
 		//生成的二维码图片地址
-		$pngAbsoluteFilePath = $temp_path.$fileName;
-		$qrcodeData = $this->Building_model->getQrcodeData(101,100001,$code,$pngAbsoluteFilePath);
-		$this->Building_model->setQRcode($qrcodeData,$temp_path,$fileName);
+		$pngAbsoluteFilePath = $temp_path.'/'.$fileName;
+		$qrcodeData = $this->Building_model->getQrcodeData(101,$village_id,$code,$pngAbsoluteFilePath);
+		// $this->Building_model->setQRcode($qrcodeData,$temp_path,$fileName);
+		$equipment_name = $name;
+		$text = $text.$sign."号";
+		$this->Building_model->txtToImg($qrcodeData,$pngAbsoluteFilePath,$temp_path,$text,$equipment_name);
 		return $qrcodeData;
 	}
 
@@ -205,50 +229,20 @@ class Equipment extends CI_Controller{
 		$old_equipment_type = $equipment['equipment_type'];
 		$old_sign = $equipment['sign'];
 		$old_building_code = $equipment['building_code'];
-		//如果设备类型\设备号\安装地点发生了变化,就要重新生成设备sip地址
-		if($old_equipment_type!=$equipment_type||$old_sign!=$sign||$old_building_code!=$building_code){
-			$this->updateEquipmentSip($building_code,$code,$equipment_type,$sign);
-			//更新完sip地址后,紧接着重新生成设备网络配置二维码
-        	//删除旧的网络配置二维码
-			$old_config_img_url = $equipment['tdcode_url'];
-			$old_config_img_url = iconv('utf-8', 'gbk', $old_config_img_url);
-			if(file_exists($old_config_img_url)){
-            	unlink($old_config_img_url);
-        	}
-        	//生成新的网络配置二维码
-        	//得到新sip地址
-        	$new_equipment = $this->Equipment_model->getEquipmentByCode($code,$village_id);
-        	//得到新二维码信息
-        	$config_qrcodeData = $this->Equipment_model->getConfigData($code,$equipment['server_ip'],$equipment['lan_ip'],$equipment['ip'],$equipment['gateway'],$equipment['netmask'],$equipment['dns1'],$equipment['dns2'],$new_equipment['sip']);
-        	//生成一张二维码图片
-        	$pngAbsoluteFilePath = $this->setConfigQRcodeImg($equipment['building_code'],$name,$config_qrcodeData);
-		}
-		
+
 		//如果名称已经改变,则重新生成二维码图片(设备二维码和网络配置二维码)
 		if($old_name!=$name){
-			//先删除旧的设备二维码
-			$qr_code_arr = json_decode($old_qr_code,true);
-			$img_url = $qr_code_arr['img_url'];
-			$img_url = iconv('utf-8', 'gbk', $img_url);
-			if(file_exists($img_url)){
-            	unlink($img_url);
-        	}
         	//生成新的设备二维码
         	$qrcodeData = $this->setEquipmentQRcodeImg($code,$building_code,$equipment_type,$sign,$name);
         	//更新qr_code字段:
         	$this->Equipment_model->updateEquipmentQrCode($code,$qrcodeData,$village_id);
 
-        	//删除旧的网络配置二维码
-			$old_config_img_url = $equipment['tdcode_url'];
-			$old_config_img_url = iconv('utf-8', 'gbk', $old_config_img_url);
-			if(file_exists($old_config_img_url)){
-            	unlink($old_config_img_url);
-        	}
         	//生成新的网络配置二维码
         	//得到新二维码信息
-        	$config_qrcodeData = $this->Equipment_model->getConfigData($code,$equipment['server_ip'],$equipment['lan_ip'],$equipment['ip'],$equipment['gateway'],$equipment['netmask'],$equipment['dns1'],$equipment['dns2'],$equipment['sip']);
-        	//生成一张二维码图片
-        	$pngAbsoluteFilePath = $this->setConfigQRcodeImg($equipment['building_code'],$name,$config_qrcodeData);
+        	$config_qrcodeData = $this->Equipment_model->getConfigData($equipment['server_ip'],$equipment['lan_ip'],$equipment['ip'],$equipment['gateway'],$equipment['netmask'],$equipment['dns1'],$equipment['dns2'],$equipment['sip']);
+        	// print_r($config_qrcodeData);exit;
+        	//生成网络配置二维码图片
+        	$pngAbsoluteFilePath = $this->setConfigQRcodeImg($code,$equipment['building_code'],$name,$config_qrcodeData,$old_sign,$old_equipment_type,$name);
         	//更新tdcode_url字段
         	$this->Equipment_model->updateEquipmentTdCodeUrl($code,$pngAbsoluteFilePath,$village_id);
 		}
@@ -294,7 +288,9 @@ class Equipment extends CI_Controller{
 		}
 		$building_code_arr = array();
 		$person_code_arr = array();
+		$has_search_person = false;
 		if(!is_null($keyword)&&$keyword!=''){
+			$has_search_person = true;
 			//根据搜索词查到buildingcode
 			$buildings = $this->Equipment_model->getBuildingByName($keyword,$village_id);
 			if(!empty($buildings)){
@@ -316,7 +312,7 @@ class Equipment extends CI_Controller{
 		}
 		$effective_date = $effective_date?$effective_date:$now;
 		//得到总条数
-		$total = $this->Equipment_model->getPersoneEquipmentListTotal($village_id,$person_code_arr,$building_code_arr,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
+		$total = $this->Equipment_model->getPersoneEquipmentListTotal($village_id,$person_code_arr,$has_search_person,$building_code_arr,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
 
 		$data['page']=$page>=$total?$total:$page;
 		$data['total']=$total;
@@ -355,7 +351,9 @@ class Equipment extends CI_Controller{
 		}
 		$building_code_arr = array();
 		$person_code_arr = array();
+		$has_search_person = false;
 		if(!is_null($keyword)&&$keyword!=''){
+			$has_search_person = true;
 			//根据搜索词查到buildingcode
 			$buildings = $this->Equipment_model->getBuildingByName($keyword,$village_id);
 			if(!empty($buildings)){
@@ -377,7 +375,7 @@ class Equipment extends CI_Controller{
 		}
 		$effective_date = $effective_date?$effective_date:$now;
 		//得到总条数
-		$total = $this->Equipment_model->getPrivilegeEquipmentListTotal($village_id,$person_code_arr,$building_code_arr,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
+		$total = $this->Equipment_model->getPrivilegeEquipmentListTotal($village_id,$person_code_arr,$has_search_person,$building_code_arr,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
 
 		$data['page']=$page>=$total?$total:$page;
 		$data['total']=$total;
@@ -451,7 +449,9 @@ class Equipment extends CI_Controller{
 		$this->load->model('Equipment_model');
 		$building_code_arr = array();
 		$person_code_arr = array();
+		$has_search_person = false;
 		if(!is_null($keyword)&&$keyword!=''){
+			$has_search_person = true;
 			// echo '1';
 			// echo $keyword;exit;
 			//根据搜索词查到buildingcode
@@ -475,7 +475,7 @@ class Equipment extends CI_Controller{
 		}
 		$effective_date = $effective_date?$effective_date:$now;
 		//获得数据
-		$res = $this->Equipment_model->getPersoneEquipmentList($village_id,$person_code_arr,$building_code_arr,$page,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
+		$res = $this->Equipment_model->getPersoneEquipmentList($village_id,$person_code_arr,$has_search_person,$building_code_arr,$page,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
 		echo $res;	
 	}
 
@@ -493,7 +493,9 @@ class Equipment extends CI_Controller{
 		$this->load->model('Equipment_model');
 		$building_code_arr = array();
 		$person_code_arr = array();
+		$has_search_person = false;
 		if(!is_null($keyword)&&$keyword!=''){
+			$has_search_person = true;
 			// echo '1';
 			// echo $keyword;exit;
 			//根据搜索词查到buildingcode
@@ -517,7 +519,7 @@ class Equipment extends CI_Controller{
 		}
 		$effective_date = $effective_date?$effective_date:$now;
 		//获得数据
-		$res = $this->Equipment_model->getPrivilegeEquipmentList($village_id,$person_code_arr,$building_code_arr,$page,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
+		$res = $this->Equipment_model->getPrivilegeEquipmentList($village_id,$person_code_arr,$has_search_person,$building_code_arr,$page,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
 		echo $res;	
 	}
 
@@ -552,7 +554,9 @@ class Equipment extends CI_Controller{
 
 		$building_code_arr = array();
 		$person_code_arr = array();
+		$has_search_person = false;
 		if(!is_null($search_keyword)&&$search_keyword!=''){
+			$has_search_person = true;
 			//根据搜索词查到buildingcode
 			$buildings = $this->Equipment_model->getBuildingByName($search_keyword,$village_id);
 			if(!empty($buildings)){
@@ -574,7 +578,7 @@ class Equipment extends CI_Controller{
 		}
 		
 		//得到授权设备总数
-		$total = $this->Equipment_model->getPersoneEquipmentListTotal($village_id,$person_code_arr,$building_code_arr,$search_keyword,$search_effective_date,$search_equipment_type,$search_building_code,$this->user_per_page);
+		$total = $this->Equipment_model->getPersoneEquipmentListTotal($village_id,$person_code_arr,$has_search_person,$building_code_arr,$search_keyword,$search_effective_date,$search_equipment_type,$search_building_code,$this->user_per_page);
 		$data['total'] = $total;
 
 		print_r(json_encode($data));
@@ -599,8 +603,15 @@ class Equipment extends CI_Controller{
 		$building_code_arr = array();
 		$person_code_arr = array();
 		
+		$level = "";
+		$this->load->model('Equipment_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->Equipment_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
 		//得到总条数
-		$total = $this->Equipment_model->getEquipmentConfigTotal($village_id,$page,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
+		$total = $this->Equipment_model->getEquipmentConfigTotal($village_id,$level,$page,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
 
 		$data['page']=$page>=$total?$total:$page;
 		$data['total']=$total;
@@ -634,51 +645,15 @@ class Equipment extends CI_Controller{
 		$building_code = $this->input->get('building_code');
 		$page = $page?$page:'1';
 		$village_id = $_SESSION['village_id'];
+		$level = "";
 		$this->load->model('Equipment_model');
+		if(!empty($building_code)){
+			$buildings = $this->Equipment_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
 		//获得数据
-		$res = $this->Equipment_model->getEquipmentConfig($village_id,$page,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
+		$res = $this->Equipment_model->getEquipmentConfig($village_id,$level,$page,$keyword,$effective_date,$equipment_type,$building_code,$this->user_per_page);
 		echo $res;
-	}
-
-
-
-	public function insertEquipmentConfig(){
-		$code = $this->input->post('code');
-		$severip = $this->input->post('severip');
-		$lan_ip = $this->input->post('lan_ip');
-		$ip = $this->input->post('ip');
-		$gatewayip = $this->input->post('gatewayip');
-		$netmask = $this->input->post('netmask');
-		$dns1 = $this->input->post('dns1');
-		$dns2 = $this->input->post('dns2');
-		$village_id = $_SESSION['village_id'];
-		$this->load->model('Equipment_model');
-
-		//先得到设备的名称和building_code,设备类型,设备号
-		$equipment = $this->Equipment_model->getEquipmentByCode($code,$village_id);
-		$building_code = $equipment['building_code'];
-		$name = $equipment['name'];
-		$equipment_type = $equipment['equipment_type'];
-		$equipment_sign = $equipment['sign'];
-
-		//更新设备sip地址
-		$equipment_sip = $this->updateEquipmentSip($building_code,$code,$equipment_type,$equipment_sign);
-
-		$qrcodeData = $this->Equipment_model->getConfigData($code,$severip,$lan_ip,$ip,$gatewayip,$netmask,$dns1,$dns2,$equipment_sip);
-
-		// print_r($qrcodeData);exit;
-		//生成一张二维码图片
-		$pngAbsoluteFilePath = $this->setConfigQRcodeImg($building_code,$name,$qrcodeData);
-
-		//更新设备配置信息
-		$res = $this->Equipment_model->updateEquipmentConfig($code,$village_id,$severip,$lan_ip,$ip,$gatewayip,$netmask,$dns1,$dns2,$pngAbsoluteFilePath);
-		if($res==true){
-			$data['message'] = '新增成功';
-		}
-		else {
-			$data['message'] = '新增失败';
-		}
-		print_r(json_encode($data));
 	}
 
 	public function updateEquipmentSip($building_code,$code,$equipment_type,$equipment_sign){
@@ -704,23 +679,46 @@ class Equipment extends CI_Controller{
 		return $equipment_sip;
 	}
 
-	public function setConfigQRcodeImg($building_code,$name,$qrcodeData){
+	//生成设备网络配置二维码图片
+	public function setConfigQRcodeImg($code,$building_code,$name,$qrcodeData,$sign,$equipment_type,$equipment_name){
 		$this->load->model('Building_model');
 		$village_id = $_SESSION['village_id'];
+		$equipment_type_sip_arr=$this->equipment_type_sip_arr;
 		//楼宇名称
-		$building_more = $this->Building_model->getBuilding($building_code,$village_id);
-		$householdInfo = $this->Building_model->getHouseholdInfo($building_more);
-		//二维码名称
-		$fileName = $householdInfo.$name.'.png';
+		$building = $this->Building_model->getBuildingFromBuilding($building_code,$village_id);
+		$building_info = $this->Building_model->getBuilding($building_code,$village_id);
+		$householdInfo = $this->Building_model->getHouseholdInfo($building_info);
+		$building_sip = $building['sip'];
+		//根据building_sip和设备型号来拼接设备的sip地址
+		foreach($equipment_type_sip_arr as $k2 => $v2){
+		    if($equipment_type == $v2['code']){
+		        $equipment_sip = $building_sip.'n'.$sign.'_'.$v2['name'];
+		        break;
+		    }
+		    //其他非门禁对讲设备,使用楼宇sip和设备号来命名
+		    else {
+		    	$equipment_sip = $building_sip.'n'.$sign;
+		    }
+		}
+		//二维码名称,以设备code命名
+		$fileName = $code.'.png';
+
+		if($equipment_type==305||$equipment_type==307){
+			//根据当前绑定的sip地址来确定生成文件夹的名字
+			$final_folder = $this->Building_model->sipChange($building['sip']);
+			$final_folder = 'HuNei/'.$final_folder;
+		}
+		else{
+			$final_folder = 'SheQu';
+		}
 		//二维码图片地址
 		$pngAbsoluteFilePath='';
-		$village_id = $_SESSION['village_id'];
-		$village_name = $_SESSION['village_name'];
-		$temp_path='qrcode/'.$village_id.$village_name.'网络配置二维码/';
+		$temp_path='qrcode/'.$village_id.'_QRCODE_'.'NETCONFIG/'.$final_folder;
 		//生成的二维码图片地址
-		$pngAbsoluteFilePath = $temp_path.$fileName;
-		//生成一张二维码图片
-		$this->Building_model->setQRcode($qrcodeData,$temp_path,$fileName);
+		$pngAbsoluteFilePath = $temp_path.'/'.$fileName;
+		$equipment_name = $equipment_name;
+		$text = $householdInfo.$sign."号";
+		$this->Building_model->txtToImg($qrcodeData,$pngAbsoluteFilePath,$temp_path,$text,$equipment_name);
 		return $pngAbsoluteFilePath;
 	}
 
@@ -751,23 +749,24 @@ class Equipment extends CI_Controller{
 		$equipment_sign = $equipment['sign'];
 		$equipment_sip = $equipment['sip'];
 
-		//删除原来的二维码图片
-		$old_tdcode_url= iconv('utf-8', 'gbk', $old_tdcode_url);
-		if(file_exists($old_tdcode_url)){
-		    unlink($old_tdcode_url);
-		}
-
 		//得到新二维码信息
-		$qrcodeData = $this->Equipment_model->getConfigData($code,$severip,$lan_ip,$ip,$gatewayip,$netmask,$dns1,$dns2,$equipment_sip);
+		$qrcodeData = $this->Equipment_model->getConfigData($severip,$lan_ip,$ip,$gatewayip,$netmask,$dns1,$dns2,$equipment_sip);
 
 		//生成一张二维码图片
-		$pngAbsoluteFilePath = $this->setConfigQRcodeImg($building_code,$name,$qrcodeData);
+		$pngAbsoluteFilePath = $this->setConfigQRcodeImg($code,$building_code,$name,$qrcodeData,$equipment_sign,$equipment_type,$name);
 
 		//更新设备配置信息
 		$res = $this->Equipment_model->updateEquipmentConfig($code,$village_id,$severip,$lan_ip,$ip,$gatewayip,$netmask,$dns1,$dns2,$pngAbsoluteFilePath);
 
+		$level = "";
+		$this->load->model('Equipment_model');
+		//先根据buildingcode查出当前搜索的楼栋的层级信息
+		if(!empty($building_code)){
+			$buildings = $this->Equipment_model->getBuildingByCode($building_code,$village_id);
+			$level = $buildings['level'];
+		}
 		//得到总条数
-		$data['total'] = $this->Equipment_model->getEquipmentConfigTotal($village_id,$page,$search_keyword,$search_effective_date,$search_equipment_type,$search_building_code,$this->user_per_page);
+		$data['total'] = $this->Equipment_model->getEquipmentConfigTotal($village_id,$level,$page,$search_keyword,$search_effective_date,$search_equipment_type,$search_building_code,$this->user_per_page);
 
 		if($res==true){
 			$data['message'] = '编辑成功';

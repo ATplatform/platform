@@ -413,7 +413,7 @@ function viewAll(value, row, index){
 function viewMore(value, row, index){
     if(value){
         //如果有逗号(多个地址),则隐藏
-        if(value.indexOf("3") != -1){
+        if(value.split(',').length>1){
            return "<div style=\"\" title=''><p onclick=openLayer('"+value+"')>内容较多,请点击查看详情</p></div>";
         }
         else{

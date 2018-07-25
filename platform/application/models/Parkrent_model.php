@@ -88,7 +88,7 @@ class Parkrent_model extends CI_Model
 
                if (!empty($keyword)) {
                    if (preg_match('/^[\x7f-\xff]*\w*\d*$/', $keyword)) {
-                       $sql .= " and concat (p.last_name,p.first_name,rent.parking_lot_code) like '%$keyword%'";
+                       $sql .= " and concat (p.last_name,p.first_name) like '%$keyword%'";
                    }
 
                }
@@ -443,6 +443,10 @@ FROM
         $res=$res->result_array();
         return $res;
     }
+
+
+
+
 
 
 

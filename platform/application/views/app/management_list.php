@@ -486,76 +486,188 @@
 
 <!--编辑人员-->
 <div class="modal fade" id="write_person" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog"  style="width: 630px;">
+    <div class="modal-dialog"  style="width: 890px;">
         <div class="modal-content model_wrap">
         	<div class="model_content">
 	            <div class="building_header">
 	                <h4 class="modal-title tac">编辑人员信息</h4>
 	            </div>
-	            <div class="modal-body building">
-					<div class="fl person_wrap person_detail">
-						<p>人员编号：
-							<span class="code" style="margin-left:30px;"></span>
-						</p>
-						<p><span class="des">姓名：</span>
-							<span class="full_name col_37A"></span>
-						</p>
-						<p><span class="des">证件类型：</span>
-							<span class="id_type_name col_37A"></span>
-						</p>
-						<p><span class="des">证件号码：</span>
-							<span class="des id_number col_37A"></span>
-						</p>
-						<p><span class="des">国籍：</span>
-							<span class="nationality col_37A"></span>
-						</p>
-						<p><span class="des">性别：</span>
-							<span class="gender_name col_37A"></span>
-						</p>
-						<p><span class="des">出生年月：</span>
-							<span class="birth_date col_37A"></span>
-						</p>
-						<p><span class="des">血型：</span>
-							<span class="blood_type_name col_37A"></span>
-						</p>
-						<p><span class="des">民族：</span>
-							<span class="ethnicity_name col_37A"></span>
-						</p>
+                <div class="modal-body building">
+    				<div class="fl person_wrap">
+    					<p style="padding-left: 16px;">人员编号：
+    						<span class="code" style="margin-left:49px;"></span>
+    					</p>
+    					<p><span class="red_star">*</span>姓：
+    					<input type="text" class="model_input last_name" placeholder="请输入姓" name="last_name">
+    					<p><span class="red_star">*</span>名：
+    					<input type="text" class="model_input first_name" placeholder="请输入名" name="first_name">
+    					<div class="select_wrap select_pull_down">
+    						<div>
+    							<span class="red_star">*</span>证件类型：
+    							<input type="text" class="model_input id_type ka_input3" placeholder="请选择证件类型" name="id_type" data-ajax="" readonly="">
+    						</div>
+    						<div class="ka_drop">
+    							<div class="ka_drop_list">
+    							<ul>
+    							</ul>
+    							</div>
+    						</div>
+    					</div>
+    					<p><span class="red_star">*</span>证件号码：
+    					<input type="text" class="model_input id_number" placeholder="请输入证件号码" name="id_number">
+    					</p>
+    					<div class="select_wrap select_pull_down">
+    						<div>
+    							<span class="red_star">*</span>国籍或地区：
+    							<input type="text" class="model_input nationality ka_input3" placeholder="请选择国籍或地区" name="nationality" data-ajax="" readonly="">
+    						</div>
+    						<div class="ka_drop">
+    						<div class="ka_drop_list">
+    						 <ul>
+    						 </ul>
+    						 </div>
+    						</div>
+    					</div>
+    					<div class="select_wrap select_pull_down">
+    						<div>
+    							<span class="red_star">*</span>性别：
+    							<input type="text" class="model_input gender ka_input3" placeholder="请选择性别" name="gender" data-ajax="" readonly="">
+    						</div>
+    						<div class="ka_drop">
+    						<div class="ka_drop_list">
+    						 <ul>
+    						   
+    						 </ul>
+    						 </div>
+    						</div>
+    					</div>
+    					<p>
+    						<span class="red_star">*</span>出生年月：
+    						<input type="text" class="ka_input3 birth dat form-control ka_input3 birth date form-control" name="birth" placeholder="请选择出生年月" />
+    					</p>	
+    					<div class="select_wrap select_pull_down">
+    						<div>
+    							<span class="red_star">*</span>是否残疾：
+    							<input type="text" class="model_input if_disabled ka_input3" name="if_disabled" data-ajax="false" value="否" readonly>
+    						</div>
+    						<div class="ka_drop"">
+    							<div class="ka_drop_list">
+    							<ul>
+    								<li><a href="javascript:;" data-ajax="false">否</a></li>
+    			                    <li><a href="javascript:;" data-ajax="true">是</a></li>
+    							</ul>
+    							</div>
+    						</div>
+    					</div>
 
-						<p><span class="des">电话号码国别：</span>
-							<span class="col_37A">中国</span>
-						</p>
-						<p><span class="des">手机号码：</span>
-							<span class="mobile_number col_37A"></span>
-						</p>
+    				</div>
+    				<div class="fr person_wrap">
+    					<div class="select_wrap select_pull_down">
+    						<div>
+    							<span class="red_star">*</span>血型：
+    							<input type="text" class="model_input bloodtype ka_input3" placeholder="请选择血型" name="bloodtype" data-ajax="" readonly="">
+    						</div>
+    						<div class="ka_drop" style="display: none;">
+    							<div class="ka_drop_list">
+    							<ul>
+    								<li><a href="javascript:;" data-ajax="101">A型</a></li>
+    								<li><a href="javascript:;" data-ajax="102">B型</a></li>
+    								<li><a href="javascript:;" data-ajax="103">AB型</a></li>
+    								<li><a href="javascript:;" data-ajax="104">O型</a></li>
+    								<li><a href="javascript:;" data-ajax="105">其他</a></li>
+    							</ul>
+    							</div>
+    						</div>
+    					</div>
+    					<div class="select_wrap select_pull_down">
+    						<div>
+    							<span class="red_star">*</span>民族：
+    							<input type="text" class="model_input ethnicity ka_input3" placeholder="请选择民族" name="ethnicity" data-ajax="" readonly="">
+    						</div>
+    						<div class="ka_drop">
+    			                 <div class="ka_drop_list ">
+    				                  <ul>
+    				                  	<li><a href="javascript:;" data-ajax="101">汉族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="102">蒙古族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="103">回族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="104">藏族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="105">维吾尔族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="106">苗族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="107">彝族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="108">壮族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="109">布依族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="110">朝鲜族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="111">满族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="112">侗族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="113">瑶族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="114">白族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="115">土家族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="116">哈尼族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="117">哈萨克族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="118">傣族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="119">黎族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="120">僳僳族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="121">佤族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="122">畲族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="123">高山族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="124">拉祜族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="125">水族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="126">东乡族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="127">纳西族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="128">景颇族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="129">柯尔克孜族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="130">土族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="131">达斡尔族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="132">仫佬族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="133">羌族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="134">布朗族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="135">撒拉族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="136">毛南族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="137">仡佬族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="138">锡伯族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="139">阿昌族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="140">普米族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="141">塔吉克族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="142">怒族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="143">乌孜别克族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="144">俄罗斯族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="145">鄂温克族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="146">德昂族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="147">保安族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="148">裕固族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="149">京族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="150">塔塔尔族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="151">独龙族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="152">鄂伦春族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="153">赫哲族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="154">门巴族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="155">珞巴族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="156">基诺族</a></li>
+    				                  	<li><a href="javascript:;" data-ajax="160">其他</a></li>
+    				                  </ul>
+    			                  </div>
+    						</div>
+    					</div>
 
-					</div>
-					<div class="fr person_wrap person_detail">
-						<div class="select_wrap select_pull_down">
-							<div>
-								<span class="red_star">*</span>是否残疾：
-								<input type="text" class="model_input if_disabled ka_input3" name="if_disabled" data-ajax="false" value="否" readonly>
-							</div>
-							<div class="ka_drop">
-								<div class="ka_drop_list">
-								<ul>
-									<li><a href="javascript:;" data-ajax="false">否</a></li>
-				                    <li><a href="javascript:;" data-ajax="true">是</a></li>
-								</ul>
-								</div>
-							</div>
-						</div>	
-						<p>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;其他电话号码：
-							<input type="text" class="ka_input3 oth_mob_no" name="oth_mob_no" placeholder="请输入其他电话号码" maxlength="11" />
-						</p>
-						<p>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：
-							<input type="text" class="ka_input3 remark" name="remark" placeholder="备注" />
-						</p>
-					</div>
-					<div class="clear"></div>
-	            </div>
+    					<p>
+    						<span class="red_star">*</span>电话号码国别：
+    						<input type="text" class="ka_input3 tel_country" name="tel_country"  value="中国"  readonly/>
+    					</p>
+    					<p>
+    						<span class="red_star">*</span>手机号码：
+    						<input type="text" class="ka_input3 mobile_number" name="mobile_number" placeholder="请输入手机号码" />
+    					</p>
+    					<p style="padding-left: 22px;">
+    						其他电话号码：
+    						<input type="text" class="ka_input3 oth_mob_no" name="oth_mob_no" placeholder="请输入其他电话号码" maxlength="11" />
+    					</p>
+    					<p style="padding-left: 22px;">
+    						备注：
+    						<input type="text" class="ka_input3 remark" name="remark" placeholder="备注" />
+    					</p>
+    				</div>
+    				<div class="clear"></div>
+                </div>
         	</div>
             <div class="modal_footer bg_eee">
             	<p class="tac pb17">
