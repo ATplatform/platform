@@ -82,6 +82,18 @@ var platform_index={
         ajax:{},
         disabledonly:'update'
     },
+    rent_licence:{
+        search:'no',
+        show:'yes',
+        detail:'yes',
+        update:'yes',
+        insert:'yes',
+        must:'no',
+        input:'绑定车牌',
+        method:'select',
+        ajax:{},
+        disabledonly:'update'
+    },
     rent_rent:{
         search:'no',
         show:'yes',
@@ -156,6 +168,7 @@ var platform_index={
         getparking_lot_code:'getparking_lot_code',
         getparkingcode:'getparkingcode',
         getperson_code:'getperson_code',
+        getlicence:'getlicence',
         getLatestCode:getRootPath()+'/index.php/ParkRent/getLatestCode',
 
     }
@@ -354,6 +367,9 @@ $('.add_btn').click(function(){
 })
 
 
+
+
+
 ////////////////////////////////停车场///////////////////////////
 $.ajax({
     type: "POST",
@@ -461,6 +477,33 @@ $('#add_Item .rent_parking_lot_code').click(function() {
         })
 
 })
+
+
+
+////////////////////////////////车位编号///////////////////////////
+
+////////////////////////////////占用人///////////////////////////
+$.ajax({
+    type:"POST",
+    url:platform_index.router.getlicence,
+    dataType:"text",
+    success:function(message){
+        var data=JSON.parse(message);
+        for(var i=0;i<data.length;i++){
+            var d = data[i];
+            var rent_licence_name =d['licence'];
+            if($("#add_Item .rent_licence  #"+rent_licence_name).length==0){
+                $('#add_Item .rent_licence  ul').append('<li><a href="javascript:;" id='+rent_licence_name +' data-ajax='+rent_licence_name +'>'+rent_licence_name+'</a></li>');
+            }
+        }
+    },
+    error:function(jqXHR,textStatus,errorThrown){
+    }
+})
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////点击保存的事件//////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////

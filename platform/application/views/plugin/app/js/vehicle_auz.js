@@ -287,8 +287,8 @@ $('.searc_room_text').val(init_keyword);
 
 //初始化第一类搜索条件  /*********************************需要改动********************/
 switch(init_search_index_1){
-    case 't':$('.search_wrap .search_1').val('小区车');break;
-    case 'f':$('.search_wrap .search_1').val('访客车');break;
+    case '101':$('.search_wrap .search_1').val('小区车');break;
+    case '102':$('.search_wrap .search_1').val('访客车');break;
 
     default:$('.search_wrap .search_1').val('小区车/访客车');break;
 }

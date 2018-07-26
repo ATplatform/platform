@@ -45,8 +45,8 @@
             <div class="ka_drop"  style="display: none;width:100px;">
                 <div class="ka_drop_list" >
                     <ul >
-                        <li><a href="javascript:;" data-ajax="t">小区车</a></li>
-                        <li><a href="javascript:;" data-ajax="f">访客车</a></li>
+                        <li><a href="javascript:;" data-ajax="101">小区车</a></li>
+                        <li><a href="javascript:;" data-ajax="102">访客车</a></li>
 
                     </ul>
                 </div>

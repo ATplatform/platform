@@ -100,7 +100,7 @@ and pb.code = (select max(code) from village_person_building as pb_s where pb.pe
              }
 
              if(!empty($if_resident)){
-                 $sql .= " and v.if_resident='$if_resident' ";
+                 $sql .= " and v.if_resident=$if_resident ";
              }
              if(!empty($vehicle_type)){
                  $sql .= " and v.vehicle_type=$vehicle_type ";
@@ -208,18 +208,18 @@ and pb.code = (select max(code) from village_person_building as pb_s where pb.pe
                         }
                     }
                     if ($key2 == 'v_if_resident') {
-                        if ($arr[$key]['v_if_resident'] == 't') {
+                        if ($arr[$key]['v_if_resident'] == '101') {
                             $arr[$key]['v_if_resident_name'] = "小区车";
                         }
-                        if ($arr[$key]['v_if_resident'] == 'f') {
+                        if ($arr[$key]['v_if_resident'] == '102') {
                             $arr[$key]['v_if_resident_name'] = "访客车";
                         }
                     }
                     if ($key2 == 'v_if_temp') {
-                        if ($arr[$key]['v_if_temp'] == 't') {
+                        if ($arr[$key]['v_if_temp'] == '101') {
                             $arr[$key]['v_if_temp_name'] = "是";
                         }
-                        if ($arr[$key]['v_if_temp'] == 'f') {
+                        if ($arr[$key]['v_if_temp'] == '102') {
                             $arr[$key]['v_if_temp_name'] = "否";
                         }
                     }
@@ -1040,18 +1040,18 @@ public function getAuzlist($sql)
                     }
                 }
                 if ($key2 == 'v_if_resident') {
-                    if ($arr[$key]['v_if_resident'] == 't') {
+                    if ($arr[$key]['v_if_resident'] == '101') {
                         $arr[$key]['v_if_resident_name'] = "小区车";
                     }
-                    if ($arr[$key]['v_if_resident'] == 'f') {
+                    if ($arr[$key]['v_if_resident'] == '102') {
                         $arr[$key]['v_if_resident_name'] = "访客车";
                     }
                 }
                 if ($key2 == 'v_if_temp') {
-                    if ($arr[$key]['v_if_temp'] == 't') {
+                    if ($arr[$key]['v_if_temp'] == '101') {
                         $arr[$key]['v_if_temp_name'] = "是";
                     }
-                    if ($arr[$key]['v_if_temp'] == 'f') {
+                    if ($arr[$key]['v_if_temp'] == '102') {
                         $arr[$key]['v_if_temp_name'] = "否";
                     }
                 }

@@ -185,7 +185,7 @@
 		</a>
 		<ul id="FinanceSetting" 
 			<?php 
-				if($nav=="Parkrent"  || $nav=="property_fee" || $nav=="pkg_fee" || $nav=="water_fee" || $nav=="service_fee"||$nav=="order_fee"){
+				if($nav=="Parkrent"  || $nav=="property_fee" || $nav=="pkg_fee" || $nav=="water_fee" || $nav=="service_fee"||$nav=="order_fee"||$nav=="bill_list"||$nav=="notice_list"){
 					echo 'class="collapse secondmenu in"';
 				} 
 				else{
@@ -199,7 +199,8 @@
             <li <?php if($nav=="water_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/water_fee'?>"><i class="glyphicon"></i>供水加压费管理</a></li>
             <li <?php if($nav=="order_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/order_fee'?>"><i class="glyphicon"></i>物业增值服务管理</a></li>
             <li <?php if($nav=="service_fee") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/service_fee'?>"><i class="glyphicon"></i>服务收费标准管理</a></li>
-            <li><a href="<?=base_url().'index.php/Building/notfond'?>"><i class="glyphicon"></i>账单管理页面</a></li>
+            <li <?php if($nav=="bill_list") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/bill_list'?>"><i class="glyphicon"></i>账单管理页面</a></li>
+            <li <?php if($nav=="notice_list") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Moneypay/notice_list'?>"><i class="glyphicon"></i>恶意欠费催缴</a></li>
 		</ul>
 	</li>
 

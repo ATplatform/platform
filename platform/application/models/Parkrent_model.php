@@ -35,6 +35,7 @@ class Parkrent_model extends CI_Model
   rent.pay_type as rent_pay_type,
   rent.begin_date as rent_begin_date,
   rent.end_date as rent_end_date,
+  rent.licence as rent_licence,
   p.first_name,
   p.last_name
  from village_park_rent as rent
@@ -60,6 +61,7 @@ class Parkrent_model extends CI_Model
   rent.pay_type as rent_pay_type,
   rent.begin_date as rent_begin_date,
   rent.end_date as rent_end_date,
+  rent.licence as rent_licence,
   p.first_name,
   p.last_name
  from village_park_rent as rent
@@ -126,6 +128,9 @@ class Parkrent_model extends CI_Model
                     }
                     if ($key2 == 'rent_parking_lot_code') {
                         $arr[$key]['rent_parking_lot_code_name'] =$value2;
+                    }
+                    if ($key2 == 'rent_licence') {
+                        $arr[$key]['rent_licence_name'] =$value2;
                     }
 
                 /*    if ($key2 == "parklot_parkcode") {
@@ -312,18 +317,18 @@ public function getOrderRecordPerson($team_person_code,$property_person_code)
     }
 
 
-public function insert($village_id,$rent_id,$rent_begin_date,$rent_end_date,$rent_pay_type,$rent_rent, $rent_renter,$rent_parking_lot_code,$create_time)
+public function insert($village_id,$rent_id,$rent_begin_date,$rent_end_date,$rent_pay_type,$rent_rent, $rent_renter,$rent_parking_lot_code,$rent_licence,$create_time)
 {
 
-    $sql = " INSERT INTO village_park_rent (id,begin_date,end_date,pay_type,rent, renter,parking_lot_code) values (".
+    $sql = " INSERT INTO village_park_rent (id,begin_date,end_date,pay_type,rent, renter,parking_lot_code,licence) values (".
         $this->db->escape($rent_id).", ".
         $this->db->escape($rent_begin_date).", ".
         $this->db->escape($rent_end_date).", ".
         $this->db->escape($rent_pay_type).", ".
         $this->db->escape($rent_rent).", ".
         $this->db->escape($rent_renter).", ".
-        $this->db->escape($rent_parking_lot_code).")";
-
+        $this->db->escape($rent_parking_lot_code).", ".
+    $this->db->escape($rent_licence).") ";
     $this->db->query($sql);
 
 
@@ -457,7 +462,13 @@ FROM
         $row = $query->row_array();
         return  $row;
     }
-
+    public function getlicence()
+    {
+        $sql = "select licence from village_vehicle ";
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+        return  $row;
+    }
 
 
 }
