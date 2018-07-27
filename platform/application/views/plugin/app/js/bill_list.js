@@ -24,133 +24,254 @@ router：路由参数
 */
 
 var platform_index={
-    order_begin_date:{
+    bill_begin_date:{
         search:'yes',
         show:'no',
         detail:'no',
-        update:'no',
         insert:'no',
-        must:'no',
+        update:'yes',
         input:'开始日期',
         method:'time',
-        disabledonly:'update'
+        disabledonly:'no'
     },
-    order_end_date:{
+    bill_end_date:{
         search:'yes',
         show:'no',
         detail:'no',
+        insert:'no',
+        update:'yes',
+        input:'结束日期',
+        method:'time',
+        disabledonly:'no'
+    },
+
+    bill_code:{
+        search:'no',
+        show:'yes',
+        detail:'yes',
         update:'no',
         insert:'no',
         must:'no',
-        input:'结束日期',
+        input:'账单编号',
+        method:'show',
+        disabledonly:'update'
+    },
+    bill_type:{
+        search:'no',
+        show:'yes',
+        detail:'yes',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'账单类型',
         method:'time',
         disabledonly:'update'
     },
-    order_code:{
+    bill_month:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
         insert:'yes',
         must:'yes',
-        input:'工单编号',
+        input:'缴纳月份',
         method:'show',
         disabledonly:'update'
     },
-    order_create_time:{
+    bill_initial_time:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
         insert:'yes',
         must:'no',
-        input:'创建时间',
+        input:'生成时间',
         method:'show',
         disabledonly:'update'
 
     },
-    order_create_person:{
+    bill_amount:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
         insert:'yes',
         must:'no',
-        input:'创建人',
-        method:'person',
-        disabledonly:'update'
-    },
-    order_equipment:{
-        search:'yes',
-        show:'yes',
-        detail:'yes',
-        update:'yes',
-        insert:'yes',
-        input:'对应设备',
+        input:'应缴金额',
         method:'other',
         disabledonly:'update'
     },
-    order_building_code:{
+    bill_person_code:{
+        search:'yes',
+        show:'no',
+        detail:'no',
+        update:'yes',
+        insert:'yes',
+        input:'缴纳人编码',
+        method:'other',
+        disabledonly:'update'
+    },
+    bill_payer_name:{
         search:'no',
+        show:'yes',
+        detail:'no',
+        insert:'no',
+        update:'yes',
+        input:'应缴纳人',
+        method:'show',
+        disabledonly:'update'
+    },
+    bill_pay_status:{
+        search:'no',
+        show:'yes',
+        detail:'yes',
+        insert:'no',
+        update:'yes',
+        input:'缴纳状态',
+        method:'select',
+        ajax:{	101:'未支付', 102:'支付失败', 103:'支付成功'},
+        disabledonly:'no'
+    },
+    bill_payed_status:{
+        search:'yes',
+        show:'no',
+        detail:'no',
+        insert:'no',
+        update:'no',
+        input:'查看已缴费',
+        method:'select',
+        ajax:{103:'支付成功'},
+        disabledonly:'no'
+    },
+    bill_notify_for_time:{
+        search:'yes',
         show:'no',
         detail:'no',
         insert:'no',
         update:'yes',
-        input:'发生地点',
-        method:'building',
-        disabledonly:'update'
-    },
-    order_building_code_fullname:{
-        search:'no',
-        show:'yes',
-        detail:'yes',
-        insert:'no',
-        update:'yes',
-        input:'发生地点',
-        method:'show',
+        input:'未缴费时间',
+        method:'select',
+        ajax:{	101:'超过15天的账单', 102:'超过6个月的账单', 103:'超过1年的账单'},
         disabledonly:'no'
     },
-    order_accept_person:{
+    bill_notify_info_date:{
         search:'no',
         show:'yes',
         detail:'yes',
         insert:'no',
         update:'no',
-        input:'接单人',
-        method:'person',
+        input:'上次催交时间',
+        method:'show',
         disabledonly:'no'
     },
-    order_if_charged:{
+    bill_notify_info_num:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'yes',
         insert:'yes',
         must:'no',
-        input:'是否收费',
-        method:'select',
+        input:'上次催交次数',
+        method:'show',
         disabledonly:'update'
     },
-    order_toller:{
+    bill_source_code:{
         search:'no',
-        show:'yes',
+        show:'no',
         detail:'yes',
-        update:'yes',
-        insert:'yes',
+        update:'no',
+        insert:'no',
         must:'no',
-        input:'收费人',
-        method:'person',
+        input:'账单类型对应来源编号',
+        method:'show',
         disabledonly:'update'
     },
-    order_amount:{
+    bill_third_bill_input:{
         search:'no',
-        show:'yes',
+        show:'no',
         detail:'yes',
-        update:'yes',
-        insert:'yes',
+        update:'no',
+        insert:'no',
         must:'no',
-        input:'收费金额',
-        method:'other',
+        input:'账单来源外部系统编号',
+        method:'show',
+        disabledonly:'update'
+    },
+    bill_creator:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'创建人',
+        method:'show',
+        disabledonly:'update'
+    },
+    bill_if_cycle:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'是否按次缴费',
+        method:'show',
+        disabledonly:'update'
+    },
+    bill_pay_req_no:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'支付发起订单号',
+        method:'show',
+        disabledonly:'update'
+    },
+    bill_pay_method:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'支付类型',
+        method:'show',
+        disabledonly:'update'
+    },
+    bill_third_payment_no:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'第三方支付订单号',
+        method:'show',
+        disabledonly:'update'
+    },
+    bill_remark:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'收费说明',
+        method:'show',
+        disabledonly:'update'
+    },
+    bill_history:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'催交历史',
+        method:'show',
         disabledonly:'update'
     },
     keyword:{
@@ -158,23 +279,23 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'no',
-        input:'可输入创建人姓名',
+        input:'可输入姓名',
         method:'keyword'
     },
     update_info:{
-        title:'增值工单详情',
-        small_title:'增值工单'
+        title:'账单信息详情',
+        small_title:'账单信息'
     },
     info_manage:{
         detail:{title:'详情',css:' fa-file-text-o',content:getdetail},
-        rewrite:{title:'更新增值工单信息',css:'fa-pencil-square-o',content:getrewrite}
+        rewrite:{title:'账单信息详情',css:'fa-pencil-square-o',content:getrewrite}
     },
     pagechange:{urlparam:{route:'',page:''}, pagesize:'', total:'',page:''},
     router:{
         root:getRootPath()+'/index.php/Moneypay/bill_list',
         get:'getList_bill_list',
         insert:'insert',
-        getfloor:'getfloor',
+        change_history:'change_history_bill_list',
         update:'update_service_fee',
         getparking_lot_code:'getparking_lot_code',
         getparkingcode:'getparkingcode',
@@ -191,9 +312,10 @@ var platform_index={
 //html 与后台数据无关
 var render=new html_render(platform_index)
 
-$('#table tr').find('th[data-checkbox]').prepend(render.data_html)
+/*$('#table tr').find('th[data-checkbox]').prepend(render.data_html)*/
+$('#table tr').prepend(render.data_html)
 $('#search_wrap').append(render.search_html)
-$('#person_detail .model_content').append(render.detail_html)
+$('#person_detail .model_content').prepend(render.detail_html)
 $('#rewrite .rewrite').append(render.update_html)
 $('#add_Item .add_item').append(render.insert_html)
 
@@ -263,36 +385,73 @@ function getdetail(location,rowkeys){
                 }
             }
         }
-        console.log(row)
 
-////////////////////////////////////////额外补充//////////////////////////////////////////////////
-        /*   var code = keys.v_code
-           console.log(code)
-           $("#getauz").bootstrapTable('destroy');
-           $('#getauz').bootstrapTable({
-               method: "get",
-               undefinedText: '/',
-               cache: false,
-               url: rowkeys.router.getauz,
-               queryParams: {
-                   code: code
-               }
-               ,
-               contentType: "application/x-www-form-urlencoded",
-               responseHandler: function (res) {
-                   //用于处理后端返回数据
-                   console.log('1');
-                   console.log(res);
-                   return res;
-               },
-               onLoadSuccess: function (data) {  //加载成功时执行
-                   console.log('2');
-                   console.log(data);
-               },
-               onLoadError: function () {  //加载失败时执行
-                   console.info("加载数据失败");
-               }
-           })*/
+        console.log(row)
+        if(row.bill_pay_status=='101' || row.bill_pay_status=='101'){
+            $('.modal_footer .print').css({"display":"none"})
+            $('.modal_footer .present').css({"display":"inline-block"})
+        }
+        if(row.bill_pay_status=='103'){
+            $('.modal_footer .present').css({"display":"none"})
+            $('.modal_footer .print').css({"display":"inline-block"})
+        }
+        ////////////////////////////////////////额外补充//////////////////////////////////////////////////
+   /*     $.ajax({
+            type:"POST",
+            url:platform_index.router.change_history,
+            dataType:"json",
+            success:function(message){
+                /!*var data=JSON.parse(message);*!/
+                console.log(message['0']['notify_info'])
+                data=JSON.parse(message['0']['notify_info'])
+                console.log(data)
+                for(var n in data){
+                }
+                console.log(n)
+                var date=new Date;
+                var year=date.getFullYear();
+                var month=date.getMonth()+1;
+                var nextmonth=month+1
+                if(month==12){nextmonth=1}
+                var now=year+'-'+nextmonth+'-'+'1'
+                console.log(now)
+                $('#add_Item .pkg_fee_standard_name_1').addClass('col_37A')
+                $('#add_Item .pkg_change_date_insert').addClass('col_37A')
+                $('#add_Item .pkg_fee_standard_name_1').html(data['0'].fee_standard+'元/平米')
+                $('#add_Item .pkg_change_date_insert').html(now)*/
+                $("#getauz").bootstrapTable('destroy');
+                $('#getauz').bootstrapTable({
+                    method: "get",
+                    undefinedText: '/',
+                    cache: false,
+                    dataType: 'json',
+                    url: platform_index.router.change_history,
+                    queryParams:{
+                        code:row.bill_code
+                    },
+                    contentType:" application/json",
+                   /* contentType : "application/x-www-form-urlencoded",*/
+                    responseHandler: function (data) {
+                        console.log(data);
+                        var final_data = [];
+                        for (var n in data) {
+                            final_data.push(data[n])
+                        }
+
+                        return final_data
+                    },
+                    onLoadSuccess: function (data) {  //加载成功时执行
+                        console.log('2');
+                        console.log(data);
+                    },
+                    onLoadError: function () {  //加载失败时执行
+                        console.info("加载数据失败");
+                    }
+                })
+       /*     },
+            error:function(jqXHR,textStatus,errorThrown){
+            }
+        })*/
     }
 
 }
@@ -878,6 +1037,14 @@ function html_render(index){
                     param = param ? param : now;
                     $('.search_wrap .'+n).val(param);
                     $('.add_item').find('input[name="' + n + '"]').val(param);
+
+                    if(n=="bill_begin_date"){
+                        var now = getLastMonthYestdy();
+                        var param = getUrlParam(n); //从url获取的参数
+                        param = param ? param : now;
+                        console.log(param)
+                        $('.search_wrap .'+n).val(param);
+                    }
                 }
                 if (index[n]['method'] == 'building') {
                 }
@@ -1213,6 +1380,25 @@ function showdata(render){
         idField:"id",
         responseHandler: function (res) {
             //用于处理后端返回数据
+
+
+            for(var n in res){
+                var final_data = [];
+                for(var m in res[n]){
+                    if(m=='bill_notify_info'){
+                        if(res[n][m]){
+                        res[n][m]= JSON.parse(res[n][m])
+                        for(var s in res[n][m]) {
+                            final_data.push(res[n][m][s])
+                        }
+                        res[n][m]=final_data
+                        res[n]['bill_notify_info_num']=final_data.length
+                        res[n]['bill_notify_info_date']=final_data[final_data.length-1]['date']
+                        }
+                    }
+
+                }
+            }
             console.log(res);
             return res;
         },

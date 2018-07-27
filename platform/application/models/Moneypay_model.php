@@ -766,7 +766,24 @@ FROM
         return $row;
     }
 
+    public function change_history_bill_list($code)
+    {
+        $sql = " 
+        select notify_info from village_bill_list
+        where code='$code'
+        ";
 
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+        foreach ($row as $key => $value) {
+            foreach ($value as $key2 => $value2) {
+                if ($key2 == "fee_standard") {
+                    $row[$key][$key2] = $value2 . "元/吨";
+                }
+            }
+        }
+        return $row;
+    }
 
     public function insert_property($code,$building_type,$change_date,$fee_standard)
     {
@@ -1501,6 +1518,214 @@ where record.work_code=work_order.code
         }
         return false;
     }
+
+    public function sqlTogetList_bill_list($village_id,$begin_date,$end_date,$pay_status,$keyword, $page, $rows)
+    {
+        $start = ($page - 1) * $rows;
+        $now   =  date("Y-m-d",time());
+        $date   =   date('Y-m-d',strtotime("$now-1 month"));
+
+        /////////////////判断为普通查询或搜索查询////////////////////////////
+        if (empty($begin_date)  &&  empty($end_date) &&  empty($pay_status) && empty($keyword))
+
+            /////////////////////////普通查询sql语句/////////////////////////
+        {
+
+            $sql = " 
+select 
+bill.code as bill_code,
+bill.bill_type as bill_type,
+bill.pay_status as bill_pay_status,
+bill.initial_time as bill_initial_time,
+bill.bill_amount as bill_amount,
+bill.person_code as bill_person_code,
+bill.payer_name as bill_payer_name,
+bill.bill_month as bill_month,
+bill.notify_info as bill_notify_info,
+
+bill.bill_source_code as bill_source_code,
+bill.third_bill_Input as bill_third_bill_Input,
+bill.creator as bill_creator,
+bill.if_cycle as bill_if_cycle,
+bill.pay_req_no as bill_pay_req_no,
+bill.pay_method as bill_pay_method,
+bill.third_payment_no as bill_third_payment_no,
+bill.remark as bill_remark
+from village_bill_list as bill
+where bill.village_id=$village_id and bill.initial_time<='now()' and (bill.pay_status=101 or bill.pay_status=102)
+";}
+
+
+
+        /////////////////////////搜索查询sql语句/////////////////////////
+        else {
+            $sql = "
+select 
+bill.code as bill_code,
+bill.bill_type as bill_type,
+bill.pay_status as bill_pay_status,
+bill.initial_time as bill_initial_time,
+bill.bill_amount as bill_amount,
+bill.person_code as bill_person_code,
+bill.payer_name as bill_payer_name,
+bill.bill_month as bill_month,
+bill.notify_info as bill_notify_info,
+
+bill.bill_source_code as bill_source_code,
+bill.third_bill_input as bill_third_bill_input,
+bill.creator as bill_creator,
+bill.if_cycle as bill_if_cycle,
+bill.pay_req_no as bill_pay_req_no,
+bill.pay_method as bill_pay_method,
+bill.third_payment_no as bill_third_payment_no,
+bill.remark as bill_remark
+from village_bill_list as bill
+where bill.village_id=$village_id
+";
+        }
+        /*    if(empty($pkg_effective_date)){
+                $sql .= " and parking_lot.effective_date <= '$now' and  parking_lot.effective_status =true ";
+            }
+
+
+            if(!empty($pkg_effective_date)){
+                $sql .= " and  parking_lot.effective_date <= '$pkg_effective_date' and  parking_lot.effective_status =true ";
+            }*/
+
+
+
+         if(!empty($begin_date)){
+             $sql .= " and bill.initial_time>='$begin_date' ";
+         }
+         if(!empty($end_date)){
+             $sql .= " and bill.initial_time<='$end_date' ";
+         }
+        if(!empty($pay_status)){
+            $sql .= " and bill.pay_status='$pay_status' ";
+        }
+        if (!empty($keyword)) {
+            if (preg_match('/^\d*\w*[\x7f-\xff]*$/', $keyword)) {
+                $sql .= " and concat (bill.payer_name) like '%$keyword%'";
+            }
+
+        }
+
+        $sqlshow = $sql . " ORDER BY bill.code ASC limit ".$rows." offset ".$start;
+        $arrayres=array($sql,$sqlshow);
+        return $arrayres;
+    }
+
+    //////////////// 根据输入的sql语句参数，得到数据////////////////
+    public function getList_bill_list($sql){
+
+        $brand_arr = $this->brand_arr;
+        $q = $this->db->query($sql); //自动转义
+        if ($q->num_rows() > 0) {
+            $arr = $q->result_array();
+
+            foreach ($arr as $key => $value) {
+                foreach ($value as $key2 => $value2) {
+                    if ($key2 == "bill_pay_status") {
+                        if ($value2 == "101") {
+                            $arr[$key]['bill_pay_status_name'] = '未支付';
+                        }
+                        if ($value2 == "102") {
+                            $arr[$key]['bill_pay_status_name'] = '支付失败';
+                        }
+                        if ($value2 == "103") {
+                            $arr[$key]['bill_pay_status_name'] = '支付成功';
+                        }
+                    }
+                    if ($key2 == "bill_type") {
+
+                        if ($value2 == "101") {
+                            $arr[$key]['bill_type_name'] = '车位租金账单';
+                        }
+                        if ($value2 == "102") {
+                            $arr[$key]['bill_type_name'] = '临时车缴费账单';
+                        }
+                        if ($value2 == "103") {
+                            $arr[$key]['bill_type_name'] = '物业费缴费账单';
+                        }
+                           if ($value2 == "104") {
+                               $arr[$key]['bill_type_name'] = '二次供水加压缴费账单';
+                           }
+                              if ($value2 == "105") {
+                                  $arr[$key]['bill_type_name'] = '车位服务费账单';
+                              }
+                                 if ($value2 == "999") {
+                                     $arr[$key]['bill_type_name'] = '其他账单';
+                                 }
+                    }
+                    if ($key2 == "bill_amount") {
+                        if(!empty($value2)){
+                            $arr[$key]['bill_amount_name'] = $value2.'元';
+                        }
+
+                    }
+
+                    if ($key2 == "service_change_date") {
+                        $arr[$key]["service_change_date_name"] = substr($value2, 0, 4) . "-" . substr($value2, 5, 2) . "-" . substr($value2, 8, 2);
+                    }
+
+                    if ($key2 == "service_fee_standard") {
+                        $arr[$key]['service_fee_standard_name']= $value2.'元';
+                    }
+
+                /*  if ($key2 == "notify_info") {
+                        $arr[$key]['notify_info']=$this->formate_notify($value2);
+                    }*/
+
+
+                    if($key2 == 'order_create_person'){
+                        if(!empty($value['order_create_person']) ) {
+
+                            $arr[$key]['order_create_person_name'] = "";
+
+                            $person = $this->getPersonByCode($value2);
+                            $name = $person['full_name'];
+                            $arr[$key]['order_create_person_name'] = $name;
+                        }
+
+                    }
+                    if($key2 == 'order_accept_person'){
+                        if(!empty($value['order_accept_person']) ) {
+
+                            $arr[$key]['order_accept_person_name'] = "";
+
+                            $person = $this->getPersonByCode($value2);
+                            $name = $person['full_name'];
+                            $arr[$key]['order_accept_person_name'] = $name;
+                        }
+
+                    }
+                    if($key2 == 'order_toller'){
+                        if(!empty($value['order_toller']) ) {
+
+                            $arr[$key]['order_toller_name'] = "";
+
+                            $person = $this->getPersonByCode($value2);
+                            $name = $person['full_name'];
+                            $arr[$key]['order_toller_name'] = $name;
+                        }
+
+                    }
+
+                }
+                $arr[$key]["order_building_code_fullname"] = $this->getHouseholdInfo($value);
+
+            }
+            $json = json_encode($arr);
+            return $json;
+        }
+        return false;
+    }
+
+    public function formate_notify($value)
+    {
+        return json_encode($value);
+    }
+
 }
 
 ?>

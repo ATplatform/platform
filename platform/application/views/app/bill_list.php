@@ -34,14 +34,17 @@
     <!-- 物资数据-->
         <div class="table_wrap">
          <div class="oh pt10">
-           <!-- <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">新增租赁</span>-->
+             <span class="fr add_btn" data-target="#notify" data-toggle="modal">催交</span>
+             <span class="fr add_btn" data-target="#get-money" data-toggle="modal">现场收费</span>
+
+             <span class="fr add_btn" data-target="#add_other" data-toggle="modal">新增其他收费项</span>
              <a class="fr add_btn" id="reset" >清除筛选</a>
             </div>
             <table id="table"
                    data-toolbar="#toolbar">
                 <thead>
                 <tr>
-                    <th data-checkbox=true ></th>
+                 <!--   <th data-checkbox=true ></th>-->
                    <!-- <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
                     <th data-title="车位编号" data-align="center" data-field="lot_code_name"></th>
                     <th data-title="生效日期" data-align="center" data-field="lot_effective_date_name"></th>
@@ -82,11 +85,23 @@
                 <div class="modal-content model_wrap">
                     <div class="model_content">
 
+                        <table id="getauz" data-toolbar="#toolbar" >
+                            <thead >
+                            <tr>
+                                <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+                                <th data-title="催交时间" data-align="center" data-field="date"></th>
+                                <th data-title="催交人" data-align="center" data-field="person_code"></th>
+                            </tr>
+                            </thead>
+                        </table>
                     </div>
+
 
                     <div class="modal_footer bg_eee">
                         <p class="tac pb17">
-                            <span class="col_37A cancle"  data-dismiss="modal">关闭</span>
+                            <span class="col_37A present">现场缴费</span>
+                            <span class="col_37A print">打印收费凭证</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div><!-- /.modal-content -->
@@ -101,7 +116,7 @@
                 <div class="modal-content model_wrap" style="width:650px;">
                     <div class="model_content" style="width:650px;position:relative;">
                         <div class="building_header">
-                            <h4 class="modal-title tac">更新增值工单信息</h4>
+                            <h4 class="modal-title tac">更新账单信息</h4>
                         </div>
                         <div class=" modal-body building  oh">
                             <div class="rewrite">
@@ -127,7 +142,7 @@
                 <div class="modal-content model_wrap">
                     <div class="model_content">
                         <div class="building_header">
-                            <h4 class="modal-title tac">新增车位租赁信息</h4>
+                            <h4 class="modal-title tac">账单信息</h4>
                         </div>
                         <div class=" modal-body building  oh">
                             <div class="add_item">
@@ -152,11 +167,19 @@
 <style>
 
     #person_detail .des{
-        width:55px;
+        width:130px;
     }
 
+    #person_detail .model_content p{
+        width:500px;
 
-
+    }
+/*#person_detail .bootstrap-table{
+    width:550px;
+}*/
+    #person_detail .bootstrap-table {
+        margin-bottom: 20px;
+    }
 </style>
 
 

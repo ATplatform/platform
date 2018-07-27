@@ -312,7 +312,12 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>
+<style>
+    #person_detail .des{
+        width:150px;
+    }
 
+</style>
 <input type="hidden" value='<?php echo $page;?>' name="page" />
 <input type="hidden" value='<?php echo $keyword;?>' name="keyword" />
 <input type="hidden" value='<?php echo $id;?>' name="id" />
@@ -420,6 +425,6 @@ $('#treeNav>span').on("select_node.jstree", function (e, node) {
     }
 })*/
 </script>	
-<script src='<?=base_url().'application/views/plugin/app/js/buildinglist.js'?>'></script>	
+<script src='<?=base_url().'application/views/plugin/app/js/bill_list.js'?>'></script>
 </body>
 </html>
