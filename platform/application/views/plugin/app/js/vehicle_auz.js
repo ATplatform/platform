@@ -479,7 +479,7 @@ if(page<total){
 ////////////////////////////////////////////信息管理////////////////////////////////
 function operateFormatter(value,row,index) {
     console.log(row)
-    if (row.v_if_resident == 't') {
+    if (row.v_if_resident == '101') {
         return [
             '<a class="detail" href="javascript:void(0)" style="margin-left: 10px;" title="详情">',
             '<i class=" fa fa-trash-o fa-lg fa-file-text-o"></i>',

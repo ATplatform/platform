@@ -29,7 +29,7 @@ var platform_index={
         show:'no',
         detail:'no',
         insert:'no',
-        update:'yes',
+        update:'no',
         input:'开始日期',
         method:'time',
         disabledonly:'no'
@@ -39,7 +39,7 @@ var platform_index={
         show:'no',
         detail:'no',
         insert:'no',
-        update:'yes',
+        update:'no',
         input:'结束日期',
         method:'time',
         disabledonly:'no'
@@ -71,8 +71,8 @@ var platform_index={
         search:'no',
         show:'yes',
         detail:'yes',
-        update:'yes',
-        insert:'yes',
+        update:'no',
+        insert:'no',
         must:'yes',
         input:'缴纳月份',
         method:'show',
@@ -82,8 +82,8 @@ var platform_index={
         search:'no',
         show:'yes',
         detail:'yes',
-        update:'yes',
-        insert:'yes',
+        update:'no',
+        insert:'no',
         must:'no',
         input:'生成时间',
         method:'show',
@@ -94,8 +94,8 @@ var platform_index={
         search:'no',
         show:'yes',
         detail:'yes',
-        update:'yes',
-        insert:'yes',
+        update:'no',
+        insert:'no',
         must:'no',
         input:'应缴金额',
         method:'other',
@@ -105,8 +105,8 @@ var platform_index={
         search:'yes',
         show:'no',
         detail:'no',
-        update:'yes',
-        insert:'yes',
+        update:'no',
+        insert:'no',
         input:'缴纳人编码',
         method:'other',
         disabledonly:'update'
@@ -116,7 +116,7 @@ var platform_index={
         show:'yes',
         detail:'no',
         insert:'no',
-        update:'yes',
+        update:'no',
         input:'应缴纳人',
         method:'show',
         disabledonly:'update'
@@ -126,7 +126,7 @@ var platform_index={
         show:'yes',
         detail:'yes',
         insert:'no',
-        update:'yes',
+        update:'no',
         input:'缴纳状态',
         method:'select',
         ajax:{	101:'未支付', 102:'支付失败', 103:'支付成功'},
@@ -148,7 +148,7 @@ var platform_index={
         show:'no',
         detail:'no',
         insert:'no',
-        update:'yes',
+        update:'no',
         input:'未缴费时间',
         method:'select',
         ajax:{	101:'超过15天的账单', 102:'超过6个月的账单', 103:'超过1年的账单'},
@@ -168,8 +168,8 @@ var platform_index={
         search:'no',
         show:'yes',
         detail:'yes',
-        update:'yes',
-        insert:'yes',
+        update:'no',
+        insert:'no',
         must:'no',
         input:'上次催交次数',
         method:'show',
@@ -274,6 +274,41 @@ var platform_index={
         method:'show',
         disabledonly:'update'
     },
+    bill_person:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'yes',
+        insert:'yes',
+        must:'yes',
+        input:'通过人员姓名查找',
+        method:'person',
+        disabledonly:'no'
+    },
+    bill_building:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'yes',
+        insert:'yes',
+        must:'yes',
+        input:'通过楼宇地点查找',
+        method:'building',
+        disabledonly:'no'
+    },
+    bill_time:{
+        search:'no',
+        show:'no',
+        detail:'yes',
+        update:'yes',
+        insert:'yes',
+        must:'yes',
+        input:'通过欠费时间查找',
+        method:'select',
+        ajax:{	101:'超过15天的账单', 102:'超过6个月的账单', 103:'超过1年的账单'},
+        disabledonly:'no'
+    },
+
     keyword:{
         search:'yes',
         show:'no',
@@ -297,6 +332,7 @@ var platform_index={
         insert:'insert',
         change_history:'change_history_bill_list',
         update:'update_service_fee',
+        get_notify:'get_notify',
         getparking_lot_code:'getparking_lot_code',
         getparkingcode:'getparkingcode',
         getperson_code:'getperson_code',
@@ -316,8 +352,8 @@ var render=new html_render(platform_index)
 $('#table tr').prepend(render.data_html)
 $('#search_wrap').append(render.search_html)
 $('#person_detail .model_content').prepend(render.detail_html)
-$('#rewrite .rewrite').append(render.update_html)
-$('#add_Item .add_item').append(render.insert_html)
+$('#notify .notify').append(render.update_html)
+$('#getmoney .getmoney').append(render.insert_html)
 
 render.initial_all(platform_index)
 showdata(platform_index)
@@ -510,10 +546,153 @@ function getrewrite(location,rowkeys){
                 }
             }
         }
+///////////////////////////////////////////////////////////////////////////////////////////////
 
     }
 }
 
+
+$('.add_btn_notify').click(function () {
+var $table;
+var selectionIds = []; //保存选中ids
+var selectionIds = [];	//保存选中ids
+    $("#notify_table").bootstrapTable('destroy');
+    $("#notify_table").bootstrapTable({
+        dataType:"json",		//初始化编码
+        url:'get_notify',
+        method: 'get',
+        striped:true,			//奇偶行渐色表
+        clickToSelect:true,		//是否选中
+        maintainSelected:true,
+        search:true,
+        idField:"idFormatter",
+        pageNumber: 1, //初始化加载第一页，默认第一页
+        pagination:false,//是否分页
+        sidePagination:'server',//指定服务器端分页
+        pageSize: 10,
+        responseHandler:responseHandler, //在渲染页面数据之前执行的方法，此配置很重要!!!!!!!
+        columns: [
+            {field: 'checkStatus',checkbox: true}, 	//给多选框赋一个field值为“checkStatus”用于更改选择状态!!!!!
+            {field: 'idFormatter',visible:true},
+            {field: 'bill_code',title: "订单编号",align:'center',width:'30%'},
+            {field: 'bill_type_name',title: "订单类型",align:'center',width:'30%'}
+        ],
+        //点击全选框时触发的操作
+
+        onCheckAll:function(rows){
+            console.log(rows);
+            for(var i=0;i<rows.length;i++){
+                if(selectionIds.indexOf(rows[i].bill_code)==-1){
+                selectionIds.push(rows[i].bill_code)
+                }
+            }
+            console.log(selectionIds)
+        },
+        onUncheckAll:function(rows){
+            selectionIds=[];
+            console.log(selectionIds)
+
+        },
+//点击每一个单选框时触发的操作
+
+        onCheck:function(row){
+            console.log(row);
+            selectionIds.push(row.bill_code)
+            console.log(selectionIds)
+        },
+
+//取消每一个单选框时对应的操作；
+
+        onUncheck:function(row){
+            console.log(row);
+            selectionIds.pop(row.bill_code)
+            console.log(selectionIds)
+        }
+    });
+
+//表格分页之前处理多选框数据
+function responseHandler(res) {
+    res['rows']= JSON.parse(res['0'])
+    res['total']= JSON.parse(res['1'])
+    console.log(res)
+    return res;
+}
+
+});
+
+
+
+$('.add_btn_getmoney').click(function () {
+    var $table;
+    var selectionIds = []; //保存选中ids
+    var selectionIds = [];	//保存选中ids
+    $("#getmoney_table").bootstrapTable('destroy');
+    $("#getmoney_table").bootstrapTable({
+        dataType:"json",		//初始化编码
+        url:'get_notify',
+        method: 'get',
+        striped:true,			//奇偶行渐色表
+        clickToSelect:true,		//是否选中
+        maintainSelected:true,
+        search:true,
+        idField:"idFormatter",
+        pageNumber: 1, //初始化加载第一页，默认第一页
+        pagination:false,//是否分页
+        sidePagination:'server',//指定服务器端分页
+        pageSize: 10,
+        responseHandler:responseHandler, //在渲染页面数据之前执行的方法，此配置很重要!!!!!!!
+        columns: [
+            {field: 'checkStatus',checkbox: true}, 	//给多选框赋一个field值为“checkStatus”用于更改选择状态!!!!!
+            {field: 'idFormatter',visible:true},
+            {field: 'bill_code',title: "订单编号",align:'center',width:'30%'},
+            {field: 'bill_type_name',title: "订单类型",align:'center',width:'30%'}
+        ],
+        //点击全选框时触发的操作
+
+        onCheckAll:function(rows){
+            console.log(rows);
+            for(var i=0;i<rows.length;i++){
+                if(selectionIds.indexOf(rows[i].bill_code)==-1){
+                    selectionIds.push(rows[i].bill_code)
+                }
+            }
+            console.log(selectionIds)
+        },
+        onUncheckAll:function(rows){
+            selectionIds=[];
+            console.log(selectionIds)
+
+        },
+//点击每一个单选框时触发的操作
+
+        onCheck:function(row){
+            console.log(row);
+            selectionIds.push(row.bill_code)
+            console.log(selectionIds)
+        },
+
+//取消每一个单选框时对应的操作；
+
+        onUncheck:function(row){
+            console.log(row);
+            selectionIds.pop(row.bill_code)
+            console.log(selectionIds)
+        }
+    });
+
+//表格分页之前处理多选框数据
+    function responseHandler(res) {
+        res['rows']= JSON.parse(res['0'])
+        res['total']= JSON.parse(res['1'])
+        console.log(res)
+        return res;
+    }
+
+
+
+
+
+});
 
 
 
@@ -878,12 +1057,22 @@ function html_render(index){
                 '</p>';
             final_html+=html
         }
+            if(index.method=='building'){
+                var html=
+                    '<p class="select_buliding_wrap">'
+                    +must_html+index.input+':'+
+                    '  <a href="javascript:;" id="treeNavWrite" class="treeWrap"><span></span></a>' +
+                    '  <span class="select_buliding"></span>' +
+                    '</p>'
+                final_html+=html
+
+            }
         if(index.method=='person'){
             var html=
                 ' <div class="search_person_wrap">' +
                 '          <div class="oh" style="">' +
-                '               <div class="fl">' +
-                +must_html+index.input+
+                '               <div class="fl">'
+                +must_html+index.input+':'+
                 '               </div>' +
                 '               <div class="fl search_person_text "style="margin-left:18px;">\n' +
                 '                    <input type="text" class="fl search_person_name" placeholder="请输入姓名查找" style="width:300px;font-size:inherit;" name="'+n+'">' +
@@ -925,7 +1114,7 @@ function html_render(index){
             }
             if(index.method=='input'){
                 var html='<p>'+must_html+index.input+':'+
-                    ' <input type="text" class="model_input '+index.input+'" placeholder="请输入'+index.input+'"  name="'+n+'" />' +
+                    ' <input type="text" class="model_input '+index.input+'" placeholder="请输入'+index.input+'"  name="'+n+'" "/>' +
                     '</p>';
                 final_html+=html
             }
@@ -943,7 +1132,7 @@ function html_render(index){
                     ' <div class="select_wrap select_pull_down ">' +
                     '    <div>' +
                     must_html+index.input+':' +
-                    '       <input type="text" class="model_input '+n+' ka_input3" placeholder="请输入'+index.input+'"  name="'+n+'" data-ajax="" readonly />' +
+                    '       <input type="text" class="model_input '+n+' ka_input3" placeholder="请输入'+index.input+'"  name="'+n+'" data-ajax="" readonly style="width: 400px;"/>' +
                     '    </div>' +
                     '    <div class="ka_drop" style="margin-left:20px;width: 300px;">' +
                     '       <div class="ka_drop_list '+n+'" style="width: 300px;">' +
@@ -977,12 +1166,21 @@ function html_render(index){
                     '</p>';
                 final_html+=html
             }
+            if(index.method=='building'){
+                var html=
+                    '<p class="select_buliding_wrap">'
+                    +must_html+index.input+':'+
+                    '  <a href="javascript:;" id="treeNavWrite" class="treeWrap"><span></span></a>' +
+                    '  <span class="select_buliding"></span>' +
+                    '</p>'
+                final_html+=html
+            }
             if(index.method=='person'){
                 var html=
                     ' <div class="search_person_wrap">' +
                     '          <div class="oh" style="">' +
-                    '               <div class="fl">' +
-                    +must_html+index.input+
+                    '               <div class="fl">'
+                    +must_html+index.input+':'+
                     '               </div>' +
                     '               <div class="fl search_person_text "style="margin-left:18px;">\n' +
                     '                    <input type="text" class="fl search_person_name" placeholder="请输入姓名查找" style="width:300px;font-size:inherit;" name="'+n+'">' +
@@ -1020,6 +1218,12 @@ function html_render(index){
         });
         ////地点控件初始化//////////////
         $('#treeNav>span').jstree({
+            'core' : {
+                data: treeNav_data
+            }
+        })
+        ////地点控件初始化//////////////
+        $('#treeNavWrite>span').jstree({
             'core' : {
                 data: treeNav_data
             }
@@ -1371,7 +1575,7 @@ function showdata(render){
 
     var datahref=href(render.pagechange.urlparam)
 
-    var selectionIds = []; //保存选中ids
+
      $('#table').bootstrapTable({
         method: "get",
         undefinedText: ' ',
@@ -1541,17 +1745,19 @@ function information(render) {
 ///////////////////////////////////////////人员查找//////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 !(function add_person(){
-    $('.search_person_wrap .search_person_btn').click(function(){
+    $('#notify .search_person_wrap .search_person_btn').click(function(){
         var name = $(this).closest('.search_person_wrap').find('.search_person_name').val();
         var search_person_wrap = $(this).closest('.search_person_wrap');
+        console.log(name)
         $.ajax({
             method:'post',
             data:{
                 name:name
             },
-            url:getRootPath()+'/index.php/People/getPersonByName',
+            url:getRootPath()+'/index.php/Moneypay/getnotify_person',
             //成功之后,将结果生成
             success:function(data){
+                console.log(data)
                 var data = data;
                 //先清空之前的值
                 $('.search_person_results').empty();
@@ -1560,10 +1766,12 @@ function information(render) {
                     for(var i=0;i<3;i++){
                         var d = data[i];
 
-                        var html = '<div class="single_person" data-last_name="'+d['last_name']+'" data-first_name="'+d['first_name']+'" data-code="'+d['code']+'"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a>'
+                        var html = '<div class="single_person" data-name="'+d['payer_name']+'" data-code="'+d['code']+'"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a>'
                             +'<div class="fl">'
-                            +'<span class="name">'+d['full_name']+'</span>'
-                            +'<span class="code">'+d['code']+'</span>'
+                            +'<span class="name">'+d['payer_name']+'</span>'
+                         /*   +'<span class="code">'+d['code']+'</span>'*/
+                        +'<span class="code">'+'iD:'+d['person_information']['id_number']+'</span>'
+                        +'<span class="code">'+'&nbsp;&nbsp;'+'Tel:'+d['person_information']['mobile_number']+'</span>'
                             +'</div>';
                         console.log(html);
                         $('.search_person_results').append(html);
@@ -1573,7 +1781,8 @@ function information(render) {
                     $('.search_person_results').append("没有结果");
                 }
             },
-            error:function(){
+            error:function(data){
+                console.log(data)
                 console.log('搜索出错');
             }
         })
@@ -1641,3 +1850,62 @@ function href(index){
     return href
 }
 
+
+
+//树节点点击后将节点赋值
+$('#treeNavAdd>span,#treeNavWrite>span').on("select_node.jstree", function (e, node) {
+
+    $('#treeNavWrite>span').jstree("close_all")
+
+    var arr = node.node.id.split("_");
+    var parent_code = arr[0];
+    //当前节点的id
+    var id = arr[1];
+    //当前节点的文本值
+    var name = node.node.text;
+    //当前节点的房号code
+    var room_code = node.node.original.code;
+    console.log(room_code);
+    console.log(node.node);
+    // console.log($(this));
+    //当前对象为包裹层元素(这里是span)
+    var that = $(this);
+
+    //父节点数组
+    var parents_arr = node.node.parents;
+    if (parents_arr.length == 3) {
+        //表示到了室这一层级,需要获取到父节点,把父节点的名称拼接
+        var imm_id = parents_arr[0];
+        var imm_node = that.jstree("get_node", imm_id);
+        var imm_name = imm_node.text;
+        console.log(imm_node);
+    }
+    //表示是栋这一层级
+    else if (parents_arr.length == 2) {
+
+    }
+
+    imm_name = imm_name ? imm_name : '';
+    var html_tmp = "<em id=" + id + " data-room_code=" + room_code + ">" + imm_name + name + "<i class='fa fa-close'></i></em>";
+    console.log(html_tmp);
+    /*   if (that.closest('.model_content').find('.select_buliding #' + id).length == 0) {
+           that.closest('.model_content').find('.select_buliding').append(html_tmp);
+       }
+*/
+    if($('.notify').find('.select_buliding em i').length==0){
+        $('.notify').find('.select_buliding').append(html_tmp);
+    }
+
+    /*     if($(".person_building_data ul #"+code).length==0){
+             $('.person_building_data ul').append(html);
+         }*/
+
+
+})
+
+$(function () {
+    //点击删除当前节点
+    $('.select_buliding_wrap').on('click', '.select_buliding em i', function () {
+        $(this).closest('em').remove();
+    })
+})

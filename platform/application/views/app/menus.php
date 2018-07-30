@@ -172,7 +172,7 @@
             <li <?php if($nav=="vehicleAuz") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Vehicle/vehicleAuz'?>"><i class="glyphicon"></i>车辆授权信息</a></li>
             <li <?php if($nav=="parkinglot") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Vehicle/parkinglot'?>"><i class="glyphicon"></i>小区车位管理</a></li>
 			<li <?php if($nav=="vehiclePkg") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Vehicle/vehiclePkg'?>"><i class="glyphicon"></i>车辆进出记录</a></li>
-			<li <?php if($nav=="vehiclePayment") {echo 'class="active"';} ?>><a href="<?=base_url().'index.php/Vehicle/vehiclePayment'?>"><i class="glyphicon"></i>车辆缴费记录</a></li>
+
 		</ul>
 	</li>
 

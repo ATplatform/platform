@@ -181,6 +181,26 @@ class Moneypay_model extends CI_Model
     }
 
 
+    //////////////////////搜索查询数据数目的数据总条数/////////////
+    public function getTotal_all($sqlorigin)
+    {
+        $sql="select count(*) as count from (";
+        $sql.=$sqlorigin;
+        $sql.=" ) as sss";
+        $q = $this->db->query($sql); //自动转义
+        if ($q->num_rows() > 0) {
+            $row = $q->row_array();
+            $items = $row["count"];
+
+            return $items;
+        }
+        return 0;
+    }
+
+
+
+
+
 
     //////////////// 根据输入的sql语句参数，得到数据////////////////
     public function getRecord( $sql){
@@ -1519,20 +1539,21 @@ where record.work_code=work_order.code
         return false;
     }
 
-    public function sqlTogetList_bill_list($village_id,$begin_date,$end_date,$pay_status,$keyword, $page, $rows)
+    public function sqlTogetList_bill_list($village_id,$begin_date,$end_date,$pay_status,$notify_for_time,$keyword, $page, $rows)
     {
         $start = ($page - 1) * $rows;
         $now   =  date("Y-m-d",time());
         $date   =   date('Y-m-d',strtotime("$now-1 month"));
 
         /////////////////判断为普通查询或搜索查询////////////////////////////
-        if (empty($begin_date)  &&  empty($end_date) &&  empty($pay_status) && empty($keyword))
+        if (empty($begin_date)  &&  empty($end_date) &&  empty($pay_status) && empty($notify_for_time) && empty($keyword))
 
             /////////////////////////普通查询sql语句/////////////////////////
         {
 
             $sql = " 
-select 
+select
+
 bill.code as bill_code,
 bill.bill_type as bill_type,
 bill.pay_status as bill_pay_status,
@@ -1542,6 +1563,7 @@ bill.person_code as bill_person_code,
 bill.payer_name as bill_payer_name,
 bill.bill_month as bill_month,
 bill.notify_info as bill_notify_info,
+
 
 bill.bill_source_code as bill_source_code,
 bill.third_bill_Input as bill_third_bill_Input,
@@ -1570,6 +1592,7 @@ bill.person_code as bill_person_code,
 bill.payer_name as bill_payer_name,
 bill.bill_month as bill_month,
 bill.notify_info as bill_notify_info,
+
 
 bill.bill_source_code as bill_source_code,
 bill.third_bill_input as bill_third_bill_input,
@@ -1600,9 +1623,16 @@ where bill.village_id=$village_id
          if(!empty($end_date)){
              $sql .= " and bill.initial_time<='$end_date' ";
          }
+        if(!empty($notify_for_time)){
+             if($notify_for_time=='101'){$date=15;}
+            if($notify_for_time=='102'){$date=180;}
+            if($notify_for_time=='103'){$date=365;}
+            $sql .= " and  ((now()::timestamp)::date - (bill.initial_time::timestamp)::date) >  '$date'";
+        }
         if(!empty($pay_status)){
             $sql .= " and bill.pay_status='$pay_status' ";
         }
+
         if (!empty($keyword)) {
             if (preg_match('/^\d*\w*[\x7f-\xff]*$/', $keyword)) {
                 $sql .= " and concat (bill.payer_name) like '%$keyword%'";
@@ -1725,6 +1755,47 @@ where bill.village_id=$village_id
     {
         return json_encode($value);
     }
+
+    public function justify_notify_time($notify_for_time)
+    {
+
+        $sql = "select initial_time from village_bill_list";
+        $q1 = $this->db->query($sql); //自动转义
+        $q2=strtotime (date("y-m-d h:i:s")); //当前时间  ,注意H 是24小时 h是12小时
+        $sql="and (SELECT DATEDIFF(day,'bill.initial_time','now()') from village_bill_list as bill)<15";
+        return $sql;
+    }
+
+    public function getnotify_person($name)
+    {
+
+        $sql = "select payer_name,person_code from village_bill_list where payer_name like '%$name%'";
+        $q = $this->db->query($sql); //自动转义
+           if ($q->num_rows() > 0) {
+               $arr = $q->result_array();
+               foreach ($arr as $key => $value) {
+                   foreach ($value as $key2 => $value2) {
+                       if($key2 == 'person_code') {
+                           if (!empty($value2)) {
+
+                               $arr[$key]['person_information'] = "";
+
+                               $person = $this->getPersonByCode($value2);
+                               $arr[$key]['person_information'] = $person;
+                           }
+                       }
+                       if($key2=='payer_name'){
+                           if (!empty($value2)) {
+                               $arr[$key]['person_information']=$value2;
+                           }else{
+                               $arr[$key]['person_information']='无';
+                           }                       }
+                   }
+               }
+           }
+        return $arr;
+    }
+
 
 }
 

@@ -42,7 +42,7 @@ var platform_index={
         must:'no',
         input:'小区车/访客车',
         method:'select',
-        ajax:{t:'小区车',f:'访客车'}
+        ajax:{101:'小区车',102:'访客车'}
 
     },
     v_vehicle_type:{
@@ -150,14 +150,14 @@ var platform_index={
         method:'show'
     },
 */
-    par_pay_person_code:{
+    payer_name:{
         search:'no',
         show:'yes',
         detail:'yes',
         update:'no',
         must:'no',
         input:'缴费人',
-        method:'person'
+        method:'show'
     }
     ,
 

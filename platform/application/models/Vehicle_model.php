@@ -51,7 +51,7 @@ left join village_person_building as pb on v.person_code=pb.person_code
 left join village_tmp_building as tmp on tmp.code=pb.building_code
 left join village_vehicle_auz as auz on auz.vehicle_code=v.code
 where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.vehicle_code=auz_s.vehicle_code)
-and pb.code = (select max(code) from village_person_building as pb_s where pb.person_code=pb_s.person_code)
+and pb.id = (select max(id) from village_person_building as pb_s where pb.person_code=pb_s.person_code)
 ";}
 
 
@@ -85,7 +85,7 @@ left join village_person_building as pb on v.person_code=pb.person_code
 left join village_tmp_building as tmp on tmp.code=pb.building_code
 left join village_vehicle_auz as auz on auz.vehicle_code=v.code
 where auz.code = (select max(code) from village_vehicle_auz as auz_s where auz.vehicle_code=auz_s.vehicle_code)
-and pb.code = (select max(code) from village_person_building as pb_s where pb.person_code=pb_s.person_code)
+and pb.id = (select max(id) from village_person_building as pb_s where pb.person_code=pb_s.person_code)
 ";
          }
              if(empty($effective_date)){
@@ -1136,7 +1136,7 @@ public function getvehicle_code()
 
 
 
-public function sqlTogetparkinglot($effective_date,$parkcode,$floor,$biz_type,$biz_status,$biz_reason,$keyword, $page, $rows)
+public function sqlTogetparkinglot($village_id,$effective_date,$parkcode,$floor,$biz_type,$biz_status,$biz_reason,$keyword, $page, $rows)
 {
     $start = ($page - 1) * $rows;
     $now   =  date("Y-m-d",time());
@@ -1169,7 +1169,7 @@ par.parkname as lot_parkcode_name
 from village_parking_lot as lot
 left join village_park as par on par.parkcode=lot.parkcode
 left join village_person as p on lot.owner=p.code 
-where lot.begin_date=lot.begin_date
+where lot.village_id=$village_id
 
 ";}
 
@@ -1197,7 +1197,7 @@ par.parkname as lot_parkcode_name
 from village_parking_lot as lot
 left join village_park as par on par.parkcode=lot.parkcode
 left join village_person as p on lot.owner=p.code 
-where lot.begin_date=lot.begin_date
+where lot.village_id=$village_id
 ";
     }
         if(empty($effective_date)){
@@ -1442,7 +1442,7 @@ FROM
 }
 
 
-public function updateParkinglot($code,$effective_date,$effective_status,$linked_lot_code,$begin_date,$end_date,$area,$monthly_rent,$parkcode,$floor,$biz_type,$biz_status,$biz_reason,$owner,$remark){
+public function updateParkinglot($village_id,$code,$effective_date,$effective_status,$linked_lot_code,$begin_date,$end_date,$area,$monthly_rent,$parkcode,$floor,$biz_type,$biz_status,$biz_reason,$owner,$remark){
 
     $sql = " update village_parking_lot
          set effective_date=".$this->db->escape($effective_date).",".
@@ -1459,7 +1459,7 @@ public function updateParkinglot($code,$effective_date,$effective_status,$linked
         "biz_reason=".$this->db->escape($biz_reason).",".
         "owner=".$this->db->escape($owner).",".
         "remark=".$this->db->escape($remark)." ".
-        "where code=$code";
+        "where code=$code and village_id=$village_id";
 
     $this->db->query($sql);
 }
@@ -1496,14 +1496,14 @@ v.person_code as v_person_code,
 v.owner as v_owner,
 v.vehicle_type as v_vehicle_type,
 pb.building_code as building_code,
-par_pay.person_code as par_pay_person_code
+bill.payer_name as payer_name
 from village_vehicle_pkg as pkg
-left join village_parking_payment as par_pay on par_pay.id=pkg.parking_payment_id
+left join village_bill_list as bill on bill.bill_source_code=pkg.vehicle_code
 left join village_vehicle as v on v.code=pkg.vehicle_code
 left join village_person as p on p.code=v.person_code
 left join village_person_building as pb on v.person_code=pb.person_code
 left join village_tmp_building as tmp on tmp.code=pb.building_code
-where tmp.code=pb.building_code
+where pkg.vehicle_code=pkg.vehicle_code
 ";}
 
 
@@ -1530,14 +1530,14 @@ v.person_code as v_person_code,
 v.owner as v_owner,
 v.vehicle_type as v_vehicle_type,
 pb.building_code as building_code,
-par_pay.person_code as par_pay_person_code
+bill.payer_name as payer_name
 from village_vehicle_pkg as pkg
-left join village_parking_payment as par_pay on par_pay.id=pkg.parking_payment_id
+left join village_bill_list as bill on bill.bill_source_code=pkg.vehicle_code
 left join village_vehicle as v on v.code=pkg.vehicle_code
 left join village_person as p on p.code=v.person_code
 left join village_person_building as pb on v.person_code=pb.person_code
 left join village_tmp_building as tmp on tmp.code=pb.building_code
-where tmp.code=pb.building_code
+where pkg.vehicle_code=pkg.vehicle_code
 ";
 
         }
@@ -1563,7 +1563,7 @@ where tmp.code=pb.building_code
             }
             if (!empty($keyword)) {
                 if (preg_match('/^[\x7f-\xff]*\w*\d*$/', $keyword)) {
-                    $sql .= " and concat (pkg.vehicle_code,p.last_name,p.first_name) like '%$keyword%'";
+                    $sql .= " and concat (pkg.vehicle_code,bill.payer_name) like '%$keyword%'";
                 }
 
             }
@@ -1619,10 +1619,10 @@ where tmp.code=pb.building_code
                         }
                     }
                     if ($key2 == 'v_if_temp') {
-                        if ($arr[$key]['v_if_temp'] == 't') {
+                        if ($arr[$key]['v_if_temp'] == '101') {
                             $arr[$key]['v_if_temp_name'] = "是";
                         }
-                        if ($arr[$key]['v_if_temp'] == 'f') {
+                        if ($arr[$key]['v_if_temp'] == '102') {
                             $arr[$key]['v_if_temp_name'] = "否";
                         }
                     }
@@ -1637,16 +1637,19 @@ where tmp.code=pb.building_code
                         if ($value2 == "999") {$arr[$key]['v_vehicle_type_name'] = '其他车辆';}
                     }
                     if ($key2 == 'v_person_code') {
+                        if($value2){
                         $person= $this->getPersonByCode($value2);
                         $arr[$key]["v_person_code_name"]=$person['full_name'];
+                        }
                     }
                     if ($key2 == 'building_code') {
+                          if($value2){
                         $building= $this->getBuildingnamebyCode($value2);
                         $arr[$key]["building_code_name"]=$building['full_name'];
+                        }
                     }
-                    if ($key2 == 'par_pay_person_code') {
-                        $person= $this->getPersonByCode($value2);
-                        $arr[$key]["par_pay_person_code_name"]=$person['full_name'];
+                    if ($key2 == 'payer_name') {
+                        $arr[$key]["par_pay_person_code_name"]=$value2;
                     }
 
 

@@ -34,8 +34,8 @@
     <!-- 物资数据-->
         <div class="table_wrap">
          <div class="oh pt10">
-             <span class="fr add_btn" data-target="#notify" data-toggle="modal">催交</span>
-             <span class="fr add_btn" data-target="#get-money" data-toggle="modal">现场收费</span>
+             <span class="fr add_btn add_btn_notify" data-target="#notify" data-toggle="modal">催交</span>
+             <span class="fr add_btn add_btn_getmoney" data-target="#getmoney" data-toggle="modal">现场收费</span>
 
              <span class="fr add_btn" data-target="#add_other" data-toggle="modal">新增其他收费项</span>
              <a class="fr add_btn" id="reset" >清除筛选</a>
@@ -108,44 +108,27 @@
             </div><!-- /.modal -->
         </div>
 
-
-
-        <!--修改 -->
-        <div class="modal fade" id="rewrite" tabindex="-1" role="dialog" aria-hidden="true" >
-            <div class="modal-dialog"  style="width:650px;">
-                <div class="modal-content model_wrap" style="width:650px;">
-                    <div class="model_content" style="width:650px;position:relative;">
-                        <div class="building_header">
-                            <h4 class="modal-title tac">更新账单信息</h4>
-                        </div>
-                        <div class=" modal-body building  oh">
-                            <div class="rewrite">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal_footer bg_eee">
-                        <p class="tac pb17">
-                            <span class="col_37A confirm">保存</span>
-                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-        </div><!-- /.modal-content -->
-        <!-- /.modal -->
-
-
         <!-- 增加物资 -->
-        <div class="modal fade" id="add_Item" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade" id="getmoney" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog"  style="width: 630px;">
                 <div class="modal-content model_wrap">
                     <div class="model_content">
                         <div class="building_header">
-                            <h4 class="modal-title tac">账单信息</h4>
+                            <h4 class="modal-title tac">现场收费</h4>
                         </div>
                         <div class=" modal-body building  oh">
-                            <div class="add_item">
+                            <div class="getmoney">
+                            </div>
+                            <div style=" overflow:auto; width: 550px;height:400px;">
+                            <table id="getmoney_table" data-toolbar="#toolbar" >
+                                <thead >
+                                <tr>
+                                    <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+                                    <th data-title="更新时间" data-align="center" data-field="change_date"></th>
+                                    <th data-title="更新后费用" data-align="center" data-field="fee_standard"></th>
+                                </tr>
+                                </thead>
+                            </table>
                             </div>
                         </div>
                     </div>
@@ -158,6 +141,44 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
         </div>
+
+
+        <!--催交 -->
+        <div class="modal fade" id="notify" tabindex="-1" role="dialog" aria-hidden="true" >
+            <div class="modal-dialog"  style="width:650px;">
+                <div class="modal-content model_wrap" style="width:650px;">
+                    <div class="model_content" style="width:650px;position:relative;">
+                        <div class="building_header">
+                            <h4 class="modal-title tac">催交信息</h4>
+                        </div>
+                        <div class=" modal-body building  oh">
+                            <div class="notify">
+                            </div>
+                            <div style=" overflow:auto; width:inherit; height:400px;">
+                            <table id="notify_table" data-toolbar="#toolbar" >
+                                <thead >
+                                <tr>
+                                <th data-title="序号" data-align="center" data-formatter="idFormatter"></th>
+                                <th data-title="催交时间" data-align="center" data-field="bill_code"></th>
+                                <th data-title="催交人" data-align="center" data-field="bill_type"></th>
+                          </div>
+                            </tr>
+                            </thead >
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal_footer bg_eee">
+                        <p class="tac pb17">
+                            <span class="col_37A confirm">催交</span>
+                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- /.modal-content -->
+        <!-- /.modal -->
+
 
 
 
@@ -270,6 +291,7 @@
         }
         return oFile; //这里必须返回oFile对象，否则FileInput组件初始化不成功
     };
+
 
 
 
