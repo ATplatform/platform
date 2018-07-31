@@ -815,12 +815,13 @@ public function updateVehicle($village_id,$code,$auz_code,$effective_date,$effec
         "where code=".$this->db->escape($code);
 
     $this->db->query($sql);
-
+if($effective_status==false){
     $sql = " update village_vehicle_auz
        set end_date=".$this->db->escape($effective_date)."  ".
         "where code=".$this->db->escape($auz_code);
 
     $this->db->query($sql);
+}
 
 }
 

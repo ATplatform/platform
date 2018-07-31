@@ -1769,17 +1769,15 @@ where bill.village_id=$village_id
     public function getnotify_person($name)
     {
 
-        $sql = "select payer_name,person_code from village_bill_list where payer_name like '%$name%'";
+        $sql = "select payer_name,json_array_elements_text(person_code) from village_bill_list where payer_name like '%$name%'";
         $q = $this->db->query($sql); //自动转义
            if ($q->num_rows() > 0) {
                $arr = $q->result_array();
                foreach ($arr as $key => $value) {
                    foreach ($value as $key2 => $value2) {
-                       if($key2 == 'person_code') {
+                       if($key2 == 'json_array_elements_text') {
                            if (!empty($value2)) {
-
                                $arr[$key]['person_information'] = "";
-
                                $person = $this->getPersonByCode($value2);
                                $arr[$key]['person_information'] = $person;
                            }
@@ -1795,6 +1793,93 @@ where bill.village_id=$village_id
            }
         return $arr;
     }
+
+
+
+    public function sqlTogetList_bill_list_notify($village_id,$person,$building,$notify_for_time,$page, $rows)
+    {
+        $start = ($page - 1) * $rows;
+        $now   =  date("Y-m-d",time());
+        $date   =   date('Y-m-d',strtotime("$now-1 month"));
+
+            $sql = " 
+select
+bill.code as bill_code,
+bill.bill_type as bill_type,
+bill.pay_status as bill_pay_status,
+bill.initial_time as bill_initial_time,
+bill.bill_amount as bill_amount,
+bill.person_code as bill_person_code,
+bill.payer_name as bill_payer_name,
+bill.bill_month as bill_month,
+bill.notify_info as bill_notify_info,
+bill.building_code,
+
+bill.bill_source_code as bill_source_code,
+bill.third_bill_Input as bill_third_bill_Input,
+bill.creator as bill_creator,
+bill.if_cycle as bill_if_cycle,
+bill.pay_req_no as bill_pay_req_no,
+bill.pay_method as bill_pay_method,
+bill.third_payment_no as bill_third_payment_no,
+bill.remark as bill_remark
+from village_bill_list as bill
+where bill.village_id=$village_id 
+
+";
+
+
+        /*    if(empty($pkg_effective_date)){
+                $sql .= " and parking_lot.effective_date <= '$now' and  parking_lot.effective_status =true ";
+            }
+
+
+            if(!empty($pkg_effective_date)){
+                $sql .= " and  parking_lot.effective_date <= '$pkg_effective_date' and  parking_lot.effective_status =true ";
+            }*/
+
+
+
+        if(!empty($person)){
+           /* $sqlforperson = " select code,json_array_elements_text(person_code) from village_bill_list  ";
+            $q = $this->db->query($sqlforperson);
+            $arr = $q->result_array();
+           foreach ($arr as $key => $value) {
+
+                   if ($arr[$key]['json_array_elements_text'] == $person) {
+                       $code_person = $arr[$key]['code'];
+                   }
+
+           }
+            $sql.=" and bill.code='$code_person'";*/
+            $sql.=" and bill.payer_name like '%$person%'";
+        }
+        if(!empty($building)){
+            $sqlforbuilding = " select code,json_array_elements_text(building_code) from village_bill_list  ";
+            $q = $this->db->query($sqlforbuilding);
+            $arr = $q->result_array();
+            foreach ($arr as $key => $value) {
+
+                if ($arr[$key]['json_array_elements_text'] == $building) {
+                    $code_person = $arr[$key]['code'];
+                }
+
+            }
+            $sql.=" and bill.code='$code_person'";
+
+        }
+        if(!empty($notify_for_time)){
+            if($notify_for_time=='101'){$date=15;}
+            if($notify_for_time=='102'){$date=180;}
+            if($notify_for_time=='103'){$date=365;}
+            $sql .= " and  ((now()::timestamp)::date - (bill.initial_time::timestamp)::date) >  '$date'";
+        }
+
+
+
+        return $sql;
+    }
+
 
 
 }

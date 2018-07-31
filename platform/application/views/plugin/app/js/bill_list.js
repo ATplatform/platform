@@ -171,7 +171,7 @@ var platform_index={
         update:'no',
         insert:'no',
         must:'no',
-        input:'上次催交次数',
+        input:'已催交次数',
         method:'show',
         disabledonly:'update'
     },
@@ -277,18 +277,29 @@ var platform_index={
     bill_person:{
         search:'no',
         show:'no',
-        detail:'yes',
+        detail:'no',
         update:'yes',
         insert:'yes',
         must:'yes',
         input:'通过人员姓名查找',
-        method:'person',
+        method:'input',
+        disabledonly:'no'
+    },
+    bill_licence:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        update:'yes',
+        insert:'yes',
+        must:'yes',
+        input:'通过车牌查找',
+        method:'input',
         disabledonly:'no'
     },
     bill_building:{
         search:'no',
         show:'no',
-        detail:'yes',
+        detail:'no',
         update:'yes',
         insert:'yes',
         must:'yes',
@@ -299,7 +310,7 @@ var platform_index={
     bill_time:{
         search:'no',
         show:'no',
-        detail:'yes',
+        detail:'no',
         update:'yes',
         insert:'yes',
         must:'yes',
@@ -352,7 +363,7 @@ var render=new html_render(platform_index)
 $('#table tr').prepend(render.data_html)
 $('#search_wrap').append(render.search_html)
 $('#person_detail .model_content').prepend(render.detail_html)
-$('#notify .notify').append(render.update_html)
+$('#notify .notify').prepend(render.update_html)
 $('#getmoney .getmoney').append(render.insert_html)
 
 render.initial_all(platform_index)
@@ -431,6 +442,9 @@ function getdetail(location,rowkeys){
             $('.modal_footer .present').css({"display":"none"})
             $('.modal_footer .print').css({"display":"inline-block"})
         }
+        word_export(row)
+
+
         ////////////////////////////////////////额外补充//////////////////////////////////////////////////
    /*     $.ajax({
             type:"POST",
@@ -552,8 +566,20 @@ function getrewrite(location,rowkeys){
 }
 
 
-$('.add_btn_notify').click(function () {
-var $table;
+$('.notify_search').click(function () {
+    $('.notify_table_wrap').css({"display":"block"})
+
+
+    var person_name=$('#notify ').find('input[name=bill_person]').val()
+    var building_code=$('#notify .select_buliding em').data('room_code')
+    var delay_date=$('#notify ').find('input[name=bill_time]').data('ajax')
+
+console.log(person_name)
+    console.log(building_code)
+    console.log(delay_date)
+
+
+    var $table;
 var selectionIds = []; //保存选中ids
 var selectionIds = [];	//保存选中ids
     $("#notify_table").bootstrapTable('destroy');
@@ -572,13 +598,24 @@ var selectionIds = [];	//保存选中ids
         pageSize: 10,
         responseHandler:responseHandler, //在渲染页面数据之前执行的方法，此配置很重要!!!!!!!
         columns: [
-            {field: 'checkStatus',checkbox: true}, 	//给多选框赋一个field值为“checkStatus”用于更改选择状态!!!!!
-            {field: 'idFormatter',visible:true},
-            {field: 'bill_code',title: "订单编号",align:'center',width:'30%'},
-            {field: 'bill_type_name',title: "订单类型",align:'center',width:'30%'}
+            {field: 'checkStatus',checkbox: true},
+            {field: 'idFormatter',visible:false},
+            {field: 'bill_code',title: "账单编号",align:'center',width:'30%'},
+            {field: 'bill_type_name',title: "账单类型",align:'center',width:'30%'},
+            {field: 'bill_month',title: "缴纳月份",align:'center',width:'30%'},
+            {field: 'bill_initial_time',title: "生成时间",align:'center',width:'30%'},
+            {field: 'bill_amount_name',title: "应缴金额",align:'center',width:'30%'},
+            {field: 'bill_payer_name',title: "应缴纳人",align:'center',width:'30%'},
+            {field: 'bill_pay_status_name',title: "缴纳状态",align:'center',width:'30%'},
+            {field: 'bill_notify_info_date',title: "上次催缴时间",align:'center',width:'30%'},
+            {field: 'bill_notify_info_num',title: "已催缴次数",align:'center',width:'30%'}
         ],
+        queryParams :{
+           person:person_name,
+           building:building_code,
+           date:delay_date
+        },
         //点击全选框时触发的操作
-
         onCheckAll:function(rows){
             console.log(rows);
             for(var i=0;i<rows.length;i++){
@@ -614,8 +651,28 @@ var selectionIds = [];	//保存选中ids
 function responseHandler(res) {
     res['rows']= JSON.parse(res['0'])
     res['total']= JSON.parse(res['1'])
-    console.log(res)
+
+    for(var n in  res['rows']) {
+        var final_data = [];
+        for (var m in res['rows'][n]) {
+            if (m == 'bill_notify_info') {
+                if (res['rows'][n][m]) {
+                    res['rows'][n][m] = JSON.parse(res['rows'][n][m])
+                    for (var s in res[n][m]) {
+                        final_data.push(res[n][m][s])
+                    }
+                    res['rows'][n][m] = final_data
+                    res['rows'][n]['bill_notify_info_num'] = final_data.length
+                    if(final_data['date']){
+                    res['rows'][n]['bill_notify_info_date'] = final_data[final_data.length - 1]['date']}else{ res['rows'][n]['bill_notify_info_date']='无'}
+                }
+            }
+
+        }
+    }
+    console.log(res);
     return res;
+
 }
 
 });
@@ -1059,9 +1116,9 @@ function html_render(index){
         }
             if(index.method=='building'){
                 var html=
-                    '<p class="select_buliding_wrap">'
+                    '<p class="select_buliding_wrap" >'
                     +must_html+index.input+':'+
-                    '  <a href="javascript:;" id="treeNavWrite" class="treeWrap"><span></span></a>' +
+                    '  <a href="javascript:;" id="treeNavWrite" class="treeWrap" style="margin-left:18px;"><span></span></a>' +
                     '  <span class="select_buliding"></span>' +
                     '</p>'
                 final_html+=html
@@ -1744,7 +1801,7 @@ function information(render) {
 ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////人员查找//////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-!(function add_person(){
+/*!(function add_person(){
     $('#notify .search_person_wrap .search_person_btn').click(function(){
         var name = $(this).closest('.search_person_wrap').find('.search_person_name').val();
         var search_person_wrap = $(this).closest('.search_person_wrap');
@@ -1763,15 +1820,24 @@ function information(render) {
                 $('.search_person_results').empty();
                 if(data){
                     data = JSON.parse(data);
+                    console.log(data)
                     for(var i=0;i<3;i++){
                         var d = data[i];
+                        d['person_code']=d['json_array_elements_text'];
+                        if(!d['person_information']){
+                            d['person_information']={
+                                id_number:null,
+                                mobile_number:null
+                            }
+                        }
 
-                        var html = '<div class="single_person" data-name="'+d['payer_name']+'" data-code="'+d['code']+'"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a>'
+
+                        var html = '<div class="single_person" data-name="'+d['payer_name']+'" data-code="'+d['person_code']+'"><a class="fl add"><i class=" fa fa-trash-o fa-lg fa-plus-circle"></i></a>'
                             +'<div class="fl">'
                             +'<span class="name">'+d['payer_name']+'</span>'
-                         /*   +'<span class="code">'+d['code']+'</span>'*/
-                        +'<span class="code">'+'iD:'+d['person_information']['id_number']+'</span>'
-                        +'<span class="code">'+'&nbsp;&nbsp;'+'Tel:'+d['person_information']['mobile_number']+'</span>'
+                         /!*   +'<span class="code">'+d['code']+'</span>'*!/
+                        +'<span class="id_number" >'+'iD:'+d['person_information']['id_number']+'</span>'
+                        +'<span class="mobile_number">'+'&nbsp;&nbsp;'+'Tel:'+d['person_information']['mobile_number']+'</span>'
                             +'</div>';
                         console.log(html);
                         $('.search_person_results').append(html);
@@ -1791,17 +1857,16 @@ function information(render) {
 //点击搜索到的住户,添加到结果列表
     $(document).on('click','.search_person_results .single_person .add',function() {
         var single_person = $(this).closest('.single_person');
-        var full_name = single_person.find('.name').html();
+        var name = single_person.find('.name').html();
         var id_number = single_person.find('.id_number').html();
-        var last_name = single_person.data('last_name');
-        var first_name = single_person.data('first_name');
-
-        var last_name = single_person.data('last_name');
-        var first_name = single_person.data('first_name');
+        var mobile_number = single_person.find('.mobile_number').html();
         var code = single_person.data('code');
 
 
-        var html = '<li data-last_name="' + last_name + '" data-first_name="' + first_name + '" data-code="' + code + '" id="' + code + '"><span class="full_name">' + full_name + '</span><span class="code">' + code + '</span> <i class="fa fa-close"></i></li>';
+
+        var html = '<li data-name="' + name  + '" data-code="' + code + '" id="' + code + '"><span class="full_name">' + name + '</span><span class="id_number" style="width:160px;">' + id_number + '</span><span class="mobile_number">' + mobile_number + '</span> <i class="fa fa-close"></i></li>';
+
+
         //不重复添加
         if($(this).closest('.modal-body').find(".person_building_data #"+code).length==0){
             $(this).closest('.modal-body').find('.person_building_data ul').append(html);
@@ -1814,7 +1879,7 @@ function information(render) {
     })
 
 
-})()
+})()*/
 
 
 
