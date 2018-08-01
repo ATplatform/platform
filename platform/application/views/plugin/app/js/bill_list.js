@@ -446,29 +446,6 @@ function getdetail(location,rowkeys){
 
 
         ////////////////////////////////////////额外补充//////////////////////////////////////////////////
-   /*     $.ajax({
-            type:"POST",
-            url:platform_index.router.change_history,
-            dataType:"json",
-            success:function(message){
-                /!*var data=JSON.parse(message);*!/
-                console.log(message['0']['notify_info'])
-                data=JSON.parse(message['0']['notify_info'])
-                console.log(data)
-                for(var n in data){
-                }
-                console.log(n)
-                var date=new Date;
-                var year=date.getFullYear();
-                var month=date.getMonth()+1;
-                var nextmonth=month+1
-                if(month==12){nextmonth=1}
-                var now=year+'-'+nextmonth+'-'+'1'
-                console.log(now)
-                $('#add_Item .pkg_fee_standard_name_1').addClass('col_37A')
-                $('#add_Item .pkg_change_date_insert').addClass('col_37A')
-                $('#add_Item .pkg_fee_standard_name_1').html(data['0'].fee_standard+'元/平米')
-                $('#add_Item .pkg_change_date_insert').html(now)*/
                 $("#getauz").bootstrapTable('destroy');
                 $('#getauz').bootstrapTable({
                     method: "get",
@@ -498,10 +475,7 @@ function getdetail(location,rowkeys){
                         console.info("加载数据失败");
                     }
                 })
-       /*     },
-            error:function(jqXHR,textStatus,errorThrown){
-            }
-        })*/
+
     }
 
 }
@@ -554,9 +528,6 @@ function getrewrite(location,rowkeys){
                         $(location+'  .'+n).html(row[n+ '_name']);
 
                     }
-
-
-
                 }
             }
         }
@@ -566,9 +537,9 @@ function getrewrite(location,rowkeys){
 }
 
 
+var selectionIds = []; //保存选中ids
 $('.notify_search').click(function () {
     $('.notify_table_wrap').css({"display":"block"})
-
 
     var person_name=$('#notify ').find('input[name=bill_person]').val()
     var building_code=$('#notify .select_buliding em').data('room_code')
@@ -577,11 +548,6 @@ $('.notify_search').click(function () {
 console.log(person_name)
     console.log(building_code)
     console.log(delay_date)
-
-
-    var $table;
-var selectionIds = []; //保存选中ids
-var selectionIds = [];	//保存选中ids
     $("#notify_table").bootstrapTable('destroy');
     $("#notify_table").bootstrapTable({
         dataType:"json",		//初始化编码
@@ -590,7 +556,7 @@ var selectionIds = [];	//保存选中ids
         striped:true,			//奇偶行渐色表
         clickToSelect:true,		//是否选中
         maintainSelected:true,
-        search:true,
+     /*   search:true,*/
         idField:"idFormatter",
         pageNumber: 1, //初始化加载第一页，默认第一页
         pagination:false,//是否分页
@@ -600,15 +566,15 @@ var selectionIds = [];	//保存选中ids
         columns: [
             {field: 'checkStatus',checkbox: true},
             {field: 'idFormatter',visible:false},
-            {field: 'bill_code',title: "账单编号",align:'center',width:'30%'},
-            {field: 'bill_type_name',title: "账单类型",align:'center',width:'30%'},
-            {field: 'bill_month',title: "缴纳月份",align:'center',width:'30%'},
-            {field: 'bill_initial_time',title: "生成时间",align:'center',width:'30%'},
-            {field: 'bill_amount_name',title: "应缴金额",align:'center',width:'30%'},
-            {field: 'bill_payer_name',title: "应缴纳人",align:'center',width:'30%'},
-            {field: 'bill_pay_status_name',title: "缴纳状态",align:'center',width:'30%'},
-            {field: 'bill_notify_info_date',title: "上次催缴时间",align:'center',width:'30%'},
-            {field: 'bill_notify_info_num',title: "已催缴次数",align:'center',width:'30%'}
+            {field: 'bill_code',title: "账单编号",align:'center',width:'10%'},
+            {field: 'bill_type_name',title: "账单类型",align:'center',width:'10%'},
+            {field: 'bill_month',title: "缴纳月份",align:'center',width:'10%'},
+            {field: 'bill_initial_time',title: "生成时间",align:'center',width:'10%'},
+            {field: 'bill_amount_name',title: "应缴金额",align:'center',width:'10%'},
+            {field: 'bill_payer_name',title: "应缴纳人",align:'center',width:'10%'},
+            {field: 'bill_pay_status_name',title: "缴纳状态",align:'center',width:'10%'},
+            {field: 'bill_notify_info_date',title: "上次催缴时间",align:'center',width:'10%'},
+            {field: 'bill_notify_info_num',title: "已催缴次数",align:'center',width:'10%'}
         ],
         queryParams :{
            person:person_name,
@@ -619,8 +585,8 @@ var selectionIds = [];	//保存选中ids
         onCheckAll:function(rows){
             console.log(rows);
             for(var i=0;i<rows.length;i++){
-                if(selectionIds.indexOf(rows[i].bill_code)==-1){
-                selectionIds.push(rows[i].bill_code)
+                if(selectionIds.indexOf(rows[i])==-1){
+                selectionIds.push(rows[i])
                 }
             }
             console.log(selectionIds)
@@ -634,7 +600,7 @@ var selectionIds = [];	//保存选中ids
 
         onCheck:function(row){
             console.log(row);
-            selectionIds.push(row.bill_code)
+            selectionIds.push(row)
             console.log(selectionIds)
         },
 
@@ -642,7 +608,7 @@ var selectionIds = [];	//保存选中ids
 
         onUncheck:function(row){
             console.log(row);
-            selectionIds.pop(row.bill_code)
+            selectionIds.pop(row)
             console.log(selectionIds)
         }
     });
@@ -656,10 +622,11 @@ function responseHandler(res) {
         var final_data = [];
         for (var m in res['rows'][n]) {
             if (m == 'bill_notify_info') {
-                if (res['rows'][n][m]) {
+                console.log(res['rows'][n][m])
+                if (res['rows'][n][m]!==null) {
                     res['rows'][n][m] = JSON.parse(res['rows'][n][m])
-                    for (var s in res[n][m]) {
-                        final_data.push(res[n][m][s])
+                    for (var s in res['rows'][n][m]) {
+                        final_data.push(res['rows'][n][m][s])
                     }
                     res['rows'][n][m] = final_data
                     res['rows'][n]['bill_notify_info_num'] = final_data.length
@@ -670,18 +637,37 @@ function responseHandler(res) {
 
         }
     }
+
+
     console.log(res);
     return res;
 
 }
 
+
 });
 
 
+$('.add_btn_notify').click(function(){
+    $('.add_btn_notify_h4').css({"display":"block"})
+    $('.add_btn_notify_confirm').css({"display":"inline-block"})
+
+    $('.add_btn_getmoney_h4').css({"display":"none"})
+    $('.add_btn_getmoney_confirm').css({"display":"none"})
+})
+
+$('.add_btn_getmoney').click(function(){
+    $('.add_btn_notify_h4').css({"display":"none"})
+    $('.add_btn_notify_confirm').css({"display":"none"})
+    $('.add_btn_getmoney_h4').css({"display":"block"})
+    $('.add_btn_getmoney_confirm').css({"display":"inline-block"})
+})
+
+
+/*
 
 $('.add_btn_getmoney').click(function () {
     var $table;
-    var selectionIds = []; //保存选中ids
     var selectionIds = [];	//保存选中ids
     $("#getmoney_table").bootstrapTable('destroy');
     $("#getmoney_table").bootstrapTable({
@@ -745,12 +731,92 @@ $('.add_btn_getmoney').click(function () {
         return res;
     }
 
-
-
-
-
 });
+*/
+message_notify(selectionIds)
+word_export(selectionIds)
 
+function message_notify(index){
+$('#message_notify').click(function(){
+    var html='';
+    var all_amount=0;
+    var now = getDate();
+    for(var n=0;n<index['length'];n++){
+        var id=n+1
+        var bill_amount=parseFloat(index[n].bill_amount)
+        var bill_month=index[n].bill_month
+        var bill_type_name=index[n].bill_type_name
+        all_amount=all_amount+bill_amount
+        html+='<li><a href="">账单'+id+':&nbsp;&nbsp;&nbsp;&nbsp;'+bill_month+bill_type_name+': '+bill_amount+'元</a></li>'
+
+    }
+
+
+
+    var person=JSON.parse(index[0].bill_person_code)
+    console.log('333333333333333333333')
+    console.log(person)
+    var target=''
+    for(var i=0;i<person.length;i++){
+
+        target += person[i] +',';
+    }
+  /*  if(!target.length){
+    }
+    else{*/
+        //去掉最后一个逗号
+    // target=target.substring(0,target.length-1);
+
+    var content = html;
+    var target={};
+
+    $.ajax({
+        url : getRootPath()+'/index.php/Moneypay/addContent',
+        type : "POST",
+        dataType : "text",
+        data : {
+            messagecode:messagecode,
+            content: content,
+            create_time:now,
+            bill_amount:all_amount
+        },
+        success:function(message){
+            msg_link = JSON.parse(message);
+            console.log(message)
+            $.ajax({
+                url : getRootPath()+'/index.php/Message/addMessage',
+                type : "POST",
+                dataType : "text",
+                data : {
+                    messagecode:messagecode,
+                    msg_type:'102',
+                    if_cycle:'101',
+                    if_receipt:'0',
+                    if_bill:'1',
+                    bill_amount:'xxxx',
+                    msg_img:getRootPath()+'upload/msg_img/10.png',
+                    msg_title:'尊敬的业主，您已欠费共XX.XX元，请及时缴费，以免影响您在本小区的正常生活',
+                    msg_link:msg_link,
+                    target:target,
+                    create_time:now,
+                    bill_amount:all_amount
+                },
+                success:function(message){
+                        $('#notify').modal('hide');
+                        openLayer('已经发送催交通知给'+selectionIds[0].bill_payer_name)
+
+                }
+            })
+        }
+    })
+
+
+   console.log( selectionIds)
+
+})
+
+
+}
 
 
 
@@ -882,6 +948,39 @@ $('#add_Item .rent_parking_lot_code').click(function() {
         })
 
 })
+
+
+var messagecode = '';
+
+//获得信息编号
+$.ajax({
+    url:getRootPath()+'/index.php/Message/getMessageCode',
+    success:function(data){
+        messagecode = parseInt(data) + 1;
+        $('#add_message .building .code').html(messagecode);
+    }
+})
+
+/*$code = $this->input->post('messagecode');
+$msg_type = $this->input->post('msg_type');
+$if_cycle = $this->input->post('if_cycle');
+$cycle_type = $this->input->post('cycle_type');
+$if_bill = $this->input->post('if_bill');
+$bill_amount = $this->input->post('bill_amount');
+$if_receipt = $this->input->post('if_receipt');
+$msg_title = $this->input->post('msg_title');
+$msg_link = $this->input->post('msg_link');
+$msg_img = $this->input->post('msg_img');
+$target_type = $this->input->post('target_type');
+$target = $this->input->post('target');
+$push_end_date = $this->input->post('push_end_date');
+$push_start_date = $this->input->post('push_start_date');*/
+
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////点击保存的事件//////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
@@ -1118,7 +1217,7 @@ function html_render(index){
                 var html=
                     '<p class="select_buliding_wrap" >'
                     +must_html+index.input+':'+
-                    '  <a href="javascript:;" id="treeNavWrite" class="treeWrap" style="margin-left:18px;"><span></span></a>' +
+                    '  <a href="javascript:;" id="treeNavWrite" class="treeWrap" style="margin-left:220px;"><span></span></a>' +
                     '  <span class="select_buliding"></span>' +
                     '</p>'
                 final_html+=html

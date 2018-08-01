@@ -35,7 +35,7 @@
         <div class="table_wrap">
          <div class="oh pt10">
              <span class="fr add_btn add_btn_notify" data-target="#notify" data-toggle="modal">催交</span>
-             <span class="fr add_btn add_btn_getmoney" data-target="#getmoney" data-toggle="modal">现场收费</span>
+             <span class="fr add_btn add_btn_getmoney" data-target="#notify" data-toggle="modal">现场收费</span>
 
              <span class="fr add_btn" data-target="#add_other" data-toggle="modal">新增其他收费项</span>
              <a class="fr add_btn" id="reset" >清除筛选</a>
@@ -67,7 +67,7 @@
         </div>
 
 
-
+<!--<button id="message_notify">notify</button>-->
 
 
 
@@ -114,49 +114,52 @@
         </div>
 
         <!-- 增加物资 -->
-        <div class="modal fade" id="getmoney" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog"  style="width: 630px;">
-                <div class="modal-content model_wrap">
-                    <div class="model_content">
-                        <div class="building_header">
-                            <h4 class="modal-title tac">现场收费</h4>
-                        </div>
-                        <div class=" modal-body building  oh">
-                            <div class="getmoney">
-                            </div>
-                            <div style=" overflow:auto; width: 550px;height:400px;">
-                            <table id="getmoney_table" data-toolbar="#toolbar" >
-                                <thead >
-                                </thead>
-                            </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal_footer bg_eee">
-                        <p class="tac pb17">
-                            <span class="col_37A confirm">保存</span>
-                            <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
-                        </p>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal -->
-        </div>
+        <!--    <div class="modal fade" id="getmoney" tabindex="-1" role="dialog" aria-hidden="true">
+              <div class="modal-dialog"  style="width: 630px;">
+                  <div class="modal-content model_wrap">
+                      <div class="model_content">
+                          <div class="building_header">
+                              <h4 class="modal-title tac">现场收费</h4>
+                          </div>
+                          <div class=" modal-body building  oh">
+                              <div class="getmoney">
+                              </div>
+                              <div style=" overflow:auto; width: 550px;height:400px;">
+                              <table id="getmoney_table" data-toolbar="#toolbar" >
+                                  <thead >
+                                  </thead>
+                              </table>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="modal_footer bg_eee">
+                          <p class="tac pb17">
+                              <span class="col_37A confirm" id="getmoney_word">现场缴费</span>
+                              <span class="col_37A confirm" id="message_notify">催交</span>
+                              <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
+                          </p>
+                      </div>
+                  </div>
+            </div>
+        </div>-->
 
 
         <!--催交 -->
-        <div class="modal fade" id="notify" tabindex="-1" role="dialog" aria-hidden="true" >
-            <div class="modal-dialog"  style="width:750px;">
-                <div class="modal-content model_wrap" style="width:750px;">
-                    <div class="model_content" style="width:750px;position:relative;">
+      <div class="modal fade" id="notify" tabindex="-1" role="dialog" aria-hidden="true" >
+            <div class="modal-dialog"  style="width:850px;">
+                <div class="modal-content model_wrap" style="width:850px;">
+                    <div class="model_content" style="width:850px;position:relative;">
                         <div class="building_header">
-                            <h4 class="modal-title tac">催交信息</h4>
+                            <h4 class="modal-title tac add_btn_notify_h4">催交信息</h4>
+                            <h4 class="modal-title tac add_btn_getmoney_h4">现场收费</h4>
                         </div>
                         <div class=" modal-body building  oh">
                             <div class="notify">
-                                <button class=" btn notify_search" style="margin-left:400px;margin-bottom:180px;margin-top:20px;width:100px;">搜索账单</button>
+                                <button class=" btn notify_search" style="margin-left:500px;margin-bottom:180px;margin-top:20px;width:100px;">搜索账单</button>
+                              <!--  <button class=" btn getmoney_search" style="margin-left:500px;margin-bottom:180px;margin-top:20px;width:100px;">搜索账单</button>-->
                             </div>
 
-                            <div class="notify_table_wrap" style=" overflow:auto; width:inherit; height:400px;margin-top:-120px;display:none">
+                            <div class="notify_table_wrap" style="overflow:auto; width:inherit; height:300px;margin-top:-180px;display:none">
                             <table id="notify_table" data-toolbar="#toolbar" >
                                 <thead >
                                 <tr>
@@ -170,18 +173,27 @@
                     </div>
                     <div class="modal_footer bg_eee">
                         <p class="tac pb17">
-                            <span class="col_37A confirm">催交</span>
+                            <span class="col_37A confirm add_btn_notify_confirm" id="message_notify">催交</span>
+                            <span class="col_37A confirm add_btn_getmoney_confirm" id="getmoney_word">现场缴费</span>
+
                             <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                         </p>
                     </div>
                 </div>
 
             </div>
-        </div><!-- /.modal-content -->
-        <!-- /.modal -->
+        </div>
+
 
         <div id="word-content" style="display:none">
-            <div><p style="margin:0pt; text-align:center"><span class="village_name" style="color:#00b0f0; font-family:宋体; font-size:16pt; font-weight:bold; text-decoration:underline">小区名称 </span><span style="font-family:宋体; font-size:16pt; font-weight:bold">收款凭据</span></p><p style="margin:0pt; text-align:justify"><span style="font-family:宋体; font-size:10.5pt">缴费人姓名：</span><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline" class="bill_payer_name">张三</span><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt"> </span></p><div style="text-align:center"><table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin:0 auto; width:110.22%"><tbody><tr style="height:22.7pt"><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:8.74%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">序号</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:25.7%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">账单编号</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:31.84%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">账单类型</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">对应期数</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">应缴纳金额</span></p></td></tr><tr style="height:22.7pt"><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:8.74%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="idformatter">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:25.7%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="bill_code">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:31.84%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="bill_type_name"></span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="bill_month">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="bill_amount_name">&nbsp;</span></p></td></tr><tr style="height:22.7pt"><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:8.74%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:25.7%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:31.84%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td></tr><tr style="height:22.7pt"><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:8.74%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">合计</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:25.7%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">大写</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:31.84%"><p style="margin:0pt; text-align:center"><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline" class="bill_amount_big">壹佰元</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">小写</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline">¥<span class="bill_amount_small">100.00</span></span></p></td></tr></tbody></table></div><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">收款时间：</span><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline" class="now_time">2018-09-01</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt"> 收款人：</span><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline">财务-李晓琼</span></p><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:12pt">&nbsp;</span></p><p style="margin:0pt"><span style="font-family:宋体; font-size:12pt">&nbsp;</span></p></div>
+            <div><p style="margin:0pt; text-align:center"><span class="village_name" style="color:#00b0f0; font-family:宋体; font-size:16pt; font-weight:bold; text-decoration:underline">小区名称 </span><span style="font-family:宋体; font-size:16pt; font-weight:bold">收款凭据</span></p><p style="margin:0pt; text-align:justify"><span style="font-family:宋体; font-size:10.5pt">缴费人姓名：</span><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline" class="bill_payer_name">张三</span><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt"> </span></p><div style="text-align:center"><table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin:0 auto; width:110.22%"><tbody><tr style="height:22.7pt"><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:8.74%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">序号</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:25.7%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">账单编号</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:31.84%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">账单类型</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">对应期数</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">应缴纳金额</span></p></td></tr>
+
+
+
+                <tr id='word_content_html' style="display:none"></tr>
+
+
+                        <tr style="height:22.7pt"><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:8.74%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:25.7%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:31.84%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span></p></td></tr><tr style="height:22.7pt"><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:8.74%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">合计</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:25.7%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">大写</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:31.84%"><p style="margin:0pt; text-align:center"><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline" class="bill_amount_big">壹佰元</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">小写</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline">¥<span class="bill_amount_small">100.00</span></span></p></td></tr></tbody></table></div><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt">收款时间：</span><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline" class="now_time">2018-09-01</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt">&nbsp;</span><span style="font-family:宋体; font-size:10.5pt"> 收款人：</span><span style="color:#00b0f0; font-family:宋体; font-size:10.5pt; text-decoration:underline">财务-李晓琼</span></p><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:12pt">&nbsp;</span></p><p style="margin:0pt"><span style="font-family:宋体; font-size:12pt">&nbsp;</span></p></div>
         </div>
 
 
@@ -304,25 +316,51 @@
 
 <script>
     function word_export(index) {
-        $("#word").click(function () {
-            var now = getDate();
-            index.bill_amount=parseFloat(index.bill_amount).toFixed(2)
-            var bill_amount_big=convertCurrency( index.bill_amount)
+        var word_name_tmp=0
+        var html='';
+        var all_amount=0;
+        $("#word,#getmoney_word").click(function (e) {
+            word_name_tmp++
+               html='';
+               all_amount=0;
+            if(index['length']==null){
+                var index_wrap={};
+                for(var n in index){
+                    index_wrap[n]=(index[n])
+                }
+                index['length']=1;
+                index['0']=index_wrap
+            }
+            console.log(index)
+           for(var n=0;n<index['length'];n++){
+                console.log(index[n])
+            var id=n+1;
+            var bill_code=index[n].bill_code
+            var bill_amount_name=index[n].bill_amount_name
+            var bill_type_name=index[n].bill_type_name
+            var bill_month=index[n].bill_month
+            var bill_amount_name=index[n].bill_amount_name
+            var bill_amount=parseFloat(index[n].bill_amount)
+            all_amount=all_amount+bill_amount
+
+                html +='<tr class="word_html_render" style="height:22.7pt"><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:8.74%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="idformatter">'+id+'</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:25.7%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="bill_code">'+bill_code+'</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:31.84%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="bill_type_name">'+bill_type_name +'</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="bill_month">'+bill_month+'</span></p></td><td style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:4.68pt; padding-right:4.68pt; vertical-align:middle; width:16.86%"><p style="margin:0pt; text-align:center"><span style="font-family:宋体; font-size:10.5pt" class="bill_amount_name">'+bill_amount+'元'+'</span></p></td></tr>';
+
+ }
+         index.bill_amount=parseFloat(index.bill_amount).toFixed(2)
+            var bill_amount_small= all_amount
+            var bill_amount_big=convertCurrency( all_amount)
             var village_name=$('input[name=village_name]').val()
+            var now = getDate();
             $("#word-content .village_name").html(village_name)
             $("#word-content .bill_payer_name").html(index.bill_payer_name)
-            $("#word-content .bill_type_name").html(index.bill_type_name)
-            $("#word-content .bill_code").html(index.bill_code)
-            $("#word-content .idformatter").html('1')
-            $("#word-content .bill_month").html(index.bill_month)
-            $("#word-content .bill_amount_name").html(index.bill_amount_name)
-            $("#word-content .bill_amount_small").html(index.bill_amount)
             $("#word-content .bill_amount_big").html(bill_amount_big)
-            $("#word-content .now_time").html(now)
+            $("#word-content .bill_amount_small").html(bill_amount_small)
+            $("#word-content .now_time").html(now);
 
+            $('.word_html_render').remove()
+            $(html).insertAfter("#word_content_html");
 
-
-            $("#word-content").wordExport("fileName");                  //fileName为导出的word文件的命名,content为要导出的html内容容器
+            $("#word-content").wordExport(now+'_'+word_name_tmp);   //fileName为导出的word文件的命名,content为要导出的html内容容器
             html2canvas(document.getElementById("content"), {
                 onrendered: function (canvas) {
                     //通过html2canvas将html渲染成canvas，然后获取图片数据
@@ -341,7 +379,9 @@
                 }
             });
         })
+        $('.word_html_render').remove()
     }
+
     function convertCurrency(money) {
         //汉字的数字
         var cnNums = new Array('零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖');
