@@ -557,7 +557,7 @@ function insert_data(element,render){
         var date=new Date;
         var nowdate=date.getDate();
         nowdate=date.getDate();
-        if(nowdate==1 || nowdate==2|| nowdate==3){openLayer('每月的1日~3日不可更新物业费标准');return;}
+        if(nowdate==1 || nowdate==2|| nowdate==3){openLayer('每月的1日~3日不可更新车位服务费');return;}
         var biz_type=$('#add_Item').find('input[name=pkg_biz_type]').data('ajax')
         var change_date=$('#add_Item .pkg_change_date_insert').html()
         var fee_standard=$('#add_Item').find('input[name=pkg_fee_standard_insert]').val()

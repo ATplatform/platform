@@ -50,7 +50,7 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'no',
-        insert:'no',
+        insert:'yes',
         must:'no',
         input:'账单编号',
         method:'show',
@@ -61,10 +61,10 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'no',
-        insert:'no',
+        insert:'yes',
         must:'no',
         input:'账单类型',
-        method:'time',
+        method:'show',
         disabledonly:'update'
     },
     bill_month:{
@@ -83,13 +83,15 @@ var platform_index={
         show:'yes',
         detail:'yes',
         update:'no',
-        insert:'no',
+        insert:'yes',
         must:'no',
         input:'生成时间',
         method:'show',
         disabledonly:'update'
 
     },
+
+
     bill_amount:{
         search:'no',
         show:'yes',
@@ -99,6 +101,17 @@ var platform_index={
         must:'no',
         input:'应缴金额',
         method:'other',
+        disabledonly:'update'
+    },
+    bill_amount_insert:{
+        search:'no',
+        show:'no',
+        detail:'no',
+        update:'no',
+        insert:'yes',
+        must:'no',
+        input:'应缴金额',
+        method:'input',
         disabledonly:'update'
     },
     bill_person_code:{
@@ -114,11 +127,11 @@ var platform_index={
     bill_payer_name:{
         search:'no',
         show:'yes',
-        detail:'no',
-        insert:'no',
+        detail:'yes',
+        insert:'yes',
         update:'no',
         input:'应缴纳人',
-        method:'show',
+        method:'input',
         disabledonly:'update'
     },
     bill_pay_status:{
@@ -257,10 +270,10 @@ var platform_index={
         show:'no',
         detail:'yes',
         update:'no',
-        insert:'no',
+        insert:'yes',
         must:'no',
         input:'收费说明',
-        method:'show',
+        method:'input',
         disabledonly:'update'
     },
     bill_history:{
@@ -279,7 +292,7 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'yes',
         input:'通过人员姓名查找',
         method:'input',
@@ -290,7 +303,7 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'yes',
         input:'通过车牌查找',
         method:'input',
@@ -301,7 +314,7 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'yes',
         input:'通过楼宇地点查找',
         method:'building',
@@ -312,7 +325,7 @@ var platform_index={
         show:'no',
         detail:'no',
         update:'yes',
-        insert:'yes',
+        insert:'no',
         must:'yes',
         input:'通过欠费时间查找',
         method:'select',
@@ -347,7 +360,7 @@ var platform_index={
         getparking_lot_code:'getparking_lot_code',
         getparkingcode:'getparkingcode',
         getperson_code:'getperson_code',
-        getLatestCode:getRootPath()+'/index.php/ParkRent/getLatestCode',
+        getLatestCode:getRootPath()+'/index.php/Moneypay/getLatestCodeforother',
 
     }
 
@@ -364,7 +377,7 @@ $('#table tr').prepend(render.data_html)
 $('#search_wrap').append(render.search_html)
 $('#person_detail .model_content').prepend(render.detail_html)
 $('#notify .notify').prepend(render.update_html)
-$('#getmoney .getmoney').append(render.insert_html)
+$('#add_Item .add_item').append(render.insert_html)
 
 render.initial_all(platform_index)
 showdata(platform_index)
@@ -442,7 +455,10 @@ function getdetail(location,rowkeys){
             $('.modal_footer .present').css({"display":"none"})
             $('.modal_footer .print').css({"display":"inline-block"})
         }
-        word_export(row)
+        $('#word').click(function(){
+            word_export(row)
+        })
+
 
 
         ////////////////////////////////////////额外补充//////////////////////////////////////////////////
@@ -543,11 +559,12 @@ $('.notify_search').click(function () {
 
     var person_name=$('#notify ').find('input[name=bill_person]').val()
     var building_code=$('#notify .select_buliding em').data('room_code')
-    var delay_date=$('#notify ').find('input[name=bill_time]').data('ajax')
-
+    var delay_date=$('#notify').find('input[name=bill_time]').data('ajax')
+    var lisence=$('#notify').find('input[name=bill_licence]').val()
 console.log(person_name)
     console.log(building_code)
     console.log(delay_date)
+    console.log(lisence)
     $("#notify_table").bootstrapTable('destroy');
     $("#notify_table").bootstrapTable({
         dataType:"json",		//初始化编码
@@ -566,20 +583,22 @@ console.log(person_name)
         columns: [
             {field: 'checkStatus',checkbox: true},
             {field: 'idFormatter',visible:false},
-            {field: 'bill_code',title: "账单编号",align:'center',width:'10%'},
-            {field: 'bill_type_name',title: "账单类型",align:'center',width:'10%'},
-            {field: 'bill_month',title: "缴纳月份",align:'center',width:'10%'},
-            {field: 'bill_initial_time',title: "生成时间",align:'center',width:'10%'},
-            {field: 'bill_amount_name',title: "应缴金额",align:'center',width:'10%'},
-            {field: 'bill_payer_name',title: "应缴纳人",align:'center',width:'10%'},
-            {field: 'bill_pay_status_name',title: "缴纳状态",align:'center',width:'10%'},
-            {field: 'bill_notify_info_date',title: "上次催缴时间",align:'center',width:'10%'},
-            {field: 'bill_notify_info_num',title: "已催缴次数",align:'center',width:'10%'}
+            {field: 'bill_code',title: "账单编号",align:'center'},
+            {field: 'bill_type_name',title: "账单类型",align:'center',width:'5%'},
+            {field: 'bill_month',title: "缴纳月份",align:'center',width:'5%'},
+            {field: 'bill_initial_time',title: "生成时间",align:'center',width:'5%'},
+            {field: 'bill_amount_name',title: "应缴金额",align:'center',width:'5%'},
+            {field: 'bill_payer_name',title: "应缴纳人",align:'center',width:'5%'},
+            {field: 'bill_pay_status_name',title: "缴纳状态",align:'center'},
+            {field: 'bill_notify_info_date',title: "上次催缴时间",align:'center'},
+            {field: 'bill_notify_info_num',title: "已催缴次数",align:'center'},
+            {field: 'remark',title: "备注",align:'center'}
         ],
         queryParams :{
            person:person_name,
            building:building_code,
-           date:delay_date
+           date:delay_date,
+            car_lisence:lisence
         },
         //点击全选框时触发的操作
         onCheckAll:function(rows){
@@ -643,6 +662,9 @@ function responseHandler(res) {
     return res;
 
 }
+    $('#getmoney_word').click(function(){
+        word_export(selectionIds)
+    })
 
 
 });
@@ -734,18 +756,20 @@ $('.add_btn_getmoney').click(function () {
 });
 */
 message_notify(selectionIds)
-word_export(selectionIds)
+
 
 function message_notify(index){
 $('#message_notify').click(function(){
     var html='';
     var all_amount=0;
     var now = getDate();
+    var bill_code=[]
     for(var n=0;n<index['length'];n++){
         var id=n+1
         var bill_amount=parseFloat(index[n].bill_amount)
         var bill_month=index[n].bill_month
         var bill_type_name=index[n].bill_type_name
+        bill_code.push(index[n].bill_code)
         all_amount=all_amount+bill_amount
         html+='<li><a href="">账单'+id+':&nbsp;&nbsp;&nbsp;&nbsp;'+bill_month+bill_type_name+': '+bill_amount+'元</a></li>'
 
@@ -784,7 +808,7 @@ $('#message_notify').click(function(){
             msg_link = JSON.parse(message);
             console.log(message)
             $.ajax({
-                url : getRootPath()+'/index.php/Message/addMessage',
+                url : getRootPath()+'/index.php/Moneypay/addMessage',
                 type : "POST",
                 dataType : "text",
                 data : {
@@ -802,11 +826,78 @@ $('#message_notify').click(function(){
                     bill_amount:all_amount
                 },
                 success:function(message){
-                        $('#notify').modal('hide');
-                        openLayer('已经发送催交通知给'+selectionIds[0].bill_payer_name)
+
+
+
+                    $.ajax({
+                        url : getRootPath()+'/index.php/Moneypay/getnotify_info',
+                        type : "POST",
+                        dataType : "text",
+                        data : {
+                            bill_code:bill_code
+                        },
+                        success:function(data){
+                            /*    data=JSON.parse(data)
+                              var new_notify_info=[]
+                               var person_code=$('input[name=village_person_code]').val()*/
+                        /*    for(var n in data){
+                                data[n]=JSON.parse(data[n])
+                                /!*for(var i in data[n]){}
+                                var new_num=i+1;
+                                data[n]['notify_info'][i]={"person_code":person_code,"date":now}
+                                new_notify_info.push( data[n]['notify_info'])*!/
+                            }*/
+                     /*     for(var n in data){
+                                var value={"person_code":person_code,"date":now}
+                                data[n].push(value)
+                            }*/
+                            var new_notify_info=[]
+                            var person_code=parseInt($('input[name=village_person_code]').val())
+                            data=JSON.parse(data)
+                            for(var n in data){
+                                data[n]['notify_info']=JSON.parse(data[n]['notify_info'])
+                                for(var i in data[n]['notify_info']){}
+                                var new_num=parseInt(i)+1;
+                                console.log(new_num)
+                                data[n]['notify_info'][new_num]={"person_code":person_code,"date":now}
+
+                                new_notify_info.push( data[n]['notify_info'])
+                                new_notify_info[n]=JSON.stringify(new_notify_info[n])
+                            }
+
+
+console.log(bill_code)
+                           $.ajax({
+                               url: getRootPath() + '/index.php/Moneypay/addnotify_info',
+                               type: "POST",
+                               dataType: "text",
+                               data: {
+                                   bill_code: bill_code,
+                                   new_notify_info: new_notify_info
+                               },
+                               success: function (data) {
+                                   console.log(data)
+                                   $('#notify').modal('hide');
+                                   layer.open({
+                                       type: 1,
+                                       title: false,
+                                       //打开关闭按钮
+                                       closeBtn: 1,
+                                       shadeClose: false,
+                                       skin: 'tanhcuang',
+                                       content: '发送催交通知成功',
+                                       cancel: function(){
+                                           window.location.href=platform_index.router.root;
+                                       }
+                                   });
+                               }
+                           })
+                        }
+                    })
 
                 }
             })
+
         }
     })
 
@@ -826,128 +917,50 @@ $('#message_notify').click(function(){
 
 
 ////////////////////////////////车位编号///////////////////////////
-$('.add_btn').click(function(){
+
+$('.add_btn_other').click(function(){
     $.ajax({
         url:platform_index.router.getLatestCode,
+        data:{
+            timestamp:'11',
+        },
+        type:"post",
         success:function(data){
-            if(parseInt(data)){
-                var code = parseInt(data) + 1;
-            }else{
-                var code = 1000001;
+
+            data=JSON.parse(data)
+            console.log(data)
+            var timestamp=new Date().getTime();
+            for(var n=0;n<data.length;n++){
+                data[n]=data[n]['code'].split(timestamp)['1']
             }
-            $('.add_item .rent_id').html(code);
+            var max=Math.max.apply(null,data);
+            console.log(data)
+            console.log(max)
+            if(parseInt(max)){
+                var new_num = parseInt(max) + 1;
+                var code='OT'+timestamp+new_num;
+            }else{
+                var timestamp=new Date().getTime();
+                var code='OT'+timestamp+100001;
+            }
+            console.log(code)
+            $('.add_item .bill_code').html(code);
         }
     })
+    var now = getDate();
+    $('.add_item .bill_type').html('其他账单');
+    $('.add_item .bill_type').html('其他账单');
+    $('.add_item .bill_initial_time').html(now);
+
+
+
+
 })
 
 
-////////////////////////////////停车场///////////////////////////
-$.ajax({
-    type: "POST",
-    url: platform_index.router.getparkingcode,
-    dataType: "text",
-    success: function (message) {
-        var data = JSON.parse(message);
-        console.log(message)
-        for (var i = 0; i < data.length; i++) {
-            var d = data[i];
-            var parklot_parkcode = d['lot_parkcode'];
-            var parklot_parkcode_name = d['lot_parkcode_name']
-            if ($("#rewrite .parklot_parkcode  #" + parklot_parkcode).length == 0) {
-                $('#rewrite .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name +parklot_parkcode+ '</a></li>');
-            }
-            if ($("#search_wrap .parklot_parkcode  #" + parklot_parkcode).length == 0) {
-                $('#search_wrap .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name +'</a></li>');
-            }
-            if ($("#add_Item .parklot_parkcode  #" + parklot_parkcode).length == 0) {
-                $('#add_Item .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name + '</a></li>');
-            }
-        }
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-    }
-})
-
-////////////////////////////////车库楼层///////////////////////////
-$.ajax({
-    type: "POST",
-    url: platform_index.router.getfloor,
-    dataType: "text",
-    success: function (message) {
-        var data = JSON.parse(message);
-        console.log(message)
-        for (var i = 0; i < data.length; i++) {
-            var d = data[i];
-            var parklot_parkcode = d['lot_parkcode'];
-            var parklot_parkcode_name = d['lot_parkcode_name']
-            if ($("#rewrite .parklot_parkcode  #" + parklot_parkcode).length == 0) {
-                $('#rewrite .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name +parklot_parkcode+ '</a></li>');
-            }
-            if ($("#search_wrap .parklot_parkcode  #" + parklot_parkcode).length == 0) {
-                $('#search_wrap .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name + parklot_parkcode+'</a></li>');
-            }
-            if ($("#add_Item .parklot_parkcode  #" + parklot_parkcode).length == 0) {
-                $('#add_Item .parklot_parkcode  ul').append('<li><a href="javascript:;" id=' + parklot_parkcode + ' data-ajax=' + parklot_parkcode + '>' + parklot_parkcode_name + parklot_parkcode+'</a></li>');
-            }
-        }
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-    }
-})
 
 
-////////////////////////////////占用人///////////////////////////
-$.ajax({
-    type:"POST",
-    url:platform_index.router.getperson_code,
-    dataType:"text",
-    success:function(message){
-        var data=JSON.parse(message);
-        for(var i=0;i<data.length;i++){
-            var d = data[i];
-            var rent_renter_name =d['full_name'];
-            var rent_renter=d['code']
-            if($("#add_Item .rent_renter  #"+rent_renter).length==0){
-                $('#add_Item .rent_renter  ul').append('<li><a href="javascript:;" id='+rent_renter +' data-ajax='+rent_renter +'>'+rent_renter_name+'</a></li>');
-            }
-        }
-    },
-    error:function(jqXHR,textStatus,errorThrown){
-    }
-})
 
-
-$('#add_Item .rent_parking_lot_code').click(function() {
-    var parkcode_insert = $('#add_Item').find('input[name=parklot_parkcode]').data('ajax')
-    var floor_insert = $('#add_Item').find('input[name=parklot_floor]').data('ajax')
-
-        $.ajax({
-            type: "POST",
-            url: platform_index.router.getparking_lot_code,
-            data: {
-                parkcode: parkcode_insert,
-                floor: floor_insert
-            },
-            dataType: "text",
-            success: function (message) {
-                $('#add_Item .rent_parking_lot_code  ul').html('')
-                var data = JSON.parse(message);
-                console.log(data)
-
-                for (var i = 0; i < data.length; i++) {
-                    var d = data[i];
-                    var rent_parking_lot_code = d['code'];
-
-                    if ($("#add_Item .rent_parking_lot_code #" + rent_parking_lot_code).length == 0) {
-                        $('#add_Item .rent_parking_lot_code  ul').append('<li><a href="javascript:;" id=' + rent_parking_lot_code + ' data-ajax=' + rent_parking_lot_code + '>' + rent_parking_lot_code + '</a></li>');
-                    }
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            }
-        })
-
-})
 
 
 var messagecode = '';
@@ -961,23 +974,6 @@ $.ajax({
     }
 })
 
-/*$code = $this->input->post('messagecode');
-$msg_type = $this->input->post('msg_type');
-$if_cycle = $this->input->post('if_cycle');
-$cycle_type = $this->input->post('cycle_type');
-$if_bill = $this->input->post('if_bill');
-$bill_amount = $this->input->post('bill_amount');
-$if_receipt = $this->input->post('if_receipt');
-$msg_title = $this->input->post('msg_title');
-$msg_link = $this->input->post('msg_link');
-$msg_img = $this->input->post('msg_img');
-$target_type = $this->input->post('target_type');
-$target = $this->input->post('target');
-$push_end_date = $this->input->post('push_end_date');
-$push_start_date = $this->input->post('push_start_date');*/
-
-
-
 
 
 
@@ -985,10 +981,17 @@ $push_start_date = $this->input->post('push_start_date');*/
 ///////////////////////////////////////点击保存的事件//////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 function insert_data(element,render){
+    $('#insert_other_and_print').click(function(){
+        var index=getdata(element,render)
+        index.bill_type_name='其他账单'
+        index.bill_amount=index.bill_amount_insert
+        index.bill_month= index.bill_initial_time
+        word_export(index)
+    })
     //点击保存新增
     $('#add_Item .confirm').click(function(){
         var index=getdata(element,render)
-
+        index.bill_type=999
         console.log(index)
         $.ajax({
             url:render.router.insert,
@@ -997,7 +1000,10 @@ function insert_data(element,render){
             success:function(data){
                 //var data = JSON.parse(data);
                 //成功之后自动刷新页面
+
+
                 $('#add_Item').modal('hide');
+
                 layer.open({
                     type: 1,
                     title: false,
@@ -1005,7 +1011,7 @@ function insert_data(element,render){
                     closeBtn: 1,
                     shadeClose: false,
                     skin: 'tanhcuang',
-                    content: '新增租赁',
+                    content: '新增其他项目成功',
                     cancel: function(){
                         window.location.href=render.router.root;
                     }
@@ -1181,7 +1187,7 @@ function html_render(index){
                 must_html+index.input+':' +
                 '       <input type="text" class="model_input '+n+' ka_input3" placeholder="请输入'+index.input+'"  name="'+n+'" data-ajax="" readonly />' +
                 '    </div>' +
-                '    <div class="ka_drop" style="margin-left:20px;width: 300px;">' +
+                '    <div class="ka_drop" style="margin-left:340px;width: 300px;">' +
                 '       <div class="ka_drop_list '+n+'" style="width: 300px;">' +
                 '           <ul>'+choice_html+'</ul>' +
                 '       </div>' +
@@ -1217,7 +1223,7 @@ function html_render(index){
                 var html=
                     '<p class="select_buliding_wrap" >'
                     +must_html+index.input+':'+
-                    '  <a href="javascript:;" id="treeNavWrite" class="treeWrap" style="margin-left:220px;"><span></span></a>' +
+                    '  <a href="javascript:;" id="treeNavWrite" class="treeWrap" style="margin-left:320px;"><span></span></a>' +
                     '  <span class="select_buliding"></span>' +
                     '</p>'
                 final_html+=html
@@ -1270,7 +1276,7 @@ function html_render(index){
             }
             if(index.method=='input'){
                 var html='<p>'+must_html+index.input+':'+
-                    ' <input type="text" class="model_input '+index.input+'" placeholder="请输入'+index.input+'"  name="'+n+'" "/>' +
+                    ' <input type="text" class="model_input '+index.input+'" placeholder="请输入'+index.input+'"  name="'+n+'"/>' +
                     '</p>';
                 final_html+=html
             }

@@ -294,7 +294,7 @@ where M.code=A.code
         else {
             $code = $row['code'] +1;
         }
-        $sql = "INSERT INTO village_material (village_id,code,effective_date,effective_status,name,pcs,material_type,building_code,function,supplier,internal_no,initial_no,remark,qr_code,create_time) values (".
+        $sql = "INSERT INTO village_material (village_id,code,effective_date,effective_status,name,pcs,material_type,building_code,purpose,supplier,internal_no,initial_no,remark,qr_code,create_time) values (".
             $this->db->escape($village_id).", ".
             $this->db->escape($code).", ".
             $this->db->escape($effective_date).", ".
@@ -409,7 +409,7 @@ where M.code=A.code
     public function UpdateMaterialList ($code, $effective_date, $effective_status, $name, $pcs, $material_type, $building_code, $function,$supplier, $internal_no, $initial_no, $remark, $create_time)
     {
 
-        $sql = "INSERT INTO village_material (code,effective_date,effective_status,name,pcs,material_type,building_code,function,supplier,internal_no,initial_no,remark,create_time) values (".
+        $sql = "INSERT INTO village_material (code,effective_date,effective_status,name,pcs,material_type,building_code,purpose,supplier,internal_no,initial_no,remark,create_time) values (".
 
             $this->db->escape($code).", ".
             $this->db->escape($effective_date).", ".

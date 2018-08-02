@@ -37,7 +37,7 @@
              <span class="fr add_btn add_btn_notify" data-target="#notify" data-toggle="modal">催交</span>
              <span class="fr add_btn add_btn_getmoney" data-target="#notify" data-toggle="modal">现场收费</span>
 
-             <span class="fr add_btn" data-target="#add_other" data-toggle="modal">新增其他收费项</span>
+             <span class="fr add_btn add_btn_other" data-target="#add_Item" data-toggle="modal">新增其他收费项</span>
              <a class="fr add_btn" id="reset" >清除筛选</a>
             </div>
             <table id="table"
@@ -114,52 +114,46 @@
         </div>
 
         <!-- 增加物资 -->
-        <!--    <div class="modal fade" id="getmoney" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal fade" id="add_Item" tabindex="-1" role="dialog" aria-hidden="true">
               <div class="modal-dialog"  style="width: 630px;">
                   <div class="modal-content model_wrap">
                       <div class="model_content">
                           <div class="building_header">
-                              <h4 class="modal-title tac">现场收费</h4>
+                              <h4 class="modal-title tac">新增其他收费项</h4>
                           </div>
                           <div class=" modal-body building  oh">
-                              <div class="getmoney">
-                              </div>
-                              <div style=" overflow:auto; width: 550px;height:400px;">
-                              <table id="getmoney_table" data-toolbar="#toolbar" >
-                                  <thead >
-                                  </thead>
-                              </table>
+                              <div class="add_item">
                               </div>
                           </div>
                       </div>
                       <div class="modal_footer bg_eee">
                           <p class="tac pb17">
-                              <span class="col_37A confirm" id="getmoney_word">现场缴费</span>
-                              <span class="col_37A confirm" id="message_notify">催交</span>
+                              <span class="col_37A confirm" id="insert_other_only">只保存账单</span>
+                              <span class="col_37A confirm" id="insert_other_and_print">保存并现场缴费</span>
                               <span class="col_FFA cancle"  data-dismiss="modal">取消</span>
                           </p>
                       </div>
                   </div>
             </div>
-        </div>-->
+        </div>
 
 
         <!--催交 -->
       <div class="modal fade" id="notify" tabindex="-1" role="dialog" aria-hidden="true" >
-            <div class="modal-dialog"  style="width:850px;">
-                <div class="modal-content model_wrap" style="width:850px;">
-                    <div class="model_content" style="width:850px;position:relative;">
+            <div class="modal-dialog"  style="width:950px;">
+                <div class="modal-content model_wrap" style="width:950px;">
+                    <div class="model_content" style="width:950px;position:relative;">
                         <div class="building_header">
                             <h4 class="modal-title tac add_btn_notify_h4">催交信息</h4>
                             <h4 class="modal-title tac add_btn_getmoney_h4">现场收费</h4>
                         </div>
                         <div class=" modal-body building  oh">
                             <div class="notify">
-                                <button class=" btn notify_search" style="margin-left:500px;margin-bottom:180px;margin-top:20px;width:100px;">搜索账单</button>
+                                <button class=" btn notify_search" style="margin-left:600px;margin-bottom:180px;margin-top:20px;width:100px;">搜索账单</button>
                               <!--  <button class=" btn getmoney_search" style="margin-left:500px;margin-bottom:180px;margin-top:20px;width:100px;">搜索账单</button>-->
                             </div>
 
-                            <div class="notify_table_wrap" style="overflow:auto; width:inherit; height:300px;margin-top:-180px;display:none">
+                            <div class="notify_table_wrap" style="overflow:auto;  height:300px;margin-top:-180px;margin-left:-15px;display:none">
                             <table id="notify_table" data-toolbar="#toolbar" >
                                 <thead >
                                 <tr>
@@ -219,7 +213,7 @@
 </style>
 
 
-
+<input type="hidden" value='<?php echo $village_person_code;?>' name="village_person_code" />
 <input type="hidden" value='<?php echo $village_name;?>' name="village_name" />
 <input type="hidden" value='<?php echo $page;?>' name="page" />
 <input type="hidden" value='<?php echo $pagesize;?>' name="pagesize" />
@@ -319,7 +313,10 @@
         var word_name_tmp=0
         var html='';
         var all_amount=0;
-        $("#word,#getmoney_word").click(function (e) {
+/*
+        $("#word,#getmoney_word,#insert_other_and_print").click(function (e) {*/
+
+            console.log(index)
             word_name_tmp++
                html='';
                all_amount=0;
@@ -360,25 +357,9 @@
             $('.word_html_render').remove()
             $(html).insertAfter("#word_content_html");
 
-            $("#word-content").wordExport(now+'_'+word_name_tmp);   //fileName为导出的word文件的命名,content为要导出的html内容容器
-            html2canvas(document.getElementById("content"), {
-                onrendered: function (canvas) {
-                    //通过html2canvas将html渲染成canvas，然后获取图片数据
-                    var imgData = canvas.toDataURL('image/jpeg');
+            $("#word-content").wordExport(now+'_'+word_name_tmp);
 
-                    //初始化pdf，设置相应格式
-                    var doc = new jsPDF("p", "mm", "a4");
-
-                    doc.setFillColor(0, 0, 0);
-
-                    //这里设置的是a4纸张尺寸
-                    doc.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-
-                    //输出保存命名为content的pdf
-                    doc.save('content.pdf');
-                }
-            });
-        })
+     /*   })*/
         $('.word_html_render').remove()
     }
 

@@ -326,17 +326,18 @@ public function getOrderRecordPerson($team_person_code,$property_person_code)
     }
 
 
-public function insert($village_id,$rent_id,$rent_begin_date,$rent_end_date,$rent_pay_type,$rent_rent, $rent_renter,$rent_parking_lot_code,$create_time)
+public function insert($village_id,$bill_code,$bill_type,$bill_initial_time,$bill_amount_insert,$bill_payer_name,$bill_remark,$create_time)
 {
 
-    $sql = " INSERT INTO village_park_rent (id,begin_date,end_date,pay_type,rent, renter,parking_lot_code) values (".
-        $this->db->escape($rent_id).", ".
-        $this->db->escape($rent_begin_date).", ".
-        $this->db->escape($rent_end_date).", ".
-        $this->db->escape($rent_pay_type).", ".
-        $this->db->escape($rent_rent).", ".
-        $this->db->escape($rent_renter).", ".
-        $this->db->escape($rent_parking_lot_code).")";
+    $sql = " INSERT INTO village_bill_list (village_id,code,bill_type,initial_time,bill_amount,payer_name,remark) values (".
+        $this->db->escape($village_id).", ".
+        $this->db->escape($bill_code).", ".
+        $this->db->escape($bill_type).", ".
+        $this->db->escape($create_time).", ".
+        $this->db->escape($bill_amount_insert).", ".
+        $this->db->escape($bill_payer_name).", ".
+        $this->db->escape($bill_remark)." ) ";
+
 
     $this->db->query($sql);
 
@@ -928,6 +929,19 @@ else{
         $row = $query->row_array();
         return $row['code'];
     }
+
+
+    public function getLatestCodeforother($timestamp)
+    {
+
+
+        $sql = "select code from village_bill_list where code like '%OT$timestamp%'";
+        $query = $this->db->query($sql);
+        $row = $query->result_array();
+        return $row;
+    }
+
+
 
 
     public function sqlTogetList_pkg_fee($effective_date,$keyword, $page, $rows)
@@ -1796,7 +1810,7 @@ where bill.village_id=$village_id
 
 
 
-    public function sqlTogetList_bill_list_notify($village_id,$person,$building,$notify_for_time,$page, $rows)
+    public function sqlTogetList_bill_list_notify($village_id,$person,$building,$notify_for_time,$car_lisence,$page, $rows)
     {
         $start = ($page - 1) * $rows;
         $now   =  date("Y-m-d",time());
@@ -1814,6 +1828,8 @@ bill.payer_name as bill_payer_name,
 bill.bill_month as bill_month,
 bill.notify_info as bill_notify_info,
 bill.building_code,
+bill.car_lisence,
+bill.remark,
 
 bill.bill_source_code as bill_source_code,
 bill.third_bill_Input as bill_third_bill_Input,
@@ -1838,7 +1854,9 @@ where bill.village_id=$village_id
                 $sql .= " and  parking_lot.effective_date <= '$pkg_effective_date' and  parking_lot.effective_status =true ";
             }*/
 
-
+if(!empty($car_lisence)){
+    $sql.=" and bill.car_lisence like '%$car_lisence%'";
+}
 
         if(!empty($person)){
            /* $sqlforperson = " select code,json_array_elements_text(person_code) from village_bill_list  ";
@@ -1880,6 +1898,29 @@ where bill.village_id=$village_id
         return $sql;
     }
 
+public function getnotify_info($village_id,$code){
+           $arrayres=array();
+          foreach ($code as $key => $value) {
+              $sql = "select notify_info from village_bill_list where village_id=$village_id and code='$value'";
+              $q = $this->db->query($sql);
+              $arr = $q->result_array();
+              array_push($arrayres,$arr['0']);
+          }
+          return $arrayres;
+}
+
+
+
+public function addnotify_info($village_id,$code,$new_notify_info){
+    foreach ($code as $key => $value) {
+        $sql = " update village_bill_list
+         set 
+            notify_info='$new_notify_info[$key]'
+            where  village_id=$village_id and code='$value'";
+
+        $this->db->query($sql);
+    }
+}
 
 
 }
