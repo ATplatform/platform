@@ -253,21 +253,7 @@ class Import extends CI_Controller {
 			$cellVal = $sheet->getCell($cellName)->getValue();//取得列内容
 			$filed []= $cellVal;
 		}
-		$sheet_table_arr = array(array('code'=>'编号','name'=>'code'),array('code'=>'楼宇名称','name'=>'name'),array('code'=>'状态','name'=>'effective_status'),array('code'=>'生效日期','name'=>'effective_date'),array('code'=>'楼宇层级','name'=>'level'),array('code'=>'顺序号','name'=>'rank'),array('code'=>'上一级楼宇','name'=>'parent_code'),array('code'=>'楼宇建筑面积','name'=>'floor_area'),array('code'=>'楼宇套内面积','name'=>'inside_area'),array('code'=>'产权类型','name'=>'building_type'),array('code'=>'姓','name'=>'last_name'),array('code'=>'名','name'=>'first_name'),array('code'=>'身份证件类型','name'=>'id_type'),array('code'=>'身份证件号码','name'=>'id_number'),array('code'=>'国家或地区','name'=>'nationality'),array('code'=>'性别','name'=>'gender'),array('code'=>'出生年月日','name'=>'birth_date'),array('code'=>'血型','name'=>'blood_type'),array('code'=>'民族','name'=>'ethnicity'),array('code'=>'是否残疾','name'=>'if_disabled'),array('code'=>'手机号码国别','name'=>'tel_country'),array('code'=>'手机号码','name'=>'mobile_number'),array('code'=>'其他手机号码','name'=>'oth_mob_no'),array('code'=>'楼宇编号','name'=>'building_code'),array('code'=>'人员编号','name'=>'person_code'),array('code'=>'开始日期','name'=>'begin_date'),array('code'=>'结束日期','name'=>'end_date'),array('code'=>'住户类型','name'=>'household_type'),array('code'=>'商户类型','name'=>'biz_type'),array('code'=>'经营内容','name'=>'biz_info'),array('code'=>'用水记录编号','name'=>'code'),array('code'=>'楼宇编号','name'=>'building_code'),array('code'=>'楼宇名称','name'=>'building_name'),array('code'=>'楼宇层顺序号','name'=>'rank'),array('code'=>'对应月份','name'=>'month'),array('code'=>'本月用水量','name'=>'water_csp'));
-
-    /*    用水记录
-编号	Water_List	Code
-楼宇编号	Water_List
-        /Building	Building_Code
-楼宇名称	Water_List
-        /Building	Building_Name
-楼宇
-层顺序号	Water_List
-        /Building	Rank
-对应月份	Water_List	Month
-本月用水量	Water_List	Water_CSP*/
-
-
+		$sheet_table_arr = array(array('code'=>'编号','name'=>'code'),array('code'=>'楼宇名称','name'=>'name'),array('code'=>'状态','name'=>'effective_status'),array('code'=>'生效日期','name'=>'effective_date'),array('code'=>'楼宇层级','name'=>'level'),array('code'=>'顺序号','name'=>'rank'),array('code'=>'上一级楼宇','name'=>'parent_code'),array('code'=>'楼宇建筑面积','name'=>'floor_area'),array('code'=>'楼宇套内面积','name'=>'inside_area'),array('code'=>'产权类型','name'=>'building_type'),array('code'=>'姓','name'=>'last_name'),array('code'=>'名','name'=>'first_name'),array('code'=>'身份证件类型','name'=>'id_type'),array('code'=>'身份证件号码','name'=>'id_number'),array('code'=>'国家或地区','name'=>'nationality'),array('code'=>'性别','name'=>'gender'),array('code'=>'出生年月日','name'=>'birth_date'),array('code'=>'血型','name'=>'blood_type'),array('code'=>'民族','name'=>'ethnicity'),array('code'=>'是否残疾','name'=>'if_disabled'),array('code'=>'手机号码国别','name'=>'tel_country'),array('code'=>'手机号码','name'=>'mobile_number'),array('code'=>'其他手机号码','name'=>'oth_mob_no'),array('code'=>'楼宇编号','name'=>'building_code'),array('code'=>'人员编号','name'=>'person_code'),array('code'=>'开始日期','name'=>'begin_date'),array('code'=>'结束日期','name'=>'end_date'),array('code'=>'住户类型','name'=>'household_type'),array('code'=>'商户类型','name'=>'biz_type'),array('code'=>'经营内容','name'=>'biz_info'),array('code'=>'用水记录编号','name'=>'code'),array('code'=>'楼宇编号_供水加压','name'=>'building_code'),array('code'=>'楼宇名称_供水加压','name'=>'building_name'),array('code'=>'楼宇层顺序号_供水加压','name'=>'rank'),array('code'=>'对应月份_供水加压','name'=>'month'),array('code'=>'本月用水量_供水加压','name'=>'water_csp'));
 
 		$tablekey=array();
 		for($i=0;$i<sizeof($filed);$i++){

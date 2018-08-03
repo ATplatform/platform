@@ -96,6 +96,17 @@
 			</form>
 		</div>
 
+        <div class="">
+            <form id="importfile_water_fee" class="load_data_from" style='padding:10px; padding-left:15px;' action='<?=base_url().'index.php/Import/importWaterFee'?>' method="post" enctype="multipart/form-data">
+	              <span class="btn btn-green btn-file">
+	                   <i class="glyphicon glyphicon-folder-open folder_icon" href="#"></i>导入月用水量信息
+	                   <input type="file" name="file" id="water_fee_file" />
+	              </span>
+                <!-- <input type="submit" value="提交" /> -->
+            </form>
+        </div>
+
+
 	</div>
 </div>
 
@@ -111,6 +122,9 @@ $('#person_biz_file').on('change',function(){
 })
 $('#building_file').on('change',function(){
 	$('#importfile_building').submit();
+})
+$('#water_fee_file').on('change',function(){
+    $('#importfile_water_fee').submit();
 })
 $('#setBuildingQRcode').click(function(){
 	$.ajax({

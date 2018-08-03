@@ -38,15 +38,15 @@
         <div class="table_wrap">
          <div class="oh pt10">
             <span class="fr add_btn" data-target="#add_Item" data-toggle="modal">修改加压费标准</span>
-             <span class="" >
-                  <form id="importfile_water_fee" class="load_data_from"  action='<?=base_url().'index.php/Import/importWaterFee'?>' method="post" enctype="multipart/form-data">
+        <!--     <span class="" >
+                  <form id="importfile_water_fee" class="load_data_from"  action='/*=base_url().'index.php/Import/importWaterFee'*/' method="post" enctype="multipart/form-data">
 	              <span class="btn btn-green btn-file fr add_btn" >
 	                   <span  style="font-size:12px">导入本月用水量</span>
 	                   <input type="file" name="file" id="person_biz_file" />
 	              </span>
-                      <!-- <input type="submit" value="提交" /> -->
+
             </form>
-             </span>
+             </span>-->
              <a class="fr add_btn" id="reset" >清除筛选</a>
             </div>
             <table id="table"

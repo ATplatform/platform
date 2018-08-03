@@ -326,7 +326,7 @@ public function getOrderRecordPerson($team_person_code,$property_person_code)
     }
 
 
-public function insert($village_id,$bill_code,$bill_type,$bill_initial_time,$bill_amount_insert,$bill_payer_name,$bill_remark,$create_time)
+public function insert($village_id,$bill_code,$bill_type,$bill_initial_time,$bill_amount_insert,$bill_payer_name,$bill_remark,$bill_otcode,$create_time)
 {
 
     $sql = " INSERT INTO village_bill_list (village_id,code,bill_type,initial_time,bill_amount,payer_name,remark) values (".
@@ -341,6 +341,14 @@ public function insert($village_id,$bill_code,$bill_type,$bill_initial_time,$bil
 
     $this->db->query($sql);
 
+
+    $sql = " update village_bill_list_nextcode
+         set 
+            ot=".$this->db->escape($bill_otcode)." ".
+
+        "where village_id=$village_id";
+
+    $this->db->query($sql);
 
 }
 
@@ -931,13 +939,13 @@ else{
     }
 
 
-    public function getLatestCodeforother($timestamp)
+    public function getLatestCodeforother($village_id)
     {
 
 
-        $sql = "select code from village_bill_list where code like '%OT$timestamp%'";
+        $sql = "select ot from village_bill_list_nextcode where village_id=$village_id";
         $query = $this->db->query($sql);
-        $row = $query->result_array();
+        $row = $query->row_array();
         return $row;
     }
 
@@ -1099,9 +1107,10 @@ water.Water_csp as water_thismonth_usage,
 tmp.*,
 water_fee.change_date as water_fee_change_date,
 water_fee.fee_standard as water_fee_standard
- from village_water_list as water  left join village_tmp_building as tmp on tmp.code=water.building_code, 
+ from village_water_list as water  
+ left join village_tmp_building as tmp on tmp.code=water.building_code, 
  village_water_fee as water_fee
- 
+  where water_fee.change_date=(select max(change_date) from village_water_fee where change_date<now() ) 
 ";}
 
 
@@ -1118,9 +1127,10 @@ water.water_csp as water_thismonth_usage,
 tmp.*,
 water_fee.change_date as water_fee_change_date,
 water_fee.fee_standard as water_fee_standard
- from village_water_list as water  left join village_tmp_building as tmp on tmp.code=water.building_code, 
+ from village_water_list as water  
+ left join village_tmp_building as tmp on tmp.code=water.building_code, 
  village_water_fee as water_fee
-
+ where water_fee.change_date=(select max(change_date) from village_water_fee where change_date<now() ) 
 ";
         }
       /*  if(empty($pkg_effective_date)){

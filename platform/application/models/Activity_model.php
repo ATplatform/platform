@@ -35,7 +35,13 @@ p.code
 FROM village_activity as a
 left join village_person_position as pp on a.service_code=pp.person_code
 left join village_person as p on a.service_code=p.code 
-where a.service_code=p.code 
+where a.service_code=p.code and  pp.id = (
+	SELECT  MAX(id)
+	FROM
+		village_person_position A
+where A.person_code=pp.person_code
+	
+) 	
 ";}
 
 
@@ -55,7 +61,13 @@ p.code
 FROM village_activity as a
 left join village_person_position as pp on a.service_code=pp.person_code
 left join village_person as p on a.service_code=p.code 
-where a.service_code=p.code  
+where a.service_code=p.code and  pp.id = (
+	SELECT  MAX(id)
+	FROM
+		village_person_position A
+where A.person_code=pp.person_code
+	
+) 	
 ";   }
              if(empty($begin_date)){
                  $sql .= " and a.begin_date<='$now' ";

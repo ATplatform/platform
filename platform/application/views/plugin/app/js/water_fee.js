@@ -24,6 +24,17 @@ router：路由参数
 */
 
 var platform_index={
+    water_code:{
+    search:'no',
+        show:'yes',
+        detail:'no',
+        update:'no',
+        insert:'no',
+        must:'no',
+        input:'用水记录',
+        method:'show',
+        disabledonly:'no',
+},
     water_building_effective_date:{
         search:'yes',
         show:'no',

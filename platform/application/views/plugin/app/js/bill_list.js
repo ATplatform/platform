@@ -917,43 +917,25 @@ console.log(bill_code)
 
 
 ////////////////////////////////车位编号///////////////////////////
-
+var bill_otcode_insert=0;
 $('.add_btn_other').click(function(){
     $.ajax({
         url:platform_index.router.getLatestCode,
-        data:{
-            timestamp:'11',
-        },
         type:"post",
         success:function(data){
-
             data=JSON.parse(data)
             console.log(data)
+            var new_num = parseInt(data.ot);
+            bill_otcode_insert=new_num
             var timestamp=new Date().getTime();
-            for(var n=0;n<data.length;n++){
-                data[n]=data[n]['code'].split(timestamp)['1']
-            }
-            var max=Math.max.apply(null,data);
-            console.log(data)
-            console.log(max)
-            if(parseInt(max)){
-                var new_num = parseInt(max) + 1;
-                var code='OT'+timestamp+new_num;
-            }else{
-                var timestamp=new Date().getTime();
-                var code='OT'+timestamp+100001;
-            }
+            var code='OT'+timestamp+new_num;
             console.log(code)
             $('.add_item .bill_code').html(code);
         }
     })
     var now = getDate();
     $('.add_item .bill_type').html('其他账单');
-    $('.add_item .bill_type').html('其他账单');
     $('.add_item .bill_initial_time').html(now);
-
-
-
 
 })
 
@@ -992,6 +974,7 @@ function insert_data(element,render){
     $('#add_Item .confirm').click(function(){
         var index=getdata(element,render)
         index.bill_type=999
+        index.bill_otcode_insert=bill_otcode_insert+1
         console.log(index)
         $.ajax({
             url:render.router.insert,

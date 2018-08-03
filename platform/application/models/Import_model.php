@@ -383,34 +383,27 @@ class Import_model extends CI_Model {
                 $res .= "第".$i."条数据有误"."<br />";
             }
             else {
-                $if_has_person=$this->getAllWaterFee($row['code'],$_SESSION['village_id'],$row['end_date']);
+           /*     $if_has_person=$this->getAllWaterFee($row['code'],$_SESSION['village_id'],$row['end_date']);
                 //表示数据表里已经有这条数据,则退出,不再写入数据
                 if(!empty($if_has_person)){
                     $res .= "第".$i."条数据有误"."<br />";
                 }
                 //写入数据
-                else {
-                    $now = date('Y-m-d H:i:s',time());
+                else {*/
+               $code=$this->getlatestwatercode($_SESSION['village_id']);
+               $code=intval($code['code'], 10)+1;
+               $building_name=$this->getbuilding_name($row['building_code'],$_SESSION['village_id']);
+               $rank=$this->getrank($row['building_code'],$_SESSION['village_id']);
+               $standard=$this->getstandard($_SESSION['village_id']);
+
+
+
                     //写入数据
-                    $if_insert = $this->insertWaterFee($_SESSION['village_id'],$row['Code'],$row['building_code'],$row['person_code'],$row['begin_date'],$row['end_date'],$row['remark'],$row['biz_type'],$row['biz_info'],$now);
+                    $if_insert = $this->insertWaterFee($_SESSION['village_id'],$code,$row['building_code'],$building_name,$rank['rank'],$row['month'],$row['water_csp'],$standard['fee_standard']);
                     if($if_insert==true){
                         $has_insert_data = true;
-
-
-                        /*    用水记录
-编号	Water_List	Code
-楼宇编号	Water_List
-    /Building	Building_Code
-楼宇名称	Water_List
-    /Building	Building_Name
-楼宇
-层顺序号	Water_List
-    /Building	Rank
-对应月份	Water_List	Month
-本月用水量	Water_List	Water_CSP*/
-
                     }
-                }
+             /*   }*/
             }
         }
         if($has_insert_data == true){
@@ -419,16 +412,55 @@ class Import_model extends CI_Model {
         return $res;
     }
 
+
+
+
+    public function getlatestwatercode($village_id){
+	    $sql="select code  from village_water_list  where village_id=$village_id order by code desc limit 1";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function getstandard($village_id){
+        $sql="select fee_standard  from village_water_fee  where change_date=(select max(change_date) from village_water_fee where change_date<now()) and village_id=$village_id";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function getrank($building_code,$village_id){
+        $sql="select rank from village_building where code=$building_code and village_id=$village_id and id=(select max(id) from village_building A where A.code=$building_code and A.village_id=$village_id)";
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function getbuilding_name($building_code,$village_id){
+        $sql="select * from village_tmp_building where village_id=$village_id and code=$building_code";
+        $query = $this->db->query($sql);
+        if ($query->num_rows() > 0) {
+            $arr = $query->result_array();
+            foreach ($arr as $key => $value) {
+                $res = $this->getHouseholdInfo($value);
+            }
+        }
+        return $res;
+    }
+
+
+
+
+
+
     public function judgeWaterFeeLegal($row){
-        if(empty($row['code'])||empty($row['building_code'])||empty($row['person_code'])||empty($row['begin_date'])||empty($row['end_date'])||empty($row['biz_type'])){
+        if(empty($row['building_code'])){
             return true;
         }
-        if($row['begin_date']>$row['end_date']){
+
+     /*   if(!is_numeric($row['code'])||!is_numeric($row['building_code'])||!is_numeric($row['rank'])||!is_numeric($row['water_csp'])){
             return true;
-        }
-        if(!is_numeric($row['code'])||!is_numeric($row['building_code'])||!is_numeric($row['person_code'])||!is_numeric($row['biz_type'])){
-            return true;
-        }
+        }*/
         return false;
     }
 
@@ -445,19 +477,64 @@ class Import_model extends CI_Model {
         $query = $this->db->query($sql);
         $row = $query->row_array();
         return $row;
+}
+/*$_SESSION['village_id'],$row['code'],$row['building_code'],$row['building_name'],$row['rank'],$row['month'],$row['water_csp']*/
+    public function insertWaterFee($village_id,$code,$building_code,$building_name,$rank,$month,$water_csp,$standard){
+        $n = intval(($month - 25569) * 3600 * 24); //转换成1970年以来的秒数
+        $month= gmdate('Y-m-d H:i:s', $n);//格式化时间
+
+        $insert_sql = " INSERT INTO village_water_list (village_id,code,building_code,building_name,rank,month,water_csp,standard) values (".
+            $this->db->escape($village_id).", ".
+            $this->db->escape($code).", ".
+            $this->db->escape($building_code).", ".
+            $this->db->escape($building_name).", ".
+            $this->db->escape($rank).", ".
+            $this->db->escape($month).", ".
+            $this->db->escape($water_csp).",".
+            $this->db->escape($standard).") ";
+
+
+        $this->db->query($insert_sql);
+
+
+        return $this->db->affected_rows();
     }
 
-    public function insertWaterFee($village_id,$code,$building_code,$person_code,$begin_date,$end_date,$remark,$biz_type,$biz_info,$create_time){
-        $today = date('Y-m-d',time());
-        $if_today_b_enddate = $this->dateBDate($today, $end_date);
-        if($if_today_b_enddate==true){
-            $insert_sql = "INSERT INTO village_person_biz_bak (village_id,code,building_code,person_code,begin_date,end_date,biz_type,biz_info,remark,create_time) values ($village_id,$code,$building_code,$person_code,'$begin_date','$end_date',$biz_type,'$biz_info','$remark','$create_time')";
+    public function getHouseholdInfo($row){
+        $result="";
+        if(!empty($row['stage_name']))
+        {
+            $result=$result.$row['stage_name']."(期)";
         }
-        else{
-            $insert_sql = "INSERT INTO village_person_biz (village_id,code,building_code,person_code,begin_date,end_date,biz_type,biz_info,remark,create_time) values ($village_id,$code,$building_code,$person_code,'$begin_date','$end_date',$biz_type,'$biz_info','$remark','$create_time')";
+        if(!empty($row['area_name']))
+        {
+            $result=$result.$row['area_name']."(区)";
         }
-        // echo $insert_sql;exit;
-        $this->db->query($insert_sql);
-        return $this->db->affected_rows();
+        if(!empty($row['immeuble_name']))
+        {
+            $result=$result.$row['immeuble_name']."(栋)";
+        }
+        if(!empty($row['unit_name']))
+        {
+            $result=$result.$row['unit_name']."(单元)";
+        }
+        if(!empty($row['floor_name']))
+        {
+            $result=$result.$row['floor_name']."(层)";
+        }
+        if(!empty($row['room_name']))
+        {
+            $result=$result.$row['room_name']."(室)";
+        }
+        if(!empty($row['public_name']))
+        {
+            $result=$result.$row['public_name']."(公共设施)";
+        }
+        if(!empty($row['level'])){
+            if($row['level']==100){
+                $result=$result.$row['name'];
+            }
+        }
+        return $result;
     }
 }
