@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JS Bin</title>
+</head>
+<body>
+<div class="top">
+    <div class="top-wrap clearfloat">
+        <div class="left fl">
+            <span class="content">  返回</span>
+
+        </div>
+
+        <div class="title fl">
+            <span class="content"> 停车费缴纳</span>
+
+        </div>
+
+        <div class="right fl">
+            <span class="content"> 缴费记录</span>
+
+        </div>
+    </div>
+</div>
+
+<div class="tab-wrap">
+    <div class=" clearfloat">
+        <div class="tab1 fl"><span class="content">当前账单</span></div>
+        <div class="tab2 fl"><span>我的月卡</span></div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="list_wrap">
+        <div class="list-1"></div>
+    </div>
+    <div class="list_wrap">
+        <div class="list-2"></div>
+    </div>
+    <div class="list_wrap">
+        <div class="list-3"> </div>
+    </div>
+
+</div>
+
+<div class="footer">
+
+    <div class="title ">支付方式</div>
+    <div class="img_wrap clearfloat">
+        <div class="img1 fl">图片1</div>
+        <div class="img1 fl">图片1</div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<style>
+
+    .clearfloat:after{
+        display:block;
+        clear:both;
+        content:"";
+        visibility:
+                hidden;
+        height:0}
+    .clearfloat{zoom:1}
+
+    .fl{
+        float:left;
+    }
+
+
+    .top{
+        width:100%;
+        background: #00BFA3;
+        position: relative;
+
+    }
+
+    .top .top-wrap{
+        height:78px;
+        padding:44px 0;
+    }
+    .top .left{
+        text-align: center;
+        height:100%;
+        width:23%;
+        font-family: PingFangSC-Regular;
+        font-size: 42px;
+        color: #FFFFFF;
+        letter-spacing: -0.29px;
+    }
+
+    .top .right{
+        text-align: center;
+        height:100%;
+        width:23%;
+        font-family: PingFangSC-Regular;
+        font-size: 42px;
+        color: #FFFFFF;
+        letter-spacing: -0.29px;
+
+    }
+
+    .top .title{
+        height:100%;
+        width:54%;
+        font-family: PingFangSC-Medium;
+        font-size: 56px;
+        color: #FFFFFF;
+        letter-spacing: -0.2px;
+        text-align: center;
+    }
+
+    .tab1{
+        width:50%;
+        height:100px;
+        font-family: PingFangSC-Regular;
+        font-size: 40px;
+        color: #00BFA3;
+        letter-spacing: 0;
+        text-align: center;
+        background: #FFFFFF;
+        border-bottom:4px solid #00BFA3;
+        border-right:2px solid #DCDCDC;
+        vertical-align: middle;
+    }
+
+    .tab2{
+        width:49%;
+        height:100px;
+        font-family: PingFangSC-Regular;
+        font-size: 40px;
+        color: #505050;
+        letter-spacing: 0;
+        text-align: center;
+        background: #F6F6F6;
+        box-shadow: 0 2px 0 0 #B4B4B4;
+    }
+
+
+    .list_wrap{
+        margin-top:10px;
+        width:98%;
+        height:256px;
+        background: #FFFFFF;
+        box-shadow: 0 0 10px 0 rgba(0,150,136,0.10);
+        border-radius: 10px;
+        margin-left:1%;
+        margin-right:1%;
+    }
+
+
+    .footer{
+        width:100%;
+        background: #FFFFFF;
+        box-shadow: 0 -3px 10px 0 rgba(0,0,0,0.10);
+        border-radius: 10px;
+        margin-top:10px;
+    }
+
+    .footer .title{
+        font-family: PingFangSC-Regular;
+        font-size: 42px;
+        color: #808080;
+        letter-spacing: 0;
+        padding-top:20px;
+    }
+
+
+
+
+</style>
